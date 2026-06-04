@@ -285,18 +285,14 @@ export default function MasterData() {
           <TableHead>
             <TableRow>
               <TableCell>{t('master_data.name')}</TableCell>
-              <TableCell>Slug</TableCell>
-              <TableCell>Icon</TableCell>
               <TableCell align="right">{t('master_data.vehicle_count')}</TableCell>
-              <TableCell align="right">{t('common.edit')}</TableCell>
+              <TableCell align="right">Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {currentRows.map((category) => (
               <TableRow key={category.id} hover>
                 <TableCell sx={{ fontWeight: 700 }}>{category.name}</TableCell>
-                <TableCell>{category.slug}</TableCell>
-                <TableCell>{category.icon}</TableCell>
                 <TableCell align="right">{category.vehicles_count || 0}</TableCell>
                 <TableCell align="right">{renderActions('categories', category)}</TableCell>
               </TableRow>
