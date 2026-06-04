@@ -17,6 +17,7 @@ import RegisterPage from './auth/RegisterPage';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const RentalDesk = lazy(() => import('./pages/RentalDesk'));
 const Fleet = lazy(() => import('./pages/Fleet'));
+const MasterData = lazy(() => import('./pages/MasterData'));
 const Customers = lazy(() => import('./pages/Customers'));
 const Rentals = lazy(() => import('./pages/Rentals'));
 const Landing = lazy(() => import('./pages/Landing'));
@@ -332,6 +333,8 @@ function App() {
         return <Customers />;
       case 'rentals':
         return <Rentals />;
+      case 'master-data':
+        return <MasterData />;
       default:
         return <Dashboard setCurrentPage={setCurrentPage} />;
     }

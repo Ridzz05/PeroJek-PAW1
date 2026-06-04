@@ -4,7 +4,8 @@
     "rental_desk": "Meja Penyewaan",
     "rentals": "Log Penyewaan",
     "fleet": "Pengelola Armada",
-    "customers": "Daftar Pelanggan"
+    "customers": "Daftar Pelanggan",
+    "master_data": "Master Data"
   },
   "dashboard": {
     "title": "Dasbor",
@@ -145,5 +146,28 @@
     "language": "Bahasa",
     "settings": "Pengaturan",
     "confirm": "Konfirmasi"
+  },
+  "master_data": {
+    "subtitle": "Kelola data utama kategori, kendaraan, dan pelanggan dari satu tempat.",
+    "categories": "Kategori",
+    "vehicles": "Kendaraan",
+    "customers": "Pelanggan",
+    "add": "Tambah",
+    "name": "Nama",
+    "vehicle": "Kendaraan",
+    "vehicle_count": "Jumlah Kendaraan",
+    "records": "data",
+    "search_placeholder": "Cari data master...",
+    "no_records": "Tidak ada data ditemukan",
+    "create_title": "Tambah",
+    "edit_title": "Ubah",
+    "saving": "Menyimpan...",
+    "confirm_delete": "Apakah Anda yakin ingin menghapus data ini?",
+    "toast_load_failed": "Gagal memuat master data",
+    "toast_create_success": "Data berhasil ditambahkan",
+    "toast_update_success": "Data berhasil diperbarui",
+    "toast_delete_success": "Data berhasil dihapus",
+    "toast_save_failed": "Gagal menyimpan data",
+    "toast_delete_failed": "Gagal menghapus data"
   }
 }

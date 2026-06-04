@@ -1,20 +1,17 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\DashboardController;
-use App\Models\Category;
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
 
 // 1. Web API Routes
 Route::prefix('api')->group(function () {
-    // Categories list
-    Route::get('categories', function () {
-        return response()->json(Category::all());
-    });
+    // Categories CRUD
+    Route::apiResource('categories', CategoryController::class)->except(['show']);
 
     // Dashboard stats
     Route::get('dashboard/stats', [DashboardController::class, 'getStats']);

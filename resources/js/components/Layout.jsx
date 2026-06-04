@@ -26,6 +26,7 @@ import AppRegistrationIcon from '@mui/icons-material/AppRegistration'; // Rental
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'; // Rentals
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar'; // Fleet
 import PeopleIcon from '@mui/icons-material/People'; // Customers
+import StorageIcon from '@mui/icons-material/Storage'; // Master Data
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave'; // Logo
@@ -65,7 +66,8 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
     { text: t('menu.rental_desk'), short: language === 'eng' ? 'Desk' : 'Meja', id: 'rental-desk', icon: <AppRegistrationIcon /> },
     { text: t('menu.rentals'), short: language === 'eng' ? 'Logs' : 'Log', id: 'rentals', icon: <ReceiptLongIcon /> },
     { text: t('menu.fleet'), short: language === 'eng' ? 'Fleet' : 'Armada', id: 'fleet', icon: <DirectionsCarIcon /> },
-    { text: t('menu.customers'), short: language === 'eng' ? 'Customers' : 'Pelanggan', id: 'customers', icon: <PeopleIcon /> },
+    { text: t('menu.customers'), short: language === 'eng' ? 'Cust' : 'Klien', id: 'customers', icon: <PeopleIcon /> },
+    { text: t('menu.master_data'), short: 'Master', id: 'master-data', icon: <StorageIcon /> },
   ];
 
   const drawerContent = (
