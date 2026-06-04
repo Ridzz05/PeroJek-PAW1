@@ -68,7 +68,7 @@ function App() {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
-  // ─── Minimalist Black × White Theme ────────────────────────────────────────
+  // Minimalist Black x White Theme
   const isDark = mode === 'dark';
 
   const theme = useMemo(() => createTheme({
@@ -85,8 +85,8 @@ function App() {
         contrastText: isDark ? '#0A0A0A' : '#FFFFFF',
       },
       background: {
-        default: isDark ? '#0D0D0D' : '#F2F2F0',  // near-black / warm light gray
-        paper:   isDark ? '#1A1A1A' : '#FFFFFF',   // slightly lifted surface
+        default: isDark ? '#0D0D0D' : '#F2F2F0',
+        paper:   isDark ? '#1A1A1A' : '#FFFFFF',
       },
       text: {
         primary:   isDark ? '#F5F5F5' : '#0A0A0A',

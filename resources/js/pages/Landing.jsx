@@ -542,7 +542,7 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
                     }
                   }}
                 >
-                  <Box sx={{ p: 1.5, borderRadius: 3, backgroundColor: isDark ? '#1F1F1F' : '#F5F5F3', mb: 2.5 }}>
+              <Box sx={{ p: 1.5, borderRadius: 3, backgroundColor: isDark ? '#1F1F1F' : '#F5F5F3', mb: 2.5 }}>
                     {feature.icon}
                   </Box>
                   <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, fontSize: '1.05rem' }}>
