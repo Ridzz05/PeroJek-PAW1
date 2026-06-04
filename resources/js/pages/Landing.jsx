@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -31,10 +31,16 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import LanguageIcon from '@mui/icons-material/Language';
 import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import { useLanguage } from '../i18n/i18n';
 import { useAuth } from '../auth/AuthContext';
+
+const heroImages = [
+  '/assets/img/1.jpg',
+  '/assets/img/2.jpg',
+  '/assets/img/3.jpg',
+  '/assets/img/4.jpg',
+];
 
 export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode, toggleColorMode }) {
   const theme = useTheme();
@@ -47,6 +53,7 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [heroIndex, setHeroIndex] = useState(0);
 
   // Fetch Fleet Data
   useEffect(() => {
@@ -71,6 +78,14 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
         setVehicles([]);
         setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setHeroIndex((index) => (index + 1) % heroImages.length);
+    }, 4000);
+
+    return () => window.clearInterval(timer);
   }, []);
 
   // Filter Categories
@@ -193,7 +208,7 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
           transition: 'background-color 0.3s ease',
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, lg: 4 } }}>
           <Box sx={{ height: { xs: 60, md: 72 }, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {/* Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, cursor: 'pointer' }} onClick={() => scrollToSection('hero')}>
@@ -306,142 +321,163 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
         id="hero"
         sx={{
           position: 'relative',
-          py: { xs: 10, md: 16 },
+          minHeight: { xs: 'calc(100svh - 112px)', md: 'calc(100svh - 120px)' },
+          display: 'flex',
+          alignItems: 'center',
           overflow: 'hidden',
-          background: isDark
-            ? 'radial-gradient(ellipse at 50% 10%, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%)'
-            : 'radial-gradient(ellipse at 50% 10%, rgba(10,10,10,0.02) 0%, rgba(0,0,0,0) 70%)',
+          color: '#FFFFFF',
+          py: { xs: 7, md: 8 },
         }}
       >
-        <Container maxWidth="lg">
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1, px: 2, py: 0.6, borderRadius: 5, border: `1px solid ${theme.palette.divider}`, mb: 3 }}>
-                <Chip label={activeText.tagline} size="small" variant="outlined" sx={{ border: 'none', fontWeight: 700, height: 22, '& .MuiChip-label': { p: 0 } }} />
-              </Box>
-              <Typography
-                variant="h1"
+        {heroImages.map((image, index) => (
+          <Box
+            key={image}
+            component="img"
+            src={image}
+            alt={`Smart Rental hero vehicle ${index + 1}`}
+            loading={index === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: { xs: '62% center', md: 'center center' },
+              opacity: heroIndex === index ? 1 : 0,
+              transform: heroIndex === index ? 'scale(1)' : 'scale(1.035)',
+              transition: 'opacity 900ms ease, transform 4200ms ease',
+              zIndex: 0,
+            }}
+          />
+        ))}
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 0,
+            background: {
+              xs: 'linear-gradient(90deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.62) 56%, rgba(0,0,0,0.22) 100%)',
+              md: 'linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.56) 38%, rgba(0,0,0,0.14) 74%, rgba(0,0,0,0.04) 100%)',
+            },
+            pointerEvents: 'none',
+          }}
+        />
+        <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, lg: 4 } }}>
+          <Box sx={{ maxWidth: { xs: 620, md: 640 } }}>
+            <Chip
+              label={activeText.tagline}
+              size="small"
+              sx={{
+                mb: 3,
+                height: 28,
+                px: 0.5,
+                color: '#FFFFFF',
+                fontWeight: 800,
+                backgroundColor: 'rgba(255,255,255,0.16)',
+                border: '1px solid rgba(255,255,255,0.28)',
+                backdropFilter: 'blur(10px)',
+              }}
+            />
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: '2.4rem', sm: '3.4rem', md: '4.6rem' },
+                fontWeight: 900,
+                lineHeight: 1.02,
+                letterSpacing: 0,
+                mb: 2.5,
+                color: '#FFFFFF',
+                textShadow: '0 12px 40px rgba(0,0,0,0.45)',
+              }}
+            >
+              {activeText.titleHighlight}
+              {activeText.titleRest}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(255,255,255,0.82)',
+                fontSize: { xs: '1rem', md: '1.15rem' },
+                mb: 4,
+                maxWidth: 600,
+                fontWeight: 500,
+                lineHeight: 1.65,
+                textShadow: '0 8px 28px rgba(0,0,0,0.42)',
+              }}
+            >
+              {activeText.subtitle}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => scrollToSection('fleet')}
                 sx={{
-                  fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4rem' },
-                  fontWeight: 900,
-                  lineHeight: 1.1,
-                  letterSpacing: '-0.03em',
-                  mb: 2.5,
-                  color: 'text.primary',
+                  borderRadius: 2,
+                  fontWeight: 800,
+                  px: { xs: 3, sm: 4 },
+                  py: 1.4,
+                  backgroundColor: '#FFFFFF',
+                  color: '#0A0A0A',
+                  '&:hover': { backgroundColor: '#EDEDED' },
                 }}
               >
-                <Box component="span" sx={{
-                  background: isDark ? 'linear-gradient(90deg, #FFFFFF 0%, #A3A3A3 100%)' : 'linear-gradient(90deg, #0A0A0A 0%, #525252 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}>
-                  {activeText.titleHighlight}
-                </Box>
-                {activeText.titleRest}
-              </Typography>
-              <Typography
-                variant="body1"
+                {activeText.exploreBtn}
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={handleBookNow}
                 sx={{
-                  color: 'text.secondary',
-                  fontSize: { xs: '1rem', md: '1.15rem' },
-                  mb: 4.5,
-                  maxWidth: 540,
-                  fontWeight: 500,
-                  lineHeight: 1.6
+                  borderRadius: 2,
+                  fontWeight: 800,
+                  px: { xs: 3, sm: 4 },
+                  py: 1.4,
+                  color: '#FFFFFF',
+                  borderColor: 'rgba(255,255,255,0.7)',
+                  backgroundColor: 'rgba(0,0,0,0.16)',
+                  backdropFilter: 'blur(8px)',
+                  '&:hover': {
+                    borderColor: '#FFFFFF',
+                    backgroundColor: 'rgba(255,255,255,0.12)',
+                  },
                 }}
               >
-                {activeText.subtitle}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => scrollToSection('fleet')}
-                  sx={{
-                    borderRadius: 3,
-                    fontWeight: 700,
-                    px: 4,
-                    py: 1.6,
-                    fontSize: '1rem',
-                  }}
-                >
-                  {activeText.exploreBtn}
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={handleBookNow}
-                  sx={{
-                    borderRadius: 3,
-                    fontWeight: 700,
-                    px: 4,
-                    py: 1.6,
-                    fontSize: '1rem',
-                  }}
-                >
-                  {activeText.startBtn}
-                </Button>
-              </Box>
-            </Grid>
-
-            {/* Interactive Hero Image Banner */}
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    width: '80%',
-                    height: '80%',
-                    borderRadius: '50%',
-                    background: isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0,0,0,0.015)',
-                    filter: 'blur(60px)',
-                    zIndex: -1,
-                  }
-                }}
-              >
-                <Card
-                  sx={{
-                    width: '100%',
-                    maxWidth: 520,
-                    borderRadius: 6,
-                    boxShadow: isDark ? '0 30px 60px rgba(0,0,0,0.6)' : '0 30px 60px rgba(0,0,0,0.08)',
-                    overflow: 'hidden',
-                    border: `1px solid ${isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)'}`,
-                    transition: 'transform 0.4s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                    }
-                  }}
-                >
-                  <CardMedia
-                    component="img"
-                    height="320"
-                    image="https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&q=80&w=800"
-                    alt="Premium Vehicle Portfolio"
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <CardContent sx={{ p: 3, background: isDark ? '#141414' : '#FAFAFA' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>Porsche Taycan EV</Typography>
-                        <Typography variant="caption" color="text.secondary">ELECTRIC SEDAN</Typography>
-                      </Box>
-                      <Box sx={{ textAlign: 'right' }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 800, color: 'success.main' }}>Rp 3.500.000</Typography>
-                        <Typography variant="caption" color="text.secondary">/ {activeText.daily}</Typography>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Box>
-            </Grid>
-          </Grid>
+                {activeText.startBtn}
+              </Button>
+            </Box>
+          </Box>
         </Container>
+        <Box
+          sx={{
+            position: 'absolute',
+            right: { xs: 16, md: 28 },
+            bottom: { xs: 14, md: 18 },
+            zIndex: 1,
+            display: 'flex',
+            gap: 0.75,
+            alignItems: 'center',
+            px: 1.1,
+            py: 0.75,
+            borderRadius: 999,
+            backgroundColor: 'rgba(0,0,0,0.32)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          {heroImages.map((image, index) => (
+            <Box
+              key={image}
+              sx={{
+                width: heroIndex === index ? 18 : 7,
+                height: 7,
+                borderRadius: 999,
+                backgroundColor: heroIndex === index ? '#FFFFFF' : 'rgba(255,255,255,0.42)',
+                transition: 'width 0.25s ease, background-color 0.25s ease',
+              }}
+            />
+          ))}
+        </Box>
       </Box>
 
       {/* ─── FEATURES SECTION ────────────────────────────────────────────────── */}
