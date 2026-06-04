@@ -7,10 +7,7 @@ import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
 import CircularProgress from '@mui/material/CircularProgress';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -422,7 +419,7 @@ export default function MasterData() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-end', sm: 'space-between' }, alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Typography variant="h5" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 800 }}>
             {t('menu.master_data')}
@@ -431,14 +428,30 @@ export default function MasterData() {
             {t('master_data.subtitle')}
           </Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={openCreateDialog} sx={{ width: { xs: '100%', sm: 'auto' } }}>
-          {t('master_data.add')} {activeLabel}
-        </Button>
       </Box>
+
+      <Collapse in={dialog.open} timeout={260} unmountOnExit>
+        <Card sx={{ mb: 3 }}>
+          <Box sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
+              {dialog.mode === 'edit' ? t('master_data.edit_title') : t('master_data.create_title')} {t(tabs.find((tab) => tab.key === dialog.entity)?.labelKey || 'menu.master_data')}
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Box sx={{ mt: 2.5 }}>{renderForm()}</Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 3, flexDirection: { xs: 'column-reverse', sm: 'row' } }}>
+                <Button color="inherit" onClick={() => setDialog({ ...dialog, open: false })}>{t('common.cancel')}</Button>
+                <Button type="submit" variant="contained" disabled={submitting}>
+                  {submitting ? t('master_data.saving') : t('common.save')}
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Card>
+      </Collapse>
 
       <Card>
         <Box sx={{ px: 2.5, pt: 2 }}>
-          <Tabs value={activeTab} onChange={(_, value) => { setActiveTab(value); setSearchQuery(''); }} variant="scrollable" scrollButtons="auto">
+          <Tabs value={activeTab} onChange={(_, value) => { setActiveTab(value); setSearchQuery(''); setDialog({ open: false, entity: value, mode: 'create' }); }} variant="scrollable" scrollButtons="auto">
             {tabs.map((tab) => <Tab key={tab.key} value={tab.key} label={t(tab.labelKey)} />)}
           </Tabs>
         </Box>
@@ -473,22 +486,6 @@ export default function MasterData() {
           ) : renderTable()}
         </TableContainer>
       </Card>
-
-      <Dialog open={dialog.open} onClose={() => setDialog({ ...dialog, open: false })} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
-          {dialog.mode === 'edit' ? t('master_data.edit_title') : t('master_data.create_title')} {t(tabs.find((tab) => tab.key === dialog.entity)?.labelKey || 'menu.master_data')}
-        </DialogTitle>
-        <form onSubmit={handleSubmit}>
-          <DialogContent sx={{ pt: 1 }}>{renderForm()}</DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button color="inherit" onClick={() => setDialog({ ...dialog, open: false })}>{t('common.cancel')}</Button>
-            <Button type="submit" variant="contained" disabled={submitting}>
-              {submitting ? t('master_data.saving') : t('common.save')}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-
       <ConfirmDialog
         open={deleteConfirm.open}
         title={t('common.confirm')}
@@ -505,6 +502,24 @@ export default function MasterData() {
           {toast.message}
         </Alert>
       </Snackbar>
+
+      <Button
+        variant="contained"
+        startIcon={<AddIcon sx={{ transition: 'transform 0.2s ease', transform: dialog.open ? 'rotate(45deg)' : 'rotate(0deg)' }} />}
+        onClick={() => (dialog.open ? setDialog({ ...dialog, open: false }) : openCreateDialog())}
+        sx={{
+          position: 'fixed',
+          right: { xs: 16, sm: 24, md: 32 },
+          bottom: { xs: 104, md: 32 },
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          borderRadius: 999,
+          px: 2.5,
+          py: 1.25,
+          boxShadow: (theme) => theme.shadows[4],
+        }}
+      >
+        {t('master_data.add')} {activeLabel}
+      </Button>
     </Box>
   );
 }

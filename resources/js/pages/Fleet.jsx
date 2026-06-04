@@ -10,10 +10,7 @@ import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import Collapse from '@mui/material/Collapse';
 import AddIcon from '@mui/icons-material/Add';
 import BuildIcon from '@mui/icons-material/Build';
 import DoneIcon from '@mui/icons-material/Done';
@@ -31,7 +28,7 @@ export default function Fleet() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Dialog State
+  // Inline form state
   const [openAdd, setOpenAdd] = useState(false);
   const [newVehicle, setNewVehicle] = useState({
     brand: '',
@@ -105,21 +102,6 @@ export default function Fleet() {
       });
   };
 
-  const fetchCategories = () => {
-    fetch('/api/categories', { headers: { 'Accept': 'application/json' } })
-      .then(async res => {
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.message || `HTTP ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => setCategories(Array.isArray(data) ? data : []))
-      .catch(err => {
-        console.error(err);
-        setCategories([]);
-      });
-  };
 
   const showToast = (message, severity = 'success') => {
     setToast({ open: true, message, severity });
@@ -238,7 +220,7 @@ export default function Fleet() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Header Area */}
-      <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-end', sm: 'space-between' }, alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Typography variant="h5" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 800 }}>
             {t('fleet.title')}
@@ -247,15 +229,99 @@ export default function Fleet() {
             {t('fleet.subtitle')}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setOpenAdd(true)}
-          sx={{ borderRadius: 2, py: 1, width: { xs: '100%', sm: 'auto' } }}
-        >
-          {t('fleet.add_vehicle')}
-        </Button>
       </Box>
+
+      <Collapse in={openAdd} timeout={260} unmountOnExit>
+        <Card sx={{ mb: 3 }}>
+          <Box sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
+              {t('fleet.register_title')}
+            </Typography>
+            <form onSubmit={handleAddSubmit}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 2.5 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label={t('fleet.brand')}
+                      placeholder="e.g. Toyota, Yamaha"
+                      value={newVehicle.brand}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, brand: e.target.value })}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label={t('fleet.model')}
+                      placeholder="e.g. Innova Zenix, NMAX"
+                      value={newVehicle.model}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label={t('fleet.license_plate')}
+                      placeholder="e.g. B 1234 ABC"
+                      value={newVehicle.license_plate}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, license_plate: e.target.value })}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label={t('fleet.rate_idr')}
+                      type="number"
+                      placeholder="e.g. 500000"
+                      value={newVehicle.daily_rate}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, daily_rate: e.target.value })}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      select
+                      label={t('fleet.category')}
+                      value={newVehicle.category_id}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, category_id: e.target.value })}
+                      required
+                      fullWidth
+                    >
+                      <MenuItem value="" disabled>{t('fleet.choose_category')}</MenuItem>
+                      {categories.map((cat) => (
+                        <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+                      ))}
+                    </TextField>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label={t('fleet.image_url')}
+                      placeholder="e.g. https://images.unsplash.com/... or keep blank"
+                      value={newVehicle.image_url}
+                      onChange={(e) => setNewVehicle({ ...newVehicle, image_url: e.target.value })}
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 3, flexDirection: { xs: 'column-reverse', sm: 'row' } }}>
+                <Button onClick={() => setOpenAdd(false)} color="inherit">{t('common.cancel')}</Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={submitting}
+                  sx={{ borderRadius: 2 }}
+                >
+                  {submitting ? t('fleet.registering') : t('fleet.add_vehicle')}
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Card>
+      </Collapse>
 
       {/* Fleet Cards Grid */}
       <Grid container spacing={3}>
@@ -346,96 +412,6 @@ export default function Fleet() {
           );
         })}
       </Grid>
-
-      {/* Add New Vehicle Dialog */}
-      <Dialog open={openAdd} onClose={() => setOpenAdd(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
-          {t('fleet.register_title')}
-        </DialogTitle>
-        <form onSubmit={handleAddSubmit}>
-          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label={t('fleet.brand')}
-                  placeholder="e.g. Toyota, Yamaha"
-                  value={newVehicle.brand}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, brand: e.target.value })}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label={t('fleet.model')}
-                  placeholder="e.g. Innova Zenix, NMAX"
-                  value={newVehicle.model}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, model: e.target.value })}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label={t('fleet.license_plate')}
-                  placeholder="e.g. B 1234 ABC"
-                  value={newVehicle.license_plate}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, license_plate: e.target.value })}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  label={t('fleet.rate_idr')}
-                  type="number"
-                  placeholder="e.g. 500000"
-                  value={newVehicle.daily_rate}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, daily_rate: e.target.value })}
-                  required
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  select
-                  label={t('fleet.category')}
-                  value={newVehicle.category_id}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, category_id: e.target.value })}
-                  required
-                  fullWidth
-                >
-                  <MenuItem value="" disabled>{t('fleet.choose_category')}</MenuItem>
-                  {categories.map((cat) => (
-                    <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label={t('fleet.image_url')}
-                  placeholder="e.g. https://images.unsplash.com/... or keep blank"
-                  value={newVehicle.image_url}
-                  onChange={(e) => setNewVehicle({ ...newVehicle, image_url: e.target.value })}
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setOpenAdd(false)} color="inherit">{t('common.cancel')}</Button>
-            <Button 
-              type="submit" 
-              variant="contained" 
-              disabled={submitting}
-              sx={{ borderRadius: 2 }}
-            >
-              {submitting ? t('fleet.registering') : t('fleet.add_vehicle')}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-
       {/* Toast Notification */}
       <Snackbar 
         open={toast.open} 
@@ -459,6 +435,24 @@ export default function Fleet() {
         cancelText={t('common.cancel') || 'Batal'}
         severity="error"
       />
+
+      <Button
+        variant="contained"
+        startIcon={<AddIcon sx={{ transition: 'transform 0.2s ease', transform: openAdd ? 'rotate(45deg)' : 'rotate(0deg)' }} />}
+        onClick={() => setOpenAdd((open) => !open)}
+        sx={{
+          position: 'fixed',
+          right: { xs: 16, sm: 24, md: 32 },
+          bottom: { xs: 104, md: 32 },
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          borderRadius: 999,
+          px: 2.5,
+          py: 1.25,
+          boxShadow: (theme) => theme.shadows[4],
+        }}
+      >
+        {t('fleet.add_vehicle')}
+      </Button>
     </Box>
   );
 }

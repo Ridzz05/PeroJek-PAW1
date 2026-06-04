@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { lazy, Suspense, useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import AppBar from '@mui/material/AppBar';
@@ -14,11 +14,9 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useLanguage } from '../i18n/i18n';
 import { useAuth } from '../auth/AuthContext';
-import SettingsModal from '../auth/SettingsModal';
 
 // Icons
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -34,11 +32,12 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LanguageIcon from '@mui/icons-material/Language';
 
+const SettingsModal = lazy(() => import('../auth/SettingsModal'));
+
 const drawerWidth = 260;
 
 export default function Layout({ children, currentPage, setCurrentPage, mode, toggleColorMode }) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const isDark = mode === 'dark';
 
   const { t, language, toggleLanguage } = useLanguage();
@@ -69,6 +68,10 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
     { text: t('menu.customers'), short: language === 'eng' ? 'Cust' : 'Klien', id: 'customers', icon: <PeopleIcon /> },
     { text: t('menu.master_data'), short: 'Master', id: 'master-data', icon: <StorageIcon /> },
   ];
+
+  const mobileMenuItems = menuItems.filter((item) =>
+    ['rental-desk', 'rentals', 'fleet', 'customers'].includes(item.id)
+  );
 
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -293,6 +296,24 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
                 <Typography variant="caption" color="text.secondary">{user?.role || 'staff'}</Typography>
               </Box>
 
+              <MenuItem onClick={() => { handleMenuClose(); setCurrentPage('dashboard'); }} sx={{ display: { xs: 'flex', md: 'none' }, py: 1.2, px: 2, gap: 1.5, mt: 0.5 }}>
+                <ListItemIcon sx={{ minWidth: 'unset', color: 'text.secondary' }}>
+                  <DashboardIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {t('menu.dashboard')}
+                </Typography>
+              </MenuItem>
+
+              <MenuItem onClick={() => { handleMenuClose(); setCurrentPage('master-data'); }} sx={{ display: { xs: 'flex', md: 'none' }, py: 1.2, px: 2, gap: 1.5 }}>
+                <ListItemIcon sx={{ minWidth: 'unset', color: 'text.secondary' }}>
+                  <StorageIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {t('menu.master_data')}
+                </Typography>
+              </MenuItem>
+
               <MenuItem onClick={() => { handleMenuClose(); setCurrentPage('landing'); }} sx={{ py: 1.2, px: 2, gap: 1.5, mt: 0.5 }}>
                 <ListItemIcon sx={{ minWidth: 'unset', color: 'text.secondary' }}>
                   <LanguageIcon fontSize="small" />
@@ -375,7 +396,7 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
           px: 1,
         }}
       >
-        {menuItems.map((item) => {
+        {mobileMenuItems.map((item) => {
           const active = currentPage === item.id;
           return (
             <Box
@@ -433,7 +454,11 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
       </Box>
 
       {/* Settings Modal */}
-      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      {settingsOpen && (
+        <Suspense fallback={null}>
+          <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+        </Suspense>
+      )}
       <Box
         component="main"
         sx={{

@@ -5,14 +5,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import Layout from './components/Layout';
 import { LanguageProvider } from './i18n/i18n';
 import { AuthProvider, useAuth } from './auth/AuthContext';
-import LoginPage from './auth/LoginPage';
-import RegisterPage from './auth/RegisterPage';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const RentalDesk = lazy(() => import('./pages/RentalDesk'));
@@ -21,6 +18,8 @@ const MasterData = lazy(() => import('./pages/MasterData'));
 const Customers = lazy(() => import('./pages/Customers'));
 const Rentals = lazy(() => import('./pages/Rentals'));
 const Landing = lazy(() => import('./pages/Landing'));
+const LoginPage = lazy(() => import('./auth/LoginPage'));
+const RegisterPage = lazy(() => import('./auth/RegisterPage'));
 
 function PageFallback() {
   return (
@@ -31,11 +30,24 @@ function PageFallback() {
 }
 
 function App() {
+  const validPages = useMemo(() => new Set([
+    'landing',
+    'dashboard',
+    'rental-desk',
+    'fleet',
+    'customers',
+    'rentals',
+    'master-data',
+  ]), []);
+
   const [mode, setMode] = useState(() => {
     return localStorage.getItem('theme-mode') || 'light';
   });
 
-  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = localStorage.getItem('current-page');
+    return validPages.has(savedPage) ? savedPage : 'dashboard';
+  });
 
   useEffect(() => {
     localStorage.setItem('theme-mode', mode);
@@ -45,6 +57,12 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
   }, [mode]);
+
+  useEffect(() => {
+    if (validPages.has(currentPage)) {
+      localStorage.setItem('current-page', currentPage);
+    }
+  }, [currentPage, validPages]);
 
   const toggleColorMode = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -363,7 +381,6 @@ function App() {
 // Auth gate component — consumes AuthContext inside AuthProvider
 function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPage, mode, toggleColorMode }) {
   const { user, authLoading } = useAuth();
-  const isMobile = useMediaQuery('(max-width:600px)');
   const videoRef = useRef(null);
   const [muted, setMuted] = useState(true);
 
@@ -454,11 +471,13 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
         </>
 
         {/* Auth pages */}
-        {authPage === 'register' ? (
-          <RegisterPage onGoLogin={() => setAuthPage('login')} onBackHome={() => setAuthPage('landing')} />
-        ) : (
-          <LoginPage onGoRegister={() => setAuthPage('register')} onBackHome={() => setAuthPage('landing')} />
-        )}
+        <Suspense fallback={<PageFallback />}>
+          {authPage === 'register' ? (
+            <RegisterPage onGoLogin={() => setAuthPage('login')} onBackHome={() => setAuthPage('landing')} />
+          ) : (
+            <LoginPage onGoRegister={() => setAuthPage('register')} onBackHome={() => setAuthPage('landing')} />
+          )}
+        </Suspense>
       </Box>
     );
   }

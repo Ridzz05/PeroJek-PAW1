@@ -13,10 +13,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import Collapse from '@mui/material/Collapse';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
@@ -37,7 +34,7 @@ export default function Customers() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   
-  // Dialog state
+  // Inline form state
   const [openDialog, setOpenDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentCustomer, setCurrentCustomer] = useState({
@@ -194,7 +191,7 @@ export default function Customers() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       {/* Header Panel */}
-      <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-end', sm: 'space-between' }, alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
         <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <Typography variant="h5" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 800 }}>
             {t('customers.title')}
@@ -203,15 +200,73 @@ export default function Customers() {
             {t('customers.subtitle')}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleOpenAdd}
-          sx={{ borderRadius: 2, py: 1, width: { xs: '100%', sm: 'auto' } }}
-        >
-          {t('customers.register')}
-        </Button>
       </Box>
+
+      <Collapse in={openDialog} timeout={260} unmountOnExit>
+        <Card sx={{ mb: 3 }}>
+          <Box sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
+              {editMode ? t('customers.edit_title') : t('customers.register_title')}
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 2.5 }}>
+                <TextField
+                  label={t('customers.full_name')}
+                  placeholder="e.g. John Doe"
+                  value={currentCustomer.name}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, name: e.target.value })}
+                  required
+                  fullWidth
+                />
+                <TextField
+                  label={t('customers.phone_number')}
+                  placeholder="e.g. 081234567890"
+                  value={currentCustomer.phone}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, phone: e.target.value })}
+                  required
+                  fullWidth
+                />
+                <TextField
+                  label={t('customers.email_address')}
+                  type="email"
+                  placeholder="e.g. john@example.com"
+                  value={currentCustomer.email}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, email: e.target.value })}
+                  fullWidth
+                />
+                <TextField
+                  label={t('customers.sim_number')}
+                  placeholder="e.g. 1234-5678-901234"
+                  value={currentCustomer.identity_number}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, identity_number: e.target.value })}
+                  required
+                  fullWidth
+                />
+                <TextField
+                  label={t('customers.residential_address')}
+                  multiline
+                  rows={3}
+                  placeholder="e.g. Jl. Sudirman No. 12, Jakarta"
+                  value={currentCustomer.address}
+                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, address: e.target.value })}
+                  fullWidth
+                />
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1.5, mt: 3, flexDirection: { xs: 'column-reverse', sm: 'row' } }}>
+                <Button onClick={() => setOpenDialog(false)} color="inherit">{t('common.cancel')}</Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  disabled={submitting}
+                  sx={{ borderRadius: 2 }}
+                >
+                  {submitting ? t('rentals.processing') : t('customers.save_customer')}
+                </Button>
+              </Box>
+            </form>
+          </Box>
+        </Card>
+      </Collapse>
 
       {/* Search and Table Card */}
       <Card>
@@ -372,70 +427,6 @@ export default function Customers() {
         </TableContainer>
         )}
       </Card>
-
-      {/* Add/Edit Dialog */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 700 }}>
-          {editMode ? t('customers.edit_title') : t('customers.register_title')}
-        </DialogTitle>
-        <form onSubmit={handleSubmit}>
-          <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}>
-            <TextField
-              label={t('customers.full_name')}
-              placeholder="e.g. John Doe"
-              value={currentCustomer.name}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, name: e.target.value })}
-              required
-              fullWidth
-            />
-            <TextField
-              label={t('customers.phone_number')}
-              placeholder="e.g. 081234567890"
-              value={currentCustomer.phone}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, phone: e.target.value })}
-              required
-              fullWidth
-            />
-            <TextField
-              label={t('customers.email_address')}
-              type="email"
-              placeholder="e.g. john@example.com"
-              value={currentCustomer.email}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, email: e.target.value })}
-              fullWidth
-            />
-            <TextField
-              label={t('customers.sim_number')}
-              placeholder="e.g. 1234-5678-901234"
-              value={currentCustomer.identity_number}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, identity_number: e.target.value })}
-              required
-              fullWidth
-            />
-            <TextField
-              label={t('customers.residential_address')}
-              multiline
-              rows={3}
-              placeholder="e.g. Jl. Sudirman No. 12, Jakarta"
-              value={currentCustomer.address}
-              onChange={(e) => setCurrentCustomer({ ...currentCustomer, address: e.target.value })}
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions sx={{ p: 3 }}>
-            <Button onClick={() => setOpenDialog(false)} color="inherit">{t('common.cancel')}</Button>
-            <Button 
-              type="submit" 
-              variant="contained" 
-              disabled={submitting}
-              sx={{ borderRadius: 2 }}
-            >
-              {submitting ? t('rentals.processing') : t('customers.save_customer')}
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-
       {/* Toast Notification */}
       <Snackbar 
         open={toast.open} 
@@ -459,6 +450,24 @@ export default function Customers() {
         cancelText={t('common.cancel') || 'Batal'}
         severity="error"
       />
+
+      <Button
+        variant="contained"
+        startIcon={<AddIcon sx={{ transition: 'transform 0.2s ease', transform: openDialog ? 'rotate(45deg)' : 'rotate(0deg)' }} />}
+        onClick={() => (openDialog ? setOpenDialog(false) : handleOpenAdd())}
+        sx={{
+          position: 'fixed',
+          right: { xs: 16, sm: 24, md: 32 },
+          bottom: { xs: 104, md: 32 },
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          borderRadius: 999,
+          px: 2.5,
+          py: 1.25,
+          boxShadow: (theme) => theme.shadows[4],
+        }}
+      >
+        {t('customers.register')}
+      </Button>
     </Box>
   );
 }
