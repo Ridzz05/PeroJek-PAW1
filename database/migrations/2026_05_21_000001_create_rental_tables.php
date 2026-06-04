@@ -51,6 +51,7 @@ return new class extends Migration
             $table->decimal('total_amount', 12, 2);
             $table->string('status')->default('Ongoing'); // Ongoing, Completed, Cancelled
             $table->string('payment_method'); // Cash, QRIS, Card
+            $table->string('payment_status')->default('Pending'); // Pending, Paid, Failed
             $table->timestamps();
         });
     }

@@ -83,7 +83,7 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
         <TimeToLeaveIcon sx={{ fontSize: 28 }} />
         <Box>
           <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 800, lineHeight: 1.2 }}>
-            Smart Rental
+            Car Rent
           </Typography>
           <Typography variant="caption" sx={{ opacity: 0.8, fontSize: '0.7rem', fontWeight: 500, letterSpacing: 0.5 }}>
             MANAGEMENT SYSTEM

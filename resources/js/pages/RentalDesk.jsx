@@ -428,8 +428,9 @@ export default function RentalDesk() {
                   >
                     <MenuItem value="Cash">Cash</MenuItem>
                     <MenuItem value="Bank Transfer">Bank Transfer</MenuItem>
-                    <MenuItem value="Credit Card">Credit Card</MenuItem>
+                    <MenuItem value="Credit Card">Credit / Debit Card</MenuItem>
                     <MenuItem value="E-Wallet">E-Wallet</MenuItem>
+                    <MenuItem value="QRIS">QRIS</MenuItem>
                   </TextField>
 
 
