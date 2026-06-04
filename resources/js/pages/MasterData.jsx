@@ -1,3 +1,5 @@
+// MASTER DATA UI PRREVIEW
+
 import React, { useEffect, useMemo, useState } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
