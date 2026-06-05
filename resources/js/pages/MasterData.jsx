@@ -182,7 +182,7 @@ export default function MasterData() {
 
   const handleFieldChange = (field, value) => {
     setForm((prev) => {
-      if (dialog.entity === 'categories' && field === 'name' && dialog.mode === 'create') {
+      if (dialog.entity === 'categories' && field === 'name') {
         return { ...prev, name: value, slug: slugify(value) };
       }
 
@@ -199,6 +199,11 @@ export default function MasterData() {
     const url = isEdit ? `/api/${entity}/${form.id}` : `/api/${entity}`;
     const payload = { ...form };
     delete payload.id;
+
+    if (entity === 'categories') {
+      payload.slug = slugify(payload.name);
+      payload.icon = payload.icon || 'DirectionsCar';
+    }
 
     try {
       const response = await fetch(url, {
@@ -361,8 +366,6 @@ export default function MasterData() {
       return (
         <Stack spacing={2.5}>
           <TextField label={t('master_data.name')} value={form.name} onChange={(e) => handleFieldChange('name', e.target.value)} required fullWidth />
-          <TextField label="Slug" value={form.slug} onChange={(e) => handleFieldChange('slug', slugify(e.target.value))} required fullWidth />
-          <TextField label="MUI Icon" value={form.icon} onChange={(e) => handleFieldChange('icon', e.target.value)} required fullWidth />
         </Stack>
       );
     }

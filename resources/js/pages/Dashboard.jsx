@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -23,6 +23,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import LaunchIcon from '@mui/icons-material/Launch';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
+const DASHBOARD_REFRESH_INTERVAL_MS = 15000;
+
 export default function Dashboard({ setCurrentPage }) {
   const { t, language } = useLanguage();
   const theme = useTheme();
@@ -38,33 +40,41 @@ export default function Dashboard({ setCurrentPage }) {
     maximumFractionDigits: 0
   }), []);
 
-  useEffect(() => {
-    fetchStats();
+  const fetchStats = useCallback(async ({ showLoader = false } = {}) => {
+    if (showLoader) {
+      setLoading(true);
+    }
+
+    try {
+      const res = await fetch('/api/dashboard/stats', {
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.message || `HTTP ${res.status}`);
+      }
+
+      setStats(await res.json());
+    } catch (err) {
+      console.error('Error fetching dashboard stats:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const fetchStats = () => {
-    setLoading(true);
-    fetch('/api/dashboard/stats', {
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-      .then(async res => {
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.message || `HTTP ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setStats(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Error fetching dashboard stats:', err);
-        setLoading(false);
-      });
-  };
+  useEffect(() => {
+    fetchStats({ showLoader: true });
+
+    const intervalId = window.setInterval(() => {
+      fetchStats();
+    }, DASHBOARD_REFRESH_INTERVAL_MS);
+
+    return () => window.clearInterval(intervalId);
+  }, [fetchStats]);
 
   const formatCurrency = (val) => currencyFormatter.format(val);
 
@@ -99,7 +109,9 @@ export default function Dashboard({ setCurrentPage }) {
   // Calculate Max Value for SVG Chart height mapping
   const monthlyRevenue = stats?.monthly_revenue || [];
   const revenues = monthlyRevenue.map(r => r.revenue);
-  const maxRevenue = Math.max(...revenues, 1000000);
+  const maxRevenue = Math.max(...revenues, 0);
+  const hasRevenueData = maxRevenue > 0;
+  const upcomingReturns = stats?.upcoming_returns || [];
 
   if (loading || !stats) {
     return (
@@ -201,9 +213,9 @@ export default function Dashboard({ setCurrentPage }) {
             <Box sx={{ position: 'relative', height: 260, width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'end' }}>
               <Box sx={{ display: 'flex', height: 220, alignItems: 'end', justifyContent: 'space-around', px: 2 }}>
                 {monthlyRevenue.map((item, idx) => {
-                  const percentageHeight = (item.revenue / maxRevenue) * 90 + 10; // Map between 10% and 100%
+                  const percentageHeight = hasRevenueData && item.revenue > 0 ? Math.max((item.revenue / maxRevenue) * 100, 8) : 0;
                   return (
-                    <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%', height: '100%', justifyContent: 'end' }}>
+                    <Box key={item.month || idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '12%', height: '100%', justifyContent: 'end' }}>
                       {/* Hover Tooltip */}
                       <Typography variant="caption" sx={{ fontWeight: 700, fontSize: '0.7rem', mb: 1, opacity: item.revenue > 0 ? 1 : 0 }}>
                         {item.revenue >= 1000000 ? (item.revenue / 1000000).toFixed(1) + 'M' : (item.revenue / 1000).toFixed(0) + 'K'}
@@ -247,7 +259,7 @@ export default function Dashboard({ setCurrentPage }) {
             </Box>
 
             <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {stats.upcoming_returns.length === 0 ? (
+              {upcomingReturns.length === 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', py: 6, textAlign: 'center', flexGrow: 1 }}>
                   <Avatar sx={{ bgcolor: 'rgba(16, 185, 129, 0.1)', mb: 2, width: 48, height: 48 }}>
                     <DoneAllIcon sx={{ color: '#10b981' }} />
@@ -260,7 +272,7 @@ export default function Dashboard({ setCurrentPage }) {
                   </Typography>
                 </Box>
               ) : (
-                stats.upcoming_returns.map((rental, index) => {
+                upcomingReturns.map((rental) => {
                   const end = new Date(rental.end_date);
                   const today = new Date();
                   const diffTime = end - today;
@@ -300,7 +312,7 @@ export default function Dashboard({ setCurrentPage }) {
               )}
             </Box>
 
-            {stats.upcoming_returns.length > 0 && (
+            {upcomingReturns.length > 0 && (
               <Button
                 variant="outlined"
                 fullWidth
