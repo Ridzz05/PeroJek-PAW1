@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Table from '@mui/material/Table';
@@ -19,10 +18,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ConfirmDialog from '../components/ConfirmDialog';
+import PageLoader from '../components/PageLoader';
+import { apiFetch } from '../utils/api';
+import useToast from '../hooks/useToast';
 
 // i18n
 import { useLanguage } from '../i18n/i18n';
@@ -30,6 +30,7 @@ import { useLanguage } from '../i18n/i18n';
 export default function Customers() {
   const { t } = useLanguage();
   const isMobile = useMediaQuery('(max-width:600px)');
+  const { showToast, ToastComponent } = useToast();
   const [customers, setCustomers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,6 @@ export default function Customers() {
   });
 
   const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
 
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function Customers() {
 
   const fetchCustomers = () => {
     setLoading(true);
-    fetch('/api/customers', { headers: { 'Accept': 'application/json' } })
+    apiFetch('/api/customers')
       .then(async res => {
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -74,14 +74,6 @@ export default function Customers() {
         setCustomers([]);
         setLoading(false);
       });
-  };
-
-  const showToast = (message, severity = 'success') => {
-    setToast({ open: true, message, severity });
-  };
-
-  const handleCloseToast = () => {
-    setToast({ ...toast, open: false });
   };
 
   const handleOpenAdd = () => {
@@ -118,13 +110,7 @@ export default function Customers() {
     const id = deleteConfirm.id;
     setDeleteConfirm({ open: false, id: null });
     try {
-      const response = await fetch(`/api/customers/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        }
-      });
+      const response = await apiFetch(`/api/customers/${id}`, { method: 'DELETE' });
       if (response.ok) {
         showToast(t('customers.toast_delete_success'));
         fetchCustomers();
@@ -146,14 +132,9 @@ export default function Customers() {
     const method = editMode ? 'PUT' : 'POST';
 
     try {
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
-        body: JSON.stringify(currentCustomer)
+      const response = await apiFetch(url, {
+        method,
+        body: JSON.stringify(currentCustomer),
       });
       
       const data = await response.json();
@@ -181,11 +162,7 @@ export default function Customers() {
   }), [customers, searchQuery]);
 
   if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-        <CircularProgress size={60} thickness={4} />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -427,17 +404,8 @@ export default function Customers() {
         </TableContainer>
         )}
       </Card>
-      {/* Toast Notification */}
-      <Snackbar 
-        open={toast.open} 
-        autoHideDuration={4000} 
-        onClose={handleCloseToast}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseToast} severity={toast.severity} sx={{ width: '100%', borderRadius: 2 }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+
+      {ToastComponent}
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog

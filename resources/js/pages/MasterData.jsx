@@ -1,18 +1,15 @@
-// MASTER DATA UI PRREVIEW
+// MASTER DATA UI PREVIEW
 
 import React, { useEffect, useMemo, useState } from 'react';
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import Chip from '@mui/material/Chip';
-import CircularProgress from '@mui/material/CircularProgress';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import MenuItem from '@mui/material/MenuItem';
-import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Tab from '@mui/material/Tab';
 import Table from '@mui/material/Table';
@@ -30,6 +27,9 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import ConfirmDialog from '../components/ConfirmDialog';
+import PageLoader from '../components/PageLoader';
+import { apiFetch, formatCurrency } from '../utils/api';
+import useToast from '../hooks/useToast';
 import { useLanguage } from '../i18n/i18n';
 
 const emptyForms = {
@@ -53,8 +53,6 @@ const tabs = [
   { key: 'customers', labelKey: 'master_data.customers' },
 ];
 
-const csrfToken = () => document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-
 const slugify = (value) => value
   .toLowerCase()
   .trim()
@@ -63,6 +61,7 @@ const slugify = (value) => value
 
 export default function MasterData() {
   const { t } = useLanguage();
+  const { showToast, ToastComponent } = useToast();
   const [activeTab, setActiveTab] = useState('categories');
   const [categories, setCategories] = useState([]);
   const [vehicles, setVehicles] = useState([]);
@@ -73,14 +72,6 @@ export default function MasterData() {
   const [form, setForm] = useState(emptyForms.categories);
   const [submitting, setSubmitting] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, entity: null, item: null });
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
-
-  const currencyFormatter = useMemo(() => new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }), []);
 
   useEffect(() => {
     fetchMasterData();
@@ -90,9 +81,9 @@ export default function MasterData() {
     setLoading(true);
     try {
       const [categoryRes, vehicleRes, customerRes] = await Promise.all([
-        fetch('/api/categories', { headers: { Accept: 'application/json' } }),
-        fetch('/api/vehicles', { headers: { Accept: 'application/json' } }),
-        fetch('/api/customers', { headers: { Accept: 'application/json' } }),
+        apiFetch('/api/categories'),
+        apiFetch('/api/vehicles'),
+        apiFetch('/api/customers'),
       ]);
 
       if (!categoryRes.ok || !vehicleRes.ok || !customerRes.ok) {
@@ -114,10 +105,6 @@ export default function MasterData() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const showToast = (message, severity = 'success') => {
-    setToast({ open: true, message, severity });
   };
 
   const currentRows = useMemo(() => {
@@ -206,13 +193,8 @@ export default function MasterData() {
     }
 
     try {
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method: isEdit ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          'X-CSRF-TOKEN': csrfToken(),
-        },
         body: JSON.stringify(payload),
       });
 
@@ -237,12 +219,8 @@ export default function MasterData() {
     setDeleteConfirm({ open: false, entity: null, item: null });
 
     try {
-      const response = await fetch(`/api/${entity}/${item.id}`, {
+      const response = await apiFetch(`/api/${entity}/${item.id}`, {
         method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'X-CSRF-TOKEN': csrfToken(),
-        },
       });
 
       const data = await response.json().catch(() => ({}));
@@ -323,7 +301,7 @@ export default function MasterData() {
                 <TableCell sx={{ fontWeight: 700 }}>{vehicle.license_plate}</TableCell>
                 <TableCell>{vehicle.brand} {vehicle.model}</TableCell>
                 <TableCell>{vehicle.category?.name || '-'}</TableCell>
-                <TableCell align="right">{currencyFormatter.format(vehicle.daily_rate || 0)}</TableCell>
+                <TableCell align="right">{formatCurrency(vehicle.daily_rate || 0)}</TableCell>
                 <TableCell>
                   <Chip label={vehicle.status} size="small" color={vehicle.status === 'Available' ? 'success' : vehicle.status === 'Rented' ? 'info' : 'warning'} />
                 </TableCell>
@@ -411,11 +389,7 @@ export default function MasterData() {
   };
 
   if (loading) {
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexGrow: 1 }}>
-        <CircularProgress size={56} thickness={4} />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   const activeLabel = t(tabs.find((tab) => tab.key === activeTab)?.labelKey || 'menu.master_data');
@@ -500,11 +474,7 @@ export default function MasterData() {
         severity="error"
       />
 
-      <Snackbar open={toast.open} autoHideDuration={4000} onClose={() => setToast({ ...toast, open: false })} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-        <Alert onClose={() => setToast({ ...toast, open: false })} severity={toast.severity} sx={{ width: '100%', borderRadius: 2 }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+      {ToastComponent}
 
       <Button
         variant="contained"

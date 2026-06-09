@@ -6,13 +6,16 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-import CircularProgress from '@mui/material/CircularProgress';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
-
-// i18n
-import { useLanguage } from '../i18n/i18n';
 import { useTheme } from '@mui/material/styles';
+
+// Shared utilities
+import { formatCurrency } from '../utils/api';
+import PageLoader from '../components/PageLoader';
+
+// i18n & Auth
+import { useLanguage } from '../i18n/i18n';
 import { useAuth } from '../auth/AuthContext';
 
 // Icons
@@ -33,12 +36,6 @@ export default function Dashboard({ setCurrentPage }) {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const currencyFormatter = useMemo(() => new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }), []);
 
   const fetchStats = useCallback(async ({ showLoader = false } = {}) => {
     if (showLoader) {
@@ -76,7 +73,6 @@ export default function Dashboard({ setCurrentPage }) {
     return () => window.clearInterval(intervalId);
   }, [fetchStats]);
 
-  const formatCurrency = (val) => currencyFormatter.format(val);
 
   // Cards Data Configuration
   const cards = useMemo(() => [
@@ -104,7 +100,7 @@ export default function Dashboard({ setCurrentPage }) {
       icon: <PeopleIcon sx={{ fontSize: 24 }} />,
       desc: t('dashboard.total_customers_desc')
     }
-  ], [stats, t, currencyFormatter]);
+  ], [stats, t]);
 
   // Calculate Max Value for SVG Chart height mapping
   const monthlyRevenue = stats?.monthly_revenue || [];
@@ -114,11 +110,7 @@ export default function Dashboard({ setCurrentPage }) {
   const upcomingReturns = stats?.upcoming_returns || [];
 
   if (loading || !stats) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-        <CircularProgress size={60} thickness={4} />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   return (

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Chip from '@mui/material/Chip';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
@@ -15,15 +14,17 @@ import AddIcon from '@mui/icons-material/Add';
 import BuildIcon from '@mui/icons-material/Build';
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import ConfirmDialog from '../components/ConfirmDialog';
+import PageLoader from '../components/PageLoader';
+import { apiFetch, formatCurrency } from '../utils/api';
+import useToast from '../hooks/useToast';
 
 // i18n
 import { useLanguage } from '../i18n/i18n';
 
 export default function Fleet() {
   const { t } = useLanguage();
+  const { showToast, ToastComponent } = useToast();
   const [vehicles, setVehicles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,14 +42,7 @@ export default function Fleet() {
   });
   
   const [submitting, setSubmitting] = useState(false);
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, id: null });
-  const currencyFormatter = useMemo(() => new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }), []);
 
   useEffect(() => {
     fetchData();
@@ -58,8 +52,8 @@ export default function Fleet() {
     setLoading(true);
     try {
       const [vehiclesRes, categoriesRes] = await Promise.all([
-        fetch('/api/vehicles', { headers: { 'Accept': 'application/json' } }),
-        fetch('/api/categories', { headers: { 'Accept': 'application/json' } }),
+        apiFetch('/api/vehicles'),
+        apiFetch('/api/categories'),
       ]);
       
       if (!vehiclesRes.ok || !categoriesRes.ok) {
@@ -82,7 +76,7 @@ export default function Fleet() {
 
   const fetchVehicles = () => {
     setLoading(true);
-    fetch('/api/vehicles', { headers: { 'Accept': 'application/json' } })
+    apiFetch('/api/vehicles')
       .then(async res => {
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
@@ -102,26 +96,12 @@ export default function Fleet() {
       });
   };
 
-
-  const showToast = (message, severity = 'success') => {
-    setToast({ open: true, message, severity });
-  };
-
-  const handleCloseToast = () => {
-    setToast({ ...toast, open: false });
-  };
-
   const handleToggleMaintenance = async (vehicle) => {
     const nextStatus = vehicle.status === 'Maintenance' ? 'Available' : 'Maintenance';
     try {
-      const response = await fetch(`/api/vehicles/${vehicle.id}/status`, {
+      const response = await apiFetch(`/api/vehicles/${vehicle.id}/status`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
-        body: JSON.stringify({ status: nextStatus })
+        body: JSON.stringify({ status: nextStatus }),
       });
       
       if (response.ok) {
@@ -147,13 +127,7 @@ export default function Fleet() {
     const id = deleteConfirm.id;
     setDeleteConfirm({ open: false, id: null });
     try {
-      const response = await fetch(`/api/vehicles/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        }
-      });
+      const response = await apiFetch(`/api/vehicles/${id}`, { method: 'DELETE' });
       
       if (response.ok) {
         showToast(t('fleet.toast_delete_success'));
@@ -172,14 +146,9 @@ export default function Fleet() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const response = await fetch('/api/vehicles', {
+      const response = await apiFetch('/api/vehicles', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
-        body: JSON.stringify(newVehicle)
+        body: JSON.stringify(newVehicle),
       });
       
       const data = await response.json();
@@ -207,14 +176,8 @@ export default function Fleet() {
     }
   };
 
-  const formatCurrency = (val) => currencyFormatter.format(val);
-
   if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-        <CircularProgress size={60} thickness={4} />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -412,17 +375,8 @@ export default function Fleet() {
           );
         })}
       </Grid>
-      {/* Toast Notification */}
-      <Snackbar 
-        open={toast.open} 
-        autoHideDuration={4000} 
-        onClose={handleCloseToast}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseToast} severity={toast.severity} sx={{ width: '100%', borderRadius: 2 }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+
+      {ToastComponent}
 
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog

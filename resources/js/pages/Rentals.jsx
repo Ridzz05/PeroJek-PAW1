@@ -4,7 +4,6 @@ import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import Chip from "@mui/material/Chip";
 import Divider from "@mui/material/Divider";
 import TextField from "@mui/material/TextField";
@@ -18,8 +17,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
+import PageLoader from "../components/PageLoader";
+import { apiFetch, formatCurrency, formatDate } from "../utils/api";
+import useToast from "../hooks/useToast";
 
 // i18n
 import { useLanguage } from "../i18n/i18n";
@@ -27,17 +27,15 @@ import { useLanguage } from "../i18n/i18n";
 export default function Rentals() {
     const { t } = useLanguage();
     const isMobile = useMediaQuery("(max-width:600px)");
+    const { showToast, ToastComponent } = useToast({
+        anchorOrigin: isMobile
+            ? { vertical: "top", horizontal: "right" }
+            : { vertical: "bottom", horizontal: "right" },
+    });
     const [rentals, setRentals] = useState([]);
     const [statusFilter, setStatusFilter] = useState("All");
     const [loading, setLoading] = useState(true);
     const [processingId, setProcessingId] = useState(null);
-
-    // Notification State
-    const [toast, setToast] = useState({
-        open: false,
-        message: "",
-        severity: "success",
-    });
 
     useEffect(() => {
         fetchRentals();
@@ -45,7 +43,7 @@ export default function Rentals() {
 
     const fetchRentals = () => {
         setLoading(true);
-        fetch("/api/rentals", { headers: { "Accept": "application/json" } })
+        apiFetch("/api/rentals")
             .then(async (res) => {
                 if (!res.ok) {
                     const errData = await res.json().catch(() => ({}));
@@ -65,27 +63,11 @@ export default function Rentals() {
             });
     };
 
-    const showToast = (message, severity = "success") => {
-        setToast({ open: true, message, severity });
-    };
-
-    const handleCloseToast = () => {
-        setToast({ ...toast, open: false });
-    };
-
     const handleProcessReturn = async (rentalId) => {
         setProcessingId(rentalId);
         try {
-            const response = await fetch(`/api/rentals/${rentalId}/return`, {
+            const response = await apiFetch(`/api/rentals/${rentalId}/return`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN":
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute("content") || "",
-                },
             });
 
             const data = await response.json();
@@ -105,15 +87,6 @@ export default function Rentals() {
             setProcessingId(null);
         }
     };
-
-    const currencyFormatter = useMemo(() => new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }), []);
-
-    const formatCurrency = (val) => currencyFormatter.format(val);
 
     const filteredRentals = useMemo(() => rentals.filter((r) => {
         if (statusFilter === "All") return true;
@@ -146,33 +119,8 @@ export default function Rentals() {
         }
     };
 
-    const formatDisplayDate = (dateString) => {
-        if (!dateString) return "-";
-        try {
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0");
-            const day = String(date.getDate()).padStart(2, "0");
-            return `${year}-${month}-${day}`;
-        } catch (e) {
-            return dateString;
-        }
-    };
-
     if (loading) {
-        return (
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    flexGrow: 1,
-                }}
-            >
-                <CircularProgress size={60} thickness={4} />
-            </Box>
-        );
+        return <PageLoader />;
     }
 
     return (
@@ -273,7 +221,7 @@ export default function Rentals() {
                                         {rental.customer.name}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                                        {formatDisplayDate(rental.start_date)} - {formatDisplayDate(rental.end_date)}
+                                        {formatDate(rental.start_date)} - {formatDate(rental.end_date)}
                                     </Typography>
                                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 1.5, gap: 1 }}>
                                         <Box>
@@ -446,7 +394,7 @@ export default function Rentals() {
                                                         variant="body2"
                                                         sx={{ fontWeight: 500 }}
                                                     >
-                                                        {formatDisplayDate(
+                                                        {formatDate(
                                                             rental.start_date,
                                                         )}
                                                     </Typography>
@@ -468,7 +416,7 @@ export default function Rentals() {
                                                         variant="body2"
                                                         sx={{ fontWeight: 500 }}
                                                     >
-                                                        {formatDisplayDate(
+                                                        {formatDate(
                                                             rental.end_date,
                                                         )}
                                                     </Typography>
@@ -567,25 +515,7 @@ export default function Rentals() {
                 )}
             </Card>
 
-            {/* Toast Notification */}
-            <Snackbar
-                open={toast.open}
-                autoHideDuration={4000}
-                onClose={handleCloseToast}
-                anchorOrigin={
-                    isMobile
-                        ? { vertical: "top", horizontal: "right" }
-                        : { vertical: "bottom", horizontal: "right" }
-                }
-            >
-                <Alert
-                    onClose={handleCloseToast}
-                    severity={toast.severity}
-                    sx={{ width: "100%", borderRadius: 2 }}
-                >
-                    {toast.message}
-                </Alert>
-            </Snackbar>
+            {ToastComponent}
         </Box>
     );
 }

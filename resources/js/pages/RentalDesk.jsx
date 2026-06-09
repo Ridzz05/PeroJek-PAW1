@@ -7,7 +7,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
@@ -16,10 +15,11 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import Avatar from '@mui/material/Avatar';
 import { useTheme } from '@mui/material/styles';
+import PageLoader from '../components/PageLoader';
+import { apiFetch, formatCurrency } from '../utils/api';
+import useToast from '../hooks/useToast';
 
 // i18n
 import { useLanguage } from '../i18n/i18n';
@@ -28,6 +28,7 @@ export default function RentalDesk() {
   const theme = useTheme();
   const isDark = theme.palette.mode === 'dark';
   const { t } = useLanguage();
+  const { showToast, ToastComponent } = useToast();
   const [vehicles, setVehicles] = useState([]);
   const [categories, setCategories] = useState([]);
   const [customers, setCustomers] = useState([]);
@@ -41,15 +42,6 @@ export default function RentalDesk() {
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  
-  // Notification State
-  const [toast, setToast] = useState({ open: false, message: '', severity: 'success' });
-  const currencyFormatter = useMemo(() => new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }), []);
 
   useEffect(() => {
     fetchData();
@@ -59,8 +51,8 @@ export default function RentalDesk() {
     setLoading(true);
     try {
       const [vRes, cRes] = await Promise.all([
-        fetch('/api/vehicles', { headers: { 'Accept': 'application/json' } }),
-        fetch('/api/customers', { headers: { 'Accept': 'application/json' } })
+        apiFetch('/api/vehicles'),
+        apiFetch('/api/customers'),
       ]);
       
       if (!vRes.ok || !cRes.ok) {
@@ -83,14 +75,6 @@ export default function RentalDesk() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const showToast = (message, severity = 'success') => {
-    setToast({ open: true, message, severity });
-  };
-
-  const handleCloseToast = () => {
-    setToast({ ...toast, open: false });
   };
 
   // Helper to calculate total price
@@ -158,20 +142,15 @@ export default function RentalDesk() {
         dbPaymentMethod = 'Card';
       }
 
-      const response = await fetch('/api/rentals/book', {
+      const response = await apiFetch('/api/rentals/book', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
-        },
         body: JSON.stringify({
           vehicle_id: selectedVehicle.id,
           customer_id: selectedCustomer,
           start_date: startDate,
           end_date: endDate,
           payment_method: dbPaymentMethod
-        })
+        }),
       });
 
       if (response.ok) {
@@ -192,8 +171,6 @@ export default function RentalDesk() {
     }
   };
 
-  const formatCurrency = (val) => currencyFormatter.format(val);
-
   // Filter logic
   const filteredVehicles = useMemo(() => vehicles.filter(v => {
     const matchesCategory = selectedCategory === 'All' || v.category?.name === selectedCategory;
@@ -205,11 +182,7 @@ export default function RentalDesk() {
   }), [vehicles, selectedCategory, searchQuery]);
 
   if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexGrow: 1 }}>
-        <CircularProgress size={60} thickness={4} />
-      </Box>
-    );
+    return <PageLoader />;
   }
 
   return (
@@ -470,17 +443,7 @@ export default function RentalDesk() {
         )}
       </Grid>
 
-      {/* Snackbar notification popup */}
-      <Snackbar 
-        open={toast.open} 
-        autoHideDuration={4000} 
-        onClose={handleCloseToast}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseToast} severity={toast.severity} sx={{ width: '100%', borderRadius: 2 }}>
-          {toast.message}
-        </Alert>
-      </Snackbar>
+      {ToastComponent}
     </Box>
   );
 }
