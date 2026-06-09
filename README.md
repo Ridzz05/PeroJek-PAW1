@@ -4,31 +4,44 @@
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Material UI](https://img.shields.io/badge/MUI-6.x-007FFF?style=for-the-badge&logo=mui&logoColor=white)](https://mui.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com/)
 
-An ultra-responsive, premium Car Rental Management System designed to simplify fleet operations, rental tracking, and dashboard analytics. Built with a high-fidelity modern UI that adaptively scales from desktop power-views down to immersive mobile-first visual experiences.
+Aplikasi manajemen rental kendaraan berbasis web dengan **landing page publik** dan **dashboard internal** untuk staf/admin. Sistem mencakup manajemen armada, data pelanggan, transaksi penyewaan, pengembalian kendaraan, dan ringkasan performa bisnis secara real-time.
 
 ---
 
-## ✨ Key Features
+## ✨ Fitur Utama
 
-- 📊 **Dynamic Analytics Dashboard**: Track active rentals, revenue metrics, fleet availability, and overall performance in real-time.
-- 🚗 **Fleet Management**: Easily manage rental vehicles, check statuses, and update car specifications.
-- 💼 **Smart Rental Desk**: Direct rental dispatch interface for quick check-ins, check-outs, and customer allocations.
-- 👤 **Customer CRM**: Maintain a centralized registry of active and past renters with ease.
-- 📱 **Mobile-Optimized Cinematic UI**:
-  - Immersive **video-playback backgrounds** (powered by BMW M3 cinematic sequences) for mobile auth views.
-  - Ultra-modern **fully transparent** cards, input fields, and action buttons for a sleek, floating-glass aesthetic.
-  - Seamless toggle tabs to transition between login and registration layouts in a single tap.
+### 🌐 Landing Page Publik
+- Hero section dengan rotasi gambar otomatis
+- Katalog kendaraan dengan filter kategori dan pencarian
+- Testimonial dan CTA booking
+- Toggle bahasa (English/Indonesia) dan tema (light/dark)
+
+### 📊 Dashboard Internal
+- **Dynamic Dashboard** — ringkasan revenue, kendaraan on road/available, total pelanggan, dan grafik revenue 6 bulan, dengan auto-refresh setiap 15 detik
+- **Rental Desk** — antarmuka booking cepat dengan pemilihan kendaraan, pelanggan, date picker, dan kalkulasi biaya otomatis
+- **Fleet Management** — kelola armada, ubah status (Available/Rented/Maintenance), tambah/hapus kendaraan
+- **Customer CRM** — registrasi dan pencarian pelanggan
+- **Rentals** — daftar transaksi dengan filter status dan proses pengembalian
+- **Master Data** — pusat administrasi kategori, kendaraan, dan pelanggan
+
+### 🎨 UI/UX
+- Responsif: sidebar desktop + bottom navigation mobile
+- Dark mode & light mode (persistent ke localStorage)
+- i18n: English & Indonesia
+- Komponen reusable (PageLoader, ConfirmDialog, Toast)
+- Lazy loading halaman
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Laravel 11.x (PHP 8.x)
-- **Frontend**: React 19.x + Material UI 6.x (MUI) & Tailwind CSS v4.0
-- **Bundler**: Vite
-- **Database**: MySQL
+- **Backend**: Laravel 13.x (PHP 8.3+)
+- **Frontend**: React 19 + Material UI 6 + Tailwind CSS 4
+- **Bundler**: Vite 7 + laravel-vite-plugin
+- **Database**: SQLite (default), support MySQL via konfigurasi `.env`
+- **Auth**: Laravel session guard
 
 ---
 
@@ -55,15 +68,38 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# Run migrations & seeders (if available)
+# Run migrations
 php artisan migrate
 ```
 
 ### 3. Running Locally
+
+**Opsi A — Terminal terpisah:**
 ```bash
 # Start Laravel development server
 php artisan serve
 
-# Run Vite dev server in a parallel terminal
+# Run Vite dev server
 npm run dev
 ```
+
+**Opsi B — Satu perintah (menjalankan server, Vite, dan log secara paralel):**
+```bash
+composer dev
+```
+
+### 4. Build Frontend
+```bash
+npm run build
+```
+
+### 5. Testing
+```bash
+composer test
+```
+
+---
+
+## 📖 Dokumentasi Lengkap
+
+Lihat [SUMMARIZE.md](./SUMMARIZE.md) untuk ringkasan menyeluruh proyek, termasuk arsitektur, routing, struktur database, alur bisnis, validasi, dan area perbaikan.
