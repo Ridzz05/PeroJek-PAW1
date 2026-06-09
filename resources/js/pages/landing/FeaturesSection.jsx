@@ -15,22 +15,22 @@ export default function FeaturesSection({ isDark, t }) {
 
   const features = [
     {
-      icon: <SecurityIcon fontSize="large" sx={{ color: isDark ? '#FFF' : '#0A0A0A' }} />,
+      icon: <SecurityIcon fontSize="large" />,
       title: t('landing.feature1Title'),
       desc: t('landing.feature1Desc'),
     },
     {
-      icon: <FlashOnIcon fontSize="large" sx={{ color: isDark ? '#FFF' : '#0A0A0A' }} />,
+      icon: <FlashOnIcon fontSize="large" />,
       title: t('landing.feature2Title'),
       desc: t('landing.feature2Desc'),
     },
     {
-      icon: <DirectionsCarIcon fontSize="large" sx={{ color: isDark ? '#FFF' : '#0A0A0A' }} />,
+      icon: <DirectionsCarIcon fontSize="large" />,
       title: t('landing.feature24Title'),
       desc: t('landing.feature24Desc'),
     },
     {
-      icon: <PaidIcon fontSize="large" sx={{ color: isDark ? '#FFF' : '#0A0A0A' }} />,
+      icon: <PaidIcon fontSize="large" />,
       title: t('landing.feature3Title'),
       desc: t('landing.feature3Desc'),
     },
@@ -41,11 +41,35 @@ export default function FeaturesSection({ isDark, t }) {
       id="features"
       sx={{
         py: { xs: 8, md: 12 },
-        backgroundColor: isDark ? '#080808' : '#FAF9F6',
+        backgroundColor: 'background.paper',
         transition: 'background-color 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Container maxWidth="lg">
+      {/* Decorative background circles */}
+      <Box sx={{
+        position: 'absolute',
+        top: '10%',
+        left: -120,
+        width: 300,
+        height: 300,
+        borderRadius: '50%',
+        background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
+        pointerEvents: 'none',
+      }} />
+      <Box sx={{
+        position: 'absolute',
+        bottom: '5%',
+        right: -60,
+        width: 200,
+        height: 200,
+        borderRadius: '50%',
+        background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
+        pointerEvents: 'none',
+      }} />
+
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center', mb: 8 }}>
           <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
             {t('landing.featuresTitle')}
@@ -61,29 +85,61 @@ export default function FeaturesSection({ isDark, t }) {
               <Card
                 sx={{
                   height: '100%',
-                  p: 2,
+                  p: 2.5,
                   borderRadius: 4,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
-                  background: isDark ? '#141414' : '#FFFFFF',
-                  border: `1px solid ${theme.palette.divider}`,
+                  position: 'relative',
+                  background: 'background.default',
+                  border: `1px solid`,
+                  borderColor: 'divider',
                   boxShadow: 'none',
-                  transition: 'all 0.3s ease',
+                  transition: 'all 0.35s ease',
                   '&:hover': {
-                    transform: 'translateY(-6px)',
+                    transform: 'translateY(-8px)',
                     borderColor: 'primary.main',
-                    boxShadow: isDark ? '0 12px 30px rgba(255,255,255,0.02)' : '0 12px 30px rgba(0,0,0,0.04)',
+                    boxShadow: isDark
+                      ? '0 16px 40px rgba(255,255,255,0.03)'
+                      : '0 16px 40px rgba(0,0,0,0.06)',
                   },
                 }}
               >
-                <Box sx={{ p: 1.5, borderRadius: 3, backgroundColor: isDark ? '#1F1F1F' : '#F5F5F3', mb: 2.5 }}>
+                {/* Number badge */}
+                <Typography
+                  sx={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 16,
+                    fontSize: '2.5rem',
+                    fontWeight: 900,
+                    color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
+                    lineHeight: 1,
+                    pointerEvents: 'none',
+                    userSelect: 'none',
+                  }}
+                >
+                  0{idx + 1}
+                </Typography>
+
+                {/* Icon box using theme palette */}
+                <Box sx={{
+                  p: 1.8,
+                  borderRadius: 3,
+                  mb: 2.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: 'action.selected',
+                  color: 'primary.main',
+                }}>
                   {feature.icon}
                 </Box>
+
                 <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, fontSize: '1.05rem' }}>
                   {feature.title}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.7 }}>
                   {feature.desc}
                 </Typography>
               </Card>

@@ -7,6 +7,10 @@ import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
 import { useTheme } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+
+const dicebearUrl = (seed) =>
+  `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
 
 export default function TestimonialsSection({ isDark, t }) {
   const theme = useTheme();
@@ -16,19 +20,19 @@ export default function TestimonialsSection({ isDark, t }) {
       name: 'Rian Hidayat',
       role: t('landing.roleEntrepreneur'),
       quote: t('landing.testimonial1Quote'),
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      avatar: dicebearUrl('Rian Hidayat'),
     },
     {
       name: 'Dewi Lestari',
       role: t('landing.roleEmployee'),
       quote: t('landing.testimonial2Quote'),
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      avatar: dicebearUrl('Dewi Lestari'),
     },
     {
       name: 'Budi Santoso',
       role: t('landing.roleBiker'),
       quote: t('landing.testimonial3Quote'),
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      avatar: dicebearUrl('Budi Santoso'),
     },
   ];
 
@@ -37,11 +41,25 @@ export default function TestimonialsSection({ isDark, t }) {
       id="testimonials"
       sx={{
         py: { xs: 8, md: 12 },
-        backgroundColor: isDark ? '#080808' : '#FAF9F6',
+        backgroundColor: 'background.paper',
         transition: 'background-color 0.3s ease',
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Container maxWidth="lg">
+      {/* Subtle decorative circle */}
+      <Box sx={{
+        position: 'absolute',
+        top: -80,
+        right: -80,
+        width: 260,
+        height: 260,
+        borderRadius: '50%',
+        background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
+        pointerEvents: 'none',
+      }} />
+
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={{ textAlign: 'center', mb: 8 }}>
           <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
             {t('landing.testimonialsTitle')}
@@ -57,17 +75,32 @@ export default function TestimonialsSection({ isDark, t }) {
               <Card
                 sx={{
                   height: '100%',
-                  p: 3,
+                  p: { xs: 2.5, md: 3 },
                   borderRadius: 4.5,
-                  background: isDark ? '#141414' : '#FFFFFF',
-                  border: `1px solid ${theme.palette.divider}`,
+                  background: 'background.default',
+                  border: `1px solid`,
+                  borderColor: 'divider',
                   boxShadow: 'none',
                   display: 'flex',
                   flexDirection: 'column',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    borderColor: 'primary.main',
+                    boxShadow: isDark ? '0 12px 30px rgba(255,255,255,0.02)' : '0 12px 30px rgba(0,0,0,0.06)',
+                  },
                 }}
               >
                 <Box>
+                  {/* Quote icon accent */}
+                  <FormatQuoteIcon sx={{
+                    fontSize: 32,
+                    color: 'action.selected',
+                    mb: 1.5,
+                    transform: 'scaleX(-1)',
+                  }} />
+
                   <Box sx={{ display: 'flex', gap: 0.5, mb: 2 }}>
                     {[...Array(5)].map((_, i) => (
                       <StarIcon key={i} fontSize="small" sx={{ color: 'warning.main' }} />
@@ -78,8 +111,17 @@ export default function TestimonialsSection({ isDark, t }) {
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Avatar alt={item.name} src={item.avatar} sx={{ width: 44, height: 44 }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 'auto' }}>
+                  <Avatar
+                    alt={item.name}
+                    src={item.avatar}
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      border: `2px solid`,
+                      borderColor: 'divider',
+                    }}
+                  />
                   <Box>
                     <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>{item.name}</Typography>
                     <Typography variant="caption" color="text.secondary">{item.role}</Typography>

@@ -11,6 +11,7 @@ import HeroSection from './landing/HeroSection';
 import FeaturesSection from './landing/FeaturesSection';
 import FleetSection from './landing/FleetSection';
 import TestimonialsSection from './landing/TestimonialsSection';
+import CtaBanner from './landing/CtaBanner';
 import Footer from './landing/Footer';
 
 const heroImages = [
@@ -131,6 +132,8 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
         handleBookNow={handleBookNow}
         t={t}
       />
+
+      <CtaBanner isDark={isDark} handleBookNow={handleBookNow} t={t} />
 
       <TestimonialsSection isDark={isDark} t={t} />
 

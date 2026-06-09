@@ -213,6 +213,23 @@
     "testimonial3Quote": "Pengalaman berkendara NMAX sangat memuaskan. Tarif harian murah, transparan, dan pelayanan langsung. Pasti sewa lagi!",
     "roleEntrepreneur": "Wirausaha",
     "roleEmployee": "Karyawan Swasta",
-    "roleBiker": "Pecinta Motor"
+    "roleBiker": "Pecinta Motor",
+    "statVehicles": "50+",
+    "statVehiclesLabel": "Armada Premium",
+    "statCustomers": "2.000+",
+    "statCustomersLabel": "Pelanggan Puas",
+    "statCities": "5",
+    "statCitiesLabel": "Kota Dilayani",
+    "statRating": "4.9",
+    "statRatingLabel": "Rating Pengguna",
+    "ctaTitle": "Siap untuk Berangkat?",
+    "ctaSubtitle": "Pesan kendaraan impian Anda dalam hitungan menit. Tanpa biaya tersembunyi, tanpa ribet.",
+    "ctaButton": "Pesan Kendaraan Sekarang",
+    "followUs": "Ikuti Kami",
+    "navHome": "Beranda",
+    "seats": "Kursi",
+    "transmission": "Trans.",
+    "fuel": "BBM",
+    "backToTop": "Kembali ke atas"
   }
 }

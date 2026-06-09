@@ -214,6 +214,23 @@
     "testimonial3Quote": "NMAX ride was phenomenal. Cheap daily rate, transparent, and direct service. Will book again!",
     "roleEntrepreneur": "Entrepreneur",
     "roleEmployee": "Private Employee",
-    "roleBiker": "Motorcycle Enthusiast"
+    "roleBiker": "Motorcycle Enthusiast",
+    "statVehicles": "50+",
+    "statVehiclesLabel": "Premium Fleet",
+    "statCustomers": "2,000+",
+    "statCustomersLabel": "Happy Customers",
+    "statCities": "5",
+    "statCitiesLabel": "Cities Served",
+    "statRating": "4.9",
+    "statRatingLabel": "User Rating",
+    "ctaTitle": "Ready to Hit the Road?",
+    "ctaSubtitle": "Book your perfect ride in minutes. No hidden fees, no hassle.",
+    "ctaButton": "Book Your Ride Now",
+    "followUs": "Follow Us",
+    "navHome": "Home",
+    "seats": "Seats",
+    "transmission": "Trans.",
+    "fuel": "Fuel",
+    "backToTop": "Back to top"
   }
 }
