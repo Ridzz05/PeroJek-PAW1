@@ -15,7 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
@@ -71,19 +71,12 @@ export default function Navbar({
           <Box sx={{ height: { xs: 60, md: 72 }, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {/* Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, cursor: 'pointer' }} onClick={() => scrollToSection('hero')}>
-              <TimeToLeaveIcon sx={{ color: 'primary.main', fontSize: { xs: 26, md: 30 } }} />
-              <Typography
-                variant="h6"
-                sx={{
-                  fontFamily: '"Google Sans", sans-serif',
-                  fontWeight: 850,
-                  fontSize: { xs: '1.1rem', md: '1.4rem' },
-                  letterSpacing: '-0.02em',
-                  color: 'text.primary',
-                }}
-              >
-                Smart Rental
-              </Typography>
+              <Box
+                component="img"
+                src="/assets/img/srs-logo.png"
+                alt="Smart Rental System"
+                sx={{ width: { xs: 36, md: 44 }, height: { xs: 36, md: 44 }, objectFit: 'contain', borderRadius: '50%' }}
+              />
             </Box>
 
             {/* Desktop Navigation Links */}
@@ -197,10 +190,12 @@ export default function Navbar({
         {/* Drawer Header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 2, py: 1.5, minHeight: 60 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TimeToLeaveIcon sx={{ color: 'primary.main', fontSize: 26 }} />
-            <Typography variant="h6" sx={{ fontWeight: 850, fontFamily: '"Google Sans", sans-serif' }}>
-              Smart Rental
-            </Typography>
+            <Box
+              component="img"
+              src="/assets/img/srs-logo.png"
+              alt="Smart Rental System"
+              sx={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '50%' }}
+            />
           </Box>
           <IconButton onClick={() => setDrawerOpen(false)} size="small">
             <CloseIcon />

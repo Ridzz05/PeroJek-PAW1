@@ -10,7 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -140,13 +140,12 @@ export default function RegisterPage({ onGoLogin, onBackHome }) {
 
                 {/* Brand */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 4 }}>
-                    <Box sx={{
-                        width: 44, height: 44, borderRadius: 2.5,
-                        background: (t) => t.palette.primary.main,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                        <TimeToLeaveIcon sx={{ color: (t) => t.palette.primary.contrastText, fontSize: 24 }} />
-                    </Box>
+                    <Box
+                        component="img"
+                        src="/assets/img/srs-logo.png"
+                        alt="Smart Rental System"
+                        sx={{ width: 44, height: 44, objectFit: 'contain', borderRadius: '50%' }}
+                    />
                     <Box>
                         <Typography variant="h6" sx={{
                             fontWeight: 800, lineHeight: 1.1,

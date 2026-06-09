@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Fab from '@mui/material/Fab';
 import { useTheme, keyframes } from '@mui/material/styles';
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -60,10 +60,12 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
             {/* Brand column */}
             <Grid item xs={12} md={5}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <TimeToLeaveIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-                <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 850 }}>
-                  Smart Rental
-                </Typography>
+                <Box
+                  component="img"
+                  src="/assets/img/srs-logo.png"
+                  alt="Smart Rental System"
+                  sx={{ width: 40, height: 40, objectFit: 'contain', borderRadius: '50%' }}
+                />
               </Box>
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400, lineHeight: 1.7, mb: 2.5 }}>
                 {t('landing.footerDesc')}

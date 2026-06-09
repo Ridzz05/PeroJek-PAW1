@@ -28,7 +28,7 @@ import PeopleIcon from '@mui/icons-material/People'; // Customers
 import StorageIcon from '@mui/icons-material/Storage'; // Master Data
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave'; // Logo
+
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LanguageIcon from '@mui/icons-material/Language';
@@ -78,23 +78,19 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Brand Logo Header */}
       <Box sx={{ 
-        p: 3, 
+        p: 2, 
         display: 'flex', 
         alignItems: 'center', 
-        gap: 1.5,
+        justifyContent: 'center',
         background: isDark ? '#141414' : '#FFFFFF',
         borderBottom: `1px solid ${isDark ? '#2A2A2A' : '#E5E5E5'}`,
-        color: isDark ? '#F5F5F5' : '#0A0A0A',
       }}>
-        <TimeToLeaveIcon sx={{ fontSize: 28 }} />
-        <Box>
-          <Typography variant="h6" sx={{ fontFamily: '"Google Sans", sans-serif', fontWeight: 800, lineHeight: 1.2 }}>
-            Car Rent
-          </Typography>
-          <Typography variant="caption" sx={{ opacity: 0.8, fontSize: '0.7rem', fontWeight: 500, letterSpacing: 0.5 }}>
-            MANAGEMENT SYSTEM
-          </Typography>
-        </Box>
+        <Box
+          component="img"
+          src="/assets/img/srs-logo.png"
+          alt="Smart Rental System"
+          sx={{ width: 180, height: 48, objectFit: 'contain', borderRadius: '50%' }}
+        />
       </Box>
       <Divider />
 
