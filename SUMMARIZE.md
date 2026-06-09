@@ -26,8 +26,9 @@ Stack yang benar-benar terlihat dari workspace saat ini:
 - Database default: SQLite
 - Database lokal: `database/database.sqlite`
 - Auth: Laravel session guard `web`
-- Testing: PHPUnit 12
+- Testing: PHPUnit 12.5
 - Build scripts: `npm run dev`, `npm run build`, `composer dev`, `composer test`
+- Tambahan composer: `livewire/livewire` (terinstal, belum digunakan di kode)
 
 Catatan dokumentasi:
 
@@ -40,13 +41,16 @@ Catatan dokumentasi:
 Struktur utama proyek:
 
 - `app/Http/Controllers`: controller API untuk auth, dashboard, kategori, kendaraan, pelanggan, dan rental.
-- `app/Models`: model Eloquent `User`, `Category`, `Vehicle`, `Customer`, dan `Rental`.
+- `app/Models`: model Eloquent `User`, `Category`, `Vehicle`, `Customer`, dan `Rental` — masing-masing memiliki static helper method untuk query dashboard.
 - `database/migrations`: schema users, session/cache/jobs, tabel rental utama, dan tambahan profil user.
 - `database/seeders`: `DatabaseSeeder` saat ini kosong.
 - `resources/js`: aplikasi React SPA.
 - `resources/js/pages`: halaman utama dashboard, rental desk, fleet, customers, rentals, master data, landing.
+- `resources/js/pages/landing`: komponen modular landing page (Navbar, HeroSection, FeaturesSection, FleetSection, TestimonialsSection, CtaBanner, Footer).
 - `resources/js/auth`: auth context, login, register, settings modal.
-- `resources/js/components`: layout shell dan dialog konfirmasi reusable.
+- `resources/js/components`: layout shell, dialog konfirmasi, page loader, dan flag icons.
+- `resources/js/hooks`: custom hooks (useToast).
+- `resources/js/utils`: shared API utilities dan formatter (apiFetch, formatCurrency, formatDate).
 - `resources/js/i18n`: provider bahasa dan file translasi English/Indonesia.
 - `resources/views/app.blade.php`: root HTML untuk React SPA dan CSRF meta tag.
 - `public/assets`: gambar kendaraan dan video BMW M3 untuk auth background.
@@ -58,9 +62,9 @@ Arsitektur aplikasi berjalan dengan pola berikut:
 
 1. Laravel melayani request web.
 2. Route fallback mengembalikan `resources/views/app.blade.php`.
-3. Blade memuat CSRF token dan bundle Vite: `resources/css/app.css` dan `resources/js/app.jsx`.
+3. Blade memuat CSRF token, Google Sans font, dan bundle Vite: `resources/css/app.css` dan `resources/js/app.jsx`.
 4. React membuat SPA di elemen `#root`.
-5. React melakukan fetch ke endpoint `/api/*`.
+5. React melakukan fetch ke endpoint `/api/*` melalui helper `apiFetch()` yang otomatis inject CSRF token dan header JSON.
 6. Laravel controller memvalidasi request, menjalankan query Eloquent, dan mengembalikan JSON.
 7. Database SQLite menyimpan user, session, cache, jobs, kategori, kendaraan, pelanggan, dan rental.
 
@@ -111,7 +115,7 @@ Catatan route:
 Fitur autentikasi:
 
 - `GET /api/me`: mengembalikan user aktif jika session login valid, atau `401 Unauthenticated`.
-- `POST /api/login`: validasi email/password, login via `Auth::attempt`, regenerate session, return user.
+- `POST /api/login`: validasi email/password, login via `Auth::attempt` dengan `remember: true` default, regenerate session, return user.
 - `POST /api/register`: membuat user baru dengan role default `staff`, password di-hash, lalu otomatis login.
 - `POST /api/logout`: logout, invalidate session, regenerate token.
 - `PUT /api/me`: update `name` dan `profile_picture`.
@@ -124,20 +128,20 @@ Validasi penting:
 
 ### 6.2 DashboardController
 
-Endpoint dashboard menghitung:
+Endpoint dashboard mendelegasikan seluruh logika ke static method di model Eloquent:
 
-- Total revenue dari rental status `Ongoing` dan `Completed`.
-- Jumlah kendaraan status `Rented`.
-- Jumlah kendaraan status `Available`.
-- Total pelanggan.
-- Upcoming returns dari rental `Ongoing`, urut `end_date`, maksimal 5.
-- Distribusi kategori berdasarkan jumlah kendaraan.
-- Monthly revenue 6 bulan terakhir.
+- `Rental::totalRecognizedRevenue()` — total revenue dari rental status `Ongoing` dan `Completed`.
+- `Vehicle::countByStatus('Rented')` — jumlah kendaraan on road.
+- `Vehicle::countByStatus('Available')` — jumlah kendaraan tersedia.
+- `Customer::totalRegistered()` — total pelanggan.
+- `Rental::upcomingReturns()` — rental `Ongoing` urut `end_date`, maksimal 5, dengan relasi vehicle dan customer.
+- `Category::vehicleDistribution()` — distribusi kategori berdasarkan jumlah kendaraan.
+- `Rental::monthlyRevenueSeries()` — revenue 6 bulan terakhir per bulan.
 
 Catatan penting:
 
-- Jika monthly revenue kosong, controller mengisi fallback angka random/dummy untuk chart.
-- Ini bagus untuk tampilan awal, tetapi kurang ideal untuk analytics produksi karena angka chart bisa berubah antar request dan tidak sepenuhnya mencerminkan data real.
+- Dashboard sudah sepenuhnya memakai data real dari database. Jika tidak ada transaksi, angka akan 0 dan chart kosong — tidak ada fallback dummy/random.
+- Response menyertakan `generated_at` timestamp ISO untuk referensi kesegaran data.
 
 ### 6.3 CategoryController
 
@@ -157,7 +161,7 @@ Validasi:
 
 Mengelola armada kendaraan:
 
-- List kendaraan dengan relasi kategori.
+- List kendaraan dengan relasi kategori, urut `id desc`.
 - Tambah kendaraan.
 - Update kendaraan.
 - Hapus kendaraan.
@@ -213,7 +217,7 @@ Catatan:
 
 Mengelola transaksi rental:
 
-- `index`: list semua rental dengan relasi `vehicle.category` dan `customer`.
+- `index`: list semua rental dengan relasi `vehicle.category` dan `customer`, urut `id desc`.
 - `book`: membuat transaksi rental baru.
 - `returnVehicle`: menyelesaikan rental dan mengembalikan status kendaraan menjadi `Available`.
 
@@ -270,6 +274,16 @@ Relasi:
 - `Rental` belongs to `Vehicle`.
 - `Rental` belongs to `Customer`.
 
+Static helper methods di model:
+
+- `Category::vehicleDistribution()` — mengembalikan collection `[name, count]` untuk chart distribusi.
+- `Vehicle::countByStatus(string $status)` — menghitung kendaraan berdasarkan status.
+- `Customer::totalRegistered()` — menghitung total pelanggan.
+- `Rental::totalRecognizedRevenue()` — sum `total_amount` untuk status `Ongoing` dan `Completed`.
+- `Rental::upcomingReturns(int $limit)` — rental ongoing terdekat, dengan relasi vehicle dan customer.
+- `Rental::monthlyRevenueSeries(int $months)` — array revenue per bulan untuk chart.
+- `Rental` memiliki scope `revenueEligible` dan konstanta `REVENUE_STATUSES`.
+
 Mass assignment:
 
 - Project memakai PHP attributes Laravel seperti `#[Fillable(...)]` dan `#[Hidden(...)]`.
@@ -312,7 +326,7 @@ Tabel `customers`:
 Tabel `vehicles`:
 
 - `id`
-- `category_id`
+- `category_id` (FK cascade ke categories)
 - `brand`
 - `model`
 - `license_plate` unique
@@ -325,8 +339,8 @@ Tabel `rentals`:
 
 - `id`
 - `rental_code` unique
-- `vehicle_id`
-- `customer_id`
+- `vehicle_id` (FK cascade ke vehicles)
+- `customer_id` (FK cascade ke customers)
 - `start_date`
 - `end_date`
 - `total_days`
@@ -344,7 +358,7 @@ Tabel auth/session:
 
 Tambahan user:
 
-- `profile_picture`
+- `profile_picture` nullable
 - `role` default `staff`
 
 ### 8.2 Kondisi Database Lokal Saat Dianalisis
@@ -353,25 +367,11 @@ Database lokal aktif:
 
 - Driver: SQLite
 - File: `database/database.sqlite`
-- SQLite version: 3.45.1
-- Total tabel: 13
 - Semua migration yang ada sudah `Ran`.
-
-Jumlah row lokal saat dianalisis:
-
-- `categories`: 5
-- `users`: 2
-- `sessions`: 3
-- `customers`: 0
-- `vehicles`: 0
-- `rentals`: 0
-- `cache`: 0
-- `jobs`: 0
-- `failed_jobs`: 0
 
 Catatan:
 
-- `DatabaseSeeder` saat ini kosong, jadi data tersebut bukan berasal dari seeder default saat ini.
+- `DatabaseSeeder` saat ini kosong (hanya komentar), jadi tidak ada seed data default.
 - README/IMPLEMENT masih menyarankan migrate/seed, tetapi seeder tidak membuat data awal.
 
 ## 9. Frontend React
@@ -395,8 +395,9 @@ Fungsi utama:
 Theme:
 
 - Palet dominan hitam/putih/minimalis.
-- Banyak override MUI untuk button, card, app bar, drawer, paper, table, text field, menu, chip, dialog.
+- Banyak override MUI untuk button, card, app bar, drawer, paper, table, text field, menu, chip, dialog, divider, icon button, list item button, select, menu item.
 - Card memakai efek glass/backdrop blur.
+- Custom shadow array dengan 4 level elevasi yang berbeda untuk dark/light mode.
 
 Catatan teknis:
 
@@ -404,7 +405,34 @@ Catatan teknis:
 - CSS global di `resources/css/app.css` mengatur Tailwind source scanning dan scrollbar.
 - File CSS mendefinisikan `--font-sans` sebagai `Outfit`/`Plus Jakarta Sans`, sedangkan Blade memuat Google Sans. Ini bukan error langsung, tetapi ada perbedaan arah typography antara CSS dan MUI theme.
 
-### 9.2 AuthGate dan Halaman Guest
+### 9.2 Shared Utilities
+
+Frontend memiliki beberapa modul bersama yang mengurangi duplikasi kode:
+
+**`resources/js/utils/api.js`**:
+- `csrfToken()` — mengambil CSRF token dari meta tag Blade.
+- `apiFetch(url, options)` — wrapper fetch yang otomatis inject `Accept: application/json`, `X-CSRF-TOKEN`, dan `Content-Type: application/json` (jika ada body). Header user menang jika konflik.
+- `formatCurrency(val)` — format IDR menggunakan `Intl.NumberFormat('id-ID')`.
+- `formatDate(dateString)` — format tanggal ke `YYYY-MM-DD`, return `-` untuk input falsy.
+
+**`resources/js/hooks/useToast.jsx`**:
+- Hook `useToast` yang mengembalikan `{ showToast, ToastComponent }`.
+- Mengelola state snackbar/alert terpusat, mengurangi duplikasi toast state di setiap halaman.
+- Mendukung konfigurasi `autoHideDuration` dan `anchorOrigin`.
+
+**`resources/js/components/PageLoader.jsx`**:
+- Komponen loading spinner terpusat, digunakan di semua halaman saat data sedang dimuat.
+
+**`resources/js/components/ConfirmDialog.jsx`**:
+- Dialog konfirmasi reusable untuk aksi destruktif (delete).
+- Mendukung props `title`, `message`, `onConfirm`, `onCancel`, `confirmText`, `cancelText`, `severity`.
+- Mendukung dark/light mode.
+
+**`resources/js/components/icons/FlagIcons.jsx`**:
+- Komponen SVG inline untuk bendera UK dan Indonesia.
+- Digunakan di Layout untuk toggle bahasa.
+
+### 9.3 AuthGate dan Halaman Guest
 
 `AuthGate` di `app.jsx` menentukan tampilan berdasarkan state auth:
 
@@ -423,17 +451,18 @@ Auth frontend:
 - `AuthContext` melakukan boot request ke `/api/me`.
 - `login`, `register`, `logout`, dan `updateUser` memakai fetch dengan `credentials: same-origin`.
 - CSRF token diambil dari meta tag Blade.
+- Helper `safeJson` untuk parsing JSON yang aman terhadap response non-JSON.
 
-### 9.3 Layout
+### 9.4 Layout
 
 `resources/js/components/Layout.jsx` adalah shell internal aplikasi.
 
 Fitur layout:
 
-- Sidebar desktop permanen.
-- Bottom navigation mobile.
+- Sidebar desktop permanent (drawer width 260px).
+- Bottom navigation mobile (floating rounded bar dengan 4 item: Rental Desk, Rentals, Fleet, Customers).
 - App bar dengan judul halaman aktif.
-- Toggle bahasa English/Indonesia.
+- Toggle bahasa English/Indonesia (dengan flag icon SVG).
 - Toggle light/dark mode.
 - Avatar user.
 - Dropdown profile:
@@ -441,6 +470,8 @@ Fitur layout:
   - Settings
   - Logout
   - Shortcut dashboard/master data di mobile
+- Brand logo header di sidebar ("Car Rent - MANAGEMENT SYSTEM").
+- User info di sidebar footer (avatar, name, role).
 - Settings modal lazy-loaded.
 
 Menu utama:
@@ -452,7 +483,7 @@ Menu utama:
 - Customers
 - Master Data
 
-### 9.4 i18n
+### 9.5 i18n
 
 Provider bahasa ada di `resources/js/i18n/i18n.jsx`.
 
@@ -463,147 +494,162 @@ Fitur:
 - Fungsi `t(key)` membaca nested key dari JSON translation.
 - Jika key tidak ditemukan, fungsi mengembalikan key mentah.
 
-### 9.5 Landing Page
+### 9.6 Landing Page
 
-`resources/js/pages/Landing.jsx` adalah halaman publik.
+`resources/js/pages/Landing.jsx` adalah halaman publik yang disusun dari komponen modular di `resources/js/pages/landing/`:
 
-Fitur utama:
-
-- Hero dengan rotasi gambar.
-- CTA login/register atau dashboard jika user sudah login.
-- Toggle tema dan bahasa.
-- Fetch kendaraan dari `/api/vehicles`.
-- Filter kendaraan berdasarkan kategori.
-- Search kendaraan berdasarkan brand/model.
-- Kartu kendaraan dengan status availability.
-- Section fitur, katalog, testimoni, dan footer.
+- **Navbar** — sticky header dengan navigasi section (Features, Fleet, Testimonials), toggle bahasa, toggle tema, mobile drawer, dan CTA login/register/dashboard.
+- **HeroSection** — hero full-viewport dengan rotasi gambar background, animasi fadeInUp/bounce, stat badges (vehicles, customers, cities, rating), dan CTA button.
+- **FeaturesSection** — grid 4 fitur unggulan dengan icon (Security, Speed, Fleet, Pricing).
+- **FleetSection** — katalog kendaraan dengan filter kategori (Tabs), search, kartu kendaraan dengan status chip, spesifikasi singkat (seats, transmission, fuel), dan tombol Book Now.
+- **TestimonialsSection** — testimonial card dengan avatar dari DiceBear API, rating bintang, dan quote.
+- **CtaBanner** — section ajakan booking dengan animasi floating dan CTA button.
+- **Footer** — informasi perusahaan, link navigasi, kontak, social media icons, dan scroll-to-top FAB.
 
 Catatan:
 
-- Landing mengambil data kendaraan dari API yang sama dengan dashboard.
-- Jika database kendaraan kosong, katalog akan kosong atau menampilkan state kosong.
+- Landing mengambil data kendaraan dari `/api/vehicles` (endpoint yang sama dengan dashboard).
+- Jika database kendaraan kosong, katalog akan menampilkan state kosong.
+- Hero image rotasi otomatis setiap 4 detik.
+- "Book Now" mengarah ke login (guest) atau rental desk (logged in).
 
-### 9.6 Dashboard
+### 9.7 Dashboard
 
 `resources/js/pages/Dashboard.jsx`.
 
 Fitur:
 
-- Fetch `/api/dashboard/stats`.
-- Menampilkan total revenue, kendaraan on road, kendaraan available, dan total pelanggan.
-- Chart sederhana monthly revenue.
-- List upcoming returns.
-- CTA menuju rental desk.
+- Fetch `/api/dashboard/stats` dengan auto-refresh setiap 15 detik (`DASHBOARD_REFRESH_INTERVAL_MS`).
+- Welcome banner dengan nama user dan CTA ke rental desk.
+- Menampilkan total revenue, kendaraan on road, kendaraan available, dan total pelanggan dalam stat cards.
+- Custom SVG bar chart monthly revenue (6 bulan terakhir).
+- Alert panel upcoming returns dengan chip countdown (overdue, due tomorrow, N days left).
+- CTA menuju rentals jika ada upcoming returns.
+- Menggunakan `PageLoader` saat loading.
 
 Format uang:
 
-- Menggunakan `Intl.NumberFormat('id-ID', { currency: 'IDR' })`.
+- Menggunakan `formatCurrency` dari `utils/api.js` (Intl.NumberFormat IDR).
 
-### 9.7 Rental Desk
+### 9.8 Rental Desk
 
 `resources/js/pages/RentalDesk.jsx`.
 
 Fitur:
 
-- Fetch kendaraan dan pelanggan.
-- Filter kendaraan berdasarkan kategori.
-- Search kendaraan.
-- Pilih kendaraan available.
-- Form booking:
-  - customer
-  - start date
-  - end date
-  - payment method
-- Kalkulasi hari dan total biaya di frontend.
-- Submit ke `/api/rentals/book`.
-- Mapping payment method UI:
-  - `Cash` -> `Cash`
-  - `QRIS` -> `QRIS`
-  - `Credit Card` -> `Card`
+- Fetch kendaraan dan pelanggan secara paralel.
+- Filter kendaraan berdasarkan kategori (Chip horizontal scroll).
+- Search kendaraan berdasarkan brand/model/license plate.
+- Pilih kendaraan available (grid card, non-available disabled).
+- Checkout side panel (sticky, muncul saat kendaraan dipilih):
+  - Dropdown customer (nama + phone).
+  - Start date dan end date picker.
+  - Payment method dropdown.
+  - Kalkulasi preview: daily rate × days = total.
+  - Submit ke `/api/rentals/book`.
+- Auto-set default dates (today + tomorrow) saat vehicle dipilih.
+- Responsive grid: 12 kolom saat tidak ada vehicle terpilih, 8+4 saat ada vehicle.
+
+Mapping payment method UI ke backend:
+
+- `Cash` → `Cash`
+- `Bank Transfer` → `QRIS`
+- `E-Wallet` → `QRIS`
+- `Credit Card` → `Card`
+- `QRIS` → `QRIS`
 
 Catatan:
 
 - Backend tetap menghitung ulang total amount, jadi kalkulasi frontend hanya untuk preview.
 - Booking hanya bisa berhasil jika kendaraan masih `Available` di backend.
+- Menggunakan `apiFetch`, `formatCurrency`, `useToast`, dan `PageLoader`.
 
-### 9.8 Fleet
+### 9.9 Fleet
 
 `resources/js/pages/Fleet.jsx`.
 
 Fitur:
 
-- Fetch kendaraan dan kategori.
-- Menampilkan kendaraan dalam grid card.
-- Tambah kendaraan.
-- Hapus kendaraan.
+- Fetch kendaraan dan kategori secara paralel.
+- Menampilkan kendaraan dalam grid card responsif (xs:1, sm:2, md:3, lg:4).
+- Tambah kendaraan melalui inline collapse form.
+- Hapus kendaraan dengan confirm dialog.
 - Toggle status maintenance:
-  - `Maintenance` -> `Available`
-  - status lain -> `Maintenance`
-- Snackbar untuk feedback.
-- Confirm dialog untuk delete.
+  - `Maintenance` → `Available`
+  - status lain → `Maintenance`
+- Status chip pada thumbnail (Available=success, Rented=info, Maintenance=warning).
+- Tombol maintenance dan delete disabled untuk kendaraan `Rented`.
+- FAB button untuk toggle form tambah kendaraan.
+- Menggunakan `apiFetch`, `formatCurrency`, `useToast`, `PageLoader`, dan `ConfirmDialog`.
 
 Catatan:
 
 - Halaman Fleet fokus pada tambah, hapus, dan status maintenance.
 - Editing detail kendaraan lebih lengkap tersedia di Master Data.
 
-### 9.9 Customers
+### 9.10 Customers
 
 `resources/js/pages/Customers.jsx`.
 
 Fitur:
 
 - Fetch pelanggan.
-- Search pelanggan.
-- Tambah pelanggan.
+- Search pelanggan berdasarkan name/email/phone/identity_number.
+- Tambah pelanggan melalui inline collapse form.
 - Edit pelanggan.
 - Hapus pelanggan dengan confirm dialog.
 - Tampilan responsif: mobile card/list dan desktop table.
-- Snackbar untuk feedback.
+- Form fields: name, phone, email (tidak ada di backend schema), identity_number, address.
+- FAB button untuk toggle form.
+- Menggunakan `apiFetch`, `useToast`, `PageLoader`, dan `ConfirmDialog`.
 
-### 9.10 Rentals
+Catatan:
+
+- Form pelanggan memiliki field `email` yang **tidak ada** di schema database, model fillable, maupun validasi backend. Field ini dikirim saat create/update tetapi diabaikan backend. Ini inkonsistensi antara frontend dan backend.
+
+### 9.11 Rentals
 
 `resources/js/pages/Rentals.jsx`.
 
 Fitur:
 
 - Fetch `/api/rentals`.
-- Filter status rental.
-- Tabel/log transaksi.
-- Menampilkan customer, kendaraan, tanggal, payment method, total, status.
-- Proses return melalui `/api/rentals/{id}/return`.
-- Responsive mobile/desktop view.
-
-Status label:
-
-- `Ongoing`
-- `Completed`
-- `Cancelled`
+- Filter status rental (All, Ongoing, Completed, Cancelled).
+- Tampilan responsif: mobile card dan desktop table.
+- Menampilkan customer, kendaraan, tanggal (pickup→return), payment method, total, status.
+- Proses return melalui `/api/rentals/{id}/return` dengan button success.
+- Processing state per-row untuk mencegah double-click.
+- Status label: Ongoing (info), Completed (success), Cancelled (error).
+- Empty state saat tidak ada data.
+- Menggunakan `apiFetch`, `formatCurrency`, `formatDate`, `useToast`, dan `PageLoader`.
 
 Catatan:
 
 - UI mengenal `Cancelled`, tetapi backend belum menyediakan endpoint cancel.
 
-### 9.11 Master Data
+### 9.12 Master Data
 
 `resources/js/pages/MasterData.jsx`.
 
 Fitur:
 
 - Tab untuk `categories`, `vehicles`, dan `customers`.
-- Fetch ketiga dataset sekaligus.
-- Search lintas entity aktif.
-- Create/edit/delete entity aktif.
-- Form dinamis berdasarkan tab.
-- Slugify otomatis untuk kategori.
-- Confirm dialog delete.
+- Fetch ketiga dataset sekaligus secara paralel.
+- Search lintas entity aktif berdasarkan tab.
+- Create/edit melalui inline collapse form (bukan dialog).
+- Delete dengan confirm dialog.
+- Form dinamis berdasarkan tab dan mode (create/edit).
+- Slugify otomatis untuk kategori (name → slug).
+- Delete button disabled untuk kategori yang masih digunakan kendaraan (berdasarkan `vehicles_count`).
+- Record count indicator.
+- Menggunakan `apiFetch`, `formatCurrency`, `useToast`, `PageLoader`, dan `ConfirmDialog`.
 
 Peran halaman:
 
 - Master Data adalah pusat administrasi yang lebih menyeluruh daripada Fleet/Customers individual.
 - Fleet dan Customers juga menyediakan workflow operasional cepat masing-masing.
 
-### 9.12 Auth Pages dan Settings
+### 9.13 Auth Pages dan Settings
 
 `LoginPage.jsx`:
 
@@ -611,19 +657,24 @@ Peran halaman:
 - Toggle show password.
 - Error handling dari backend.
 - Navigasi ke register atau kembali ke landing.
+- Mobile: login/register tab switcher, transparent card style.
+- Brand header dengan TimeToLeaveIcon.
 
 `RegisterPage.jsx`:
 
 - Register name/email/password/password confirmation.
 - Toggle show password.
 - Error field dari validasi backend.
+- Real-time password match validation.
+- Mobile: login/register tab switcher.
 
 `SettingsModal.jsx`:
 
 - Edit nama.
 - Edit profile picture URL.
-- Preview avatar.
+- Preview avatar dengan onBlur.
 - Simpan melalui `updateUser` ke `/api/me`.
+- Success alert dan auto-close setelah 1.2 detik.
 
 ## 10. Alur Bisnis Utama
 
@@ -642,7 +693,7 @@ Alur operasional yang didukung aplikasi:
 8. Booking dibuat.
 9. Rental masuk status `Ongoing`.
 10. Kendaraan berubah status menjadi `Rented`.
-11. Dashboard memperbarui revenue/on road/upcoming returns.
+11. Dashboard memperbarui revenue/on road/upcoming returns (auto-refresh 15 detik).
 12. Saat kendaraan kembali, staff proses return di halaman Rentals.
 13. Rental berubah menjadi `Completed`.
 14. Kendaraan berubah kembali menjadi `Available`.
@@ -703,18 +754,19 @@ Temuan konsistensi:
 
 - `README.md`, `IMPLEMENT.md`, dan kode aktual berbeda versi stack.
 - `DatabaseSeeder` kosong, tetapi dokumentasi masih menyiratkan ada seed data.
-- Local database memiliki 5 kategori dan 2 user, tetapi kendaraan/pelanggan/rental kosong.
 - `payment_status` ada di migration tetapi tidak dipakai model/controller/frontend.
 - `apiResource` membuat route `show` untuk vehicles/customers, tetapi controller tidak punya method `show`.
-- Dashboard monthly revenue memakai dummy/random fallback saat data kosong.
+- Frontend Customers mengirim field `email` yang tidak ada di schema/model backend.
 - Delete kendaraan/pelanggan dapat menghapus histori rental karena cascade.
 - Tidak ada pagination untuk list kendaraan, pelanggan, rental, atau master data.
+- `livewire/livewire` terinstal di composer.json tetapi tidak digunakan di kode manapun.
+- `.env` memiliki variabel `CAR_API_KEY` dan `CAR_API_SECRET` yang tidak dipakai di kode.
 
 ## 14. Testing
 
 Setup testing:
 
-- PHPUnit dikonfigurasi di `phpunit.xml`.
+- PHPUnit 12.5 dikonfigurasi di `phpunit.xml`.
 - Testing memakai SQLite in-memory.
 - Cache/session/queue testing dibuat ringan:
   - `CACHE_STORE=array`
@@ -767,7 +819,7 @@ php artisan serve
 npm run dev
 ```
 
-Alternatif menjalankan beberapa proses sekaligus:
+Alternatif menjalankan beberapa proses sekaligus (server, queue, logs, vite):
 
 ```bash
 composer dev
@@ -811,8 +863,9 @@ Aset yang tersedia:
 Penggunaan:
 
 - Video BMW M3 dipakai sebagai background login/register.
-- Landing page memakai hero images dan katalog kendaraan.
-- Vehicle card memakai `image_url` dari database jika tersedia.
+- Landing page HeroSection memakai 4 gambar hero (rotasi otomatis setiap 4 detik).
+- Vehicle card di Fleet, Rental Desk, dan Landing memakai `image_url` dari database jika tersedia, fallback ke Unsplash.
+- Testimonial avatar memakai DiceBear API.
 
 Catatan:
 
@@ -824,14 +877,18 @@ Kekuatan teknis dan produk:
 
 - Struktur modul cukup jelas: dashboard, rental desk, fleet, customers, rentals, master data.
 - Backend sudah memisahkan controller dan model sesuai domain.
+- Model Eloquent memiliki static helper methods yang rapi untuk dashboard queries.
 - Relasi Eloquent utama sudah didefinisikan.
 - Booking dan return memakai database transaction.
+- Dashboard sepenuhnya memakai data real (tidak ada dummy/random fallback).
+- Dashboard memiliki auto-refresh setiap 15 detik.
 - UI internal sudah responsif dengan desktop sidebar dan mobile bottom navigation.
+- Landing page tersusun dari komponen modular yang terstruktur.
 - Ada i18n English/Indonesia.
 - Ada dark/light mode persistent.
 - Auth session sudah terintegrasi dengan React context.
+- Shared utilities (apiFetch, useToast, PageLoader, ConfirmDialog) mengurangi duplikasi kode.
 - UI cukup lengkap untuk demo operasional rental kendaraan.
-- Dashboard sudah menggabungkan data statistik, chart, dan upcoming returns.
 
 ## 18. Risiko dan Area Perbaikan Prioritas
 
@@ -848,14 +905,16 @@ Prioritas menengah:
 
 1. Cegah delete kendaraan/pelanggan jika punya rental history.
 2. Tambahkan pagination/search server-side untuk data besar.
-3. Hilangkan random revenue fallback dari dashboard produksi.
-4. Tambahkan cancel rental workflow.
-5. Tambahkan pengecekan overlap jadwal kendaraan.
-6. Tambahkan role/permission jika ada admin dan staff berbeda.
+3. Tambahkan cancel rental workflow.
+4. Tambahkan pengecekan overlap jadwal kendaraan.
+5. Tambahkan role/permission jika ada admin dan staff berbeda.
+6. Sinkronkan field `email` di frontend Customers dengan backend (tambahkan kolom atau hapus dari form).
+7. Hapus dependency `livewire/livewire` dari composer.json jika tidak akan dipakai.
+8. Bersihkan variabel `.env` yang tidak dipakai (`CAR_API_KEY`, `CAR_API_SECRET`).
 
 Prioritas rendah:
 
-1. Rapikan konsistensi typography antara CSS global dan MUI theme.
+1. Rapikan konsistensi typography antara CSS global (`Outfit`/`Plus Jakarta Sans`) dan MUI theme (`Google Sans`).
 2. Konsolidasikan Fleet dan Master Data agar tidak terasa duplikatif.
 3. Buat error boundary frontend.
 4. Tambahkan loading/empty state yang lebih konsisten di semua halaman.
@@ -864,6 +923,6 @@ Prioritas rendah:
 
 Project ini sudah membentuk sistem rental kendaraan yang fungsional secara end-to-end: user dapat login, mengelola master data, membuat booking, memproses return, dan melihat ringkasan bisnis. Arsitektur Laravel + React SPA sudah berjalan dan struktur domainnya mudah dipahami.
 
-Bagian yang paling kuat adalah alur operasional rental: kendaraan available dipilih, rental dibuat dalam transaction, status kendaraan berubah menjadi rented, lalu return mengembalikan status kendaraan. Bagian frontend juga sudah cukup matang untuk demo karena memiliki landing page, dashboard internal, responsive layout, dark mode, i18n, dan modal/profile handling.
+Bagian yang paling kuat adalah alur operasional rental: kendaraan available dipilih, rental dibuat dalam transaction, status kendaraan berubah menjadi rented, lalu return mengembalikan status kendaraan. Frontend juga sudah cukup matang dengan landing page modular, dashboard auto-refresh, shared utility layer, responsive layout, dark mode, i18n, dan modal/profile handling.
 
-Namun, untuk menjadi lebih siap produksi, proyek perlu memperkuat keamanan API, memperbaiki mismatch route/controller, menyelaraskan dokumentasi, mengisi seeder, menambah test untuk business logic inti, dan memastikan schema seperti `payment_status` benar-benar dipakai atau dirapikan. Setelah area tersebut diperbaiki, aplikasi ini akan jauh lebih stabil, aman, dan mudah dikembangkan.
+Namun, untuk menjadi lebih siap produksi, proyek perlu memperkuat keamanan API, memperbaiki mismatch route/controller, menyelaraskan dokumentasi, mengisi seeder, menambah test untuk business logic inti, memastikan schema seperti `payment_status` benar-benar dipakai atau dirapikan, serta membersihkan dependency dan konfigurasi yang tidak terpakai. Setelah area tersebut diperbaiki, aplikasi ini akan jauh lebih stabil, aman, dan mudah dikembangkan.
