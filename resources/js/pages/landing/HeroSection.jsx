@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
+import Card from '@mui/material/Card';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme, keyframes } from '@mui/material/styles';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -11,6 +15,9 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import PeopleIcon from '@mui/icons-material/People';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import StarIcon from '@mui/icons-material/Star';
+import SearchIcon from '@mui/icons-material/Search';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
@@ -23,6 +30,11 @@ const fadeInUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+
 const statItems = [
   { key: 'statVehicles', labelKey: 'statVehiclesLabel', icon: <DirectionsCarIcon sx={{ fontSize: 20 }} /> },
   { key: 'statCustomers', labelKey: 'statCustomersLabel', icon: <PeopleIcon sx={{ fontSize: 20 }} /> },
@@ -30,9 +42,33 @@ const statItems = [
   { key: 'statRating', labelKey: 'statRatingLabel', icon: <StarIcon sx={{ fontSize: 20 }} /> },
 ];
 
-export default function HeroSection({ heroImages, heroIndex, scrollToSection, handleBookNow, t }) {
+export default function HeroSection({ isDark, heroImages, heroIndex, setHeroIndex, scrollToSection, handleBookNow, setSearchQuery, t }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [quickSearch, setQuickSearch] = useState('');
+
+  const handleQuickSearch = () => {
+    if (quickSearch.trim()) {
+      setSearchQuery(quickSearch.trim());
+    }
+    scrollToSection('fleet');
+  };
+
+  const today = new Date().toISOString().split('T')[0];
+  const isOverDark = isDark;
+
+  const inputSx = {
+    borderRadius: 2.5,
+    backgroundColor: isOverDark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.9)',
+    color: isOverDark ? '#FFFFFF' : '#0A0A0A',
+    '& .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' },
+    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)' },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? '#FFFFFF' : '#0A0A0A' },
+    '& input::placeholder': { color: isOverDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)', opacity: 1 },
+    '& input': { color: isOverDark ? '#FFFFFF' : '#0A0A0A' },
+    '& input[type="date"]::-webkit-calendar-picker-indicator': { filter: isOverDark ? 'invert(1)' : 'none', cursor: 'pointer' },
+    '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: isOverDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)' },
+  };
 
   return (
     <Box
@@ -73,7 +109,7 @@ export default function HeroSection({ heroImages, heroIndex, scrollToSection, ha
         />
       ))}
 
-      {/* Gradient overlay - lighter on mobile for better bg visibility */}
+      {/* Gradient overlay */}
       <Box
         sx={{
           position: 'absolute',
@@ -90,121 +126,247 @@ export default function HeroSection({ heroImages, heroIndex, scrollToSection, ha
       {/* Main content */}
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, sm: 3, lg: 4 }, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
         <Box sx={{
-          maxWidth: { xs: '100%', sm: 620, md: 640 },
-          mx: { xs: 'auto', md: 0 },
-          textAlign: { xs: 'center', md: 'left' },
-          animation: `${fadeInUp} 0.8s ease-out`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          gap: 4,
         }}>
-          <Chip
-            label={t('landing.tagline')}
-            size="small"
-            sx={{
-              mb: { xs: 2, md: 3 },
-              height: { xs: 26, md: 28 },
-              px: 0.5,
-              color: '#FFFFFF',
-              fontWeight: 800,
-              fontSize: { xs: '0.7rem', md: '0.8125rem' },
-              backgroundColor: 'rgba(255,255,255,0.16)',
-              border: '1px solid rgba(255,255,255,0.28)',
-              backdropFilter: 'blur(10px)',
-            }}
-          />
-          <Typography
-            variant="h1"
-            sx={{
-              fontSize: { xs: '2rem', sm: '3rem', md: '4.6rem' },
-              fontWeight: 900,
-              lineHeight: { xs: 1.1, md: 1.02 },
-              letterSpacing: 0,
-              mb: { xs: 2, md: 2.5 },
-              color: '#FFFFFF',
-              textShadow: '0 8px 30px rgba(0,0,0,0.5)',
-            }}
-          >
-            {t('landing.titleHighlight')}
-            {t('landing.titleRest')}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: 'rgba(255,255,255,0.85)',
-              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.15rem' },
-              mb: { xs: 3, md: 4 },
-              maxWidth: { xs: '100%', md: 600 },
-              mx: { xs: 'auto', md: 0 },
-              fontWeight: 500,
-              lineHeight: { xs: 1.6, md: 1.65 },
-              textShadow: '0 6px 20px rgba(0,0,0,0.4)',
-            }}
-          >
-            {t('landing.subtitle')}
-          </Typography>
-          <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => scrollToSection('fleet')}
+          {/* Left: Text content + mobile search */}
+          <Box sx={{
+            maxWidth: { xs: '100%', sm: 620, md: 640 },
+            mx: { xs: 'auto', md: 0 },
+            textAlign: { xs: 'center', md: 'left' },
+            animation: `${fadeInUp} 0.8s ease-out`,
+          }}>
+            <Chip
+              label={t('landing.tagline')}
+              size="small"
               sx={{
-                borderRadius: 2,
-                fontWeight: 800,
-                px: { xs: 2.5, sm: 4 },
-                py: { xs: 1.1, md: 1.4 },
-                fontSize: { xs: '0.85rem', md: '0.9375rem' },
-                backgroundColor: '#FFFFFF',
-                color: '#0A0A0A',
-                '&:hover': { backgroundColor: '#EDEDED' },
-              }}
-            >
-              {t('landing.exploreBtn')}
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={handleBookNow}
-              sx={{
-                borderRadius: 2,
-                fontWeight: 800,
-                px: { xs: 2.5, sm: 4 },
-                py: { xs: 1.1, md: 1.4 },
-                fontSize: { xs: '0.85rem', md: '0.9375rem' },
+                mb: { xs: 2, md: 3 },
+                height: { xs: 26, md: 28 },
+                px: 0.5,
                 color: '#FFFFFF',
-                borderColor: 'rgba(255,255,255,0.7)',
-                backgroundColor: 'rgba(0,0,0,0.16)',
-                backdropFilter: 'blur(8px)',
-                '&:hover': {
-                  borderColor: '#FFFFFF',
-                  backgroundColor: 'rgba(255,255,255,0.12)',
-                },
+                fontWeight: 800,
+                fontSize: { xs: '0.7rem', md: '0.8125rem' },
+                backgroundColor: 'rgba(255,255,255,0.16)',
+                border: '1px solid rgba(255,255,255,0.28)',
+                backdropFilter: 'blur(10px)',
+              }}
+            />
+            <Typography
+              variant="h1"
+              sx={{
+                fontSize: { xs: '2rem', sm: '3rem', md: '4.6rem' },
+                fontWeight: 900,
+                lineHeight: { xs: 1.1, md: 1.02 },
+                letterSpacing: 0,
+                mb: { xs: 2, md: 2.5 },
+                color: '#FFFFFF',
+                textShadow: '0 8px 30px rgba(0,0,0,0.5)',
               }}
             >
-              {t('landing.startBtn')}
-            </Button>
+              {t('landing.titleHighlight')}
+              {t('landing.titleRest')}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(255,255,255,0.85)',
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.15rem' },
+                mb: { xs: 3, md: 4 },
+                maxWidth: { xs: '100%', md: 600 },
+                mx: { xs: 'auto', md: 0 },
+                fontWeight: 500,
+                lineHeight: { xs: 1.6, md: 1.65 },
+                textShadow: '0 6px 20px rgba(0,0,0,0.4)',
+              }}
+            >
+              {t('landing.subtitle')}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: { xs: 'center', md: 'flex-start' } }}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => scrollToSection('fleet')}
+                sx={{
+                  borderRadius: 2,
+                  fontWeight: 800,
+                  px: { xs: 2.5, sm: 4 },
+                  py: { xs: 1.1, md: 1.4 },
+                  fontSize: { xs: '0.85rem', md: '0.9375rem' },
+                  backgroundColor: '#FFFFFF',
+                  color: '#0A0A0A',
+                  '&:hover': { backgroundColor: '#EDEDED' },
+                }}
+              >
+                {t('landing.exploreBtn')}
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={handleBookNow}
+                sx={{
+                  borderRadius: 2,
+                  fontWeight: 800,
+                  px: { xs: 2.5, sm: 4 },
+                  py: { xs: 1.1, md: 1.4 },
+                  fontSize: { xs: '0.85rem', md: '0.9375rem' },
+                  color: '#FFFFFF',
+                  borderColor: 'rgba(255,255,255,0.7)',
+                  backgroundColor: 'rgba(0,0,0,0.16)',
+                  backdropFilter: 'blur(8px)',
+                  '&:hover': {
+                    borderColor: '#FFFFFF',
+                    backgroundColor: 'rgba(255,255,255,0.12)',
+                  },
+                }}
+              >
+                {t('landing.startBtn')}
+              </Button>
+            </Box>
+
+            {/* Mobile search — inline after CTA */}
+            {isMobile && (
+              <Box
+                component="form"
+                onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
+                sx={{ mt: 3, animation: `${fadeIn} 0.6s ease-out 0.3s both` }}
+              >
+                <TextField
+                  placeholder={t('landing.searchPlaceholder')}
+                  value={quickSearch}
+                  onChange={(e) => setQuickSearch(e.target.value)}
+                  fullWidth
+                  size="small"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end" sx={{ mr: -0.5 }}>
+                        <IconButton
+                          type="submit"
+                          size="small"
+                          sx={{
+                            color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+                            '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
+                          }}
+                        >
+                          <SearchIcon fontSize="small" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                    sx: { ...inputSx, pr: 1 },
+                  }}
+                />
+              </Box>
+            )}
           </Box>
+
+          {/* Right: Quick Booking Card (desktop only) */}
+          {!isMobile && (
+            <Card
+              sx={{
+                minWidth: 340,
+                maxWidth: 400,
+                p: 3,
+                borderRadius: 4,
+                backgroundColor: isOverDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)',
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+                border: '1px solid',
+                borderColor: isOverDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.8)',
+                boxShadow: isOverDark ? '0 20px 60px rgba(0,0,0,0.3)' : '0 20px 60px rgba(0,0,0,0.15)',
+                animation: `${fadeIn} 0.6s ease-out 0.3s both`,
+              }}
+            >
+              <Box
+                component="form"
+                onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
+              >
+                <Typography sx={{ color: isOverDark ? '#FFFFFF' : '#0A0A0A', fontWeight: 800, fontSize: '1.1rem', mb: 2.5 }}>
+                  {t('landing.quickFind')}
+                </Typography>
+
+                <TextField
+                  placeholder={t('landing.searchPlaceholder')}
+                  value={quickSearch}
+                  onChange={(e) => setQuickSearch(e.target.value)}
+                  fullWidth
+                  size="small"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          type="submit"
+                          size="small"
+                          sx={{
+                            color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
+                            '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
+                          }}
+                        >
+                          <SearchIcon fontSize="small" />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                    sx: { ...inputSx, mb: 2, pr: 1 },
+                  }}
+                />
+
+                <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
+                  <TextField
+                    type="date"
+                    defaultValue={today}
+                    size="small"
+                    fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CalendarTodayIcon sx={{ fontSize: 16 }} />
+                      </InputAdornment>
+                    ),
+                    sx: inputSx,
+                  }}
+                />
+                <TextField
+                  type="date"
+                  defaultValue={today}
+                  size="small"
+                  fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CalendarTodayIcon sx={{ fontSize: 16 }} />
+                      </InputAdornment>
+                    ),
+                    sx: inputSx,
+                  }}
+                />
+              </Box>
+              </Box>
+
+            </Card>
+          )}
         </Box>
       </Container>
 
-      {/* Scroll-down indicator (desktop only) */}
-      {!isMobile && (
-        <Box
-          onClick={() => scrollToSection('features')}
-          sx={{
-            position: 'absolute',
-            bottom: 90,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            zIndex: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 0.5,
-            cursor: 'pointer',
-            animation: `${bounce} 2s infinite`,
-          }}
-        >
-          <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 28 }} />
-        </Box>
-      )}
+      {/* Scroll-down indicator */}
+      <Box
+        onClick={() => scrollToSection('features')}
+        sx={{
+          position: 'absolute',
+          bottom: { xs: 104, md: 90 },
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 0.5,
+          cursor: 'pointer',
+          animation: `${bounce} 2s infinite`,
+        }}
+      >
+        <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 28 }} />
+      </Box>
 
       {/* Stats bar overlay at bottom */}
       <Box
@@ -280,12 +442,15 @@ export default function HeroSection({ heroImages, heroIndex, scrollToSection, ha
         {heroImages.map((image, index) => (
           <Box
             key={image}
+            onClick={() => setHeroIndex(index)}
             sx={{
               width: heroIndex === index ? 18 : 7,
               height: 7,
               borderRadius: 999,
               backgroundColor: heroIndex === index ? '#FFFFFF' : 'rgba(255,255,255,0.42)',
               transition: 'width 0.25s ease, background-color 0.25s ease',
+              cursor: 'pointer',
+              '&:hover': { backgroundColor: '#FFFFFF' },
             }}
           />
         ))}

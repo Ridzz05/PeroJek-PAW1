@@ -42,8 +42,10 @@ export default function Navbar({
   const navSections = [
     { id: 'hero', label: t('landing.navHome'), icon: <HomeIcon /> },
     { id: 'features', label: t('landing.navFeatures'), icon: <WidgetsIcon /> },
+    { id: 'how-it-works', label: t('landing.navHowItWorks'), icon: <WidgetsIcon /> },
     { id: 'fleet', label: t('landing.navFleet'), icon: <DirectionsCarIcon /> },
     { id: 'testimonials', label: t('landing.navTestimonials'), icon: <ReviewsIcon /> },
+    { id: 'faq', label: t('landing.navFaq'), icon: <ReviewsIcon /> },
   ];
 
   const handleNavClick = (sectionId) => {

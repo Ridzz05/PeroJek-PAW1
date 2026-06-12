@@ -106,7 +106,7 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
                 {t('landing.quickLinks')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {['features', 'fleet', 'testimonials'].map((sec) => (
+                {['features', 'how-it-works', 'fleet', 'faq', 'testimonials'].map((sec) => (
                   <Typography
                     key={sec}
                     variant="caption"
@@ -121,7 +121,9 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
                     }}
                   >
                     {sec === 'features' ? t('landing.navFeatures') :
+                     sec === 'how-it-works' ? t('landing.navHowItWorks') :
                      sec === 'fleet' ? t('landing.navFleet') :
+                     sec === 'faq' ? t('landing.navFaq') :
                      t('landing.navTestimonials')}
                   </Typography>
                 ))}

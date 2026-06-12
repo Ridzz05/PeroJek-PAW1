@@ -12,6 +12,8 @@ import FeaturesSection from './landing/FeaturesSection';
 import FleetSection from './landing/FleetSection';
 import TestimonialsSection from './landing/TestimonialsSection';
 import CtaBanner from './landing/CtaBanner';
+import HowItWorksSection from './landing/HowItWorksSection';
+import FaqSection from './landing/FaqSection';
 import Footer from './landing/Footer';
 
 const heroImages = [
@@ -110,14 +112,19 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
       />
 
       <HeroSection
+        isDark={isDark}
         heroImages={heroImages}
         heroIndex={heroIndex}
+        setHeroIndex={setHeroIndex}
         scrollToSection={scrollToSection}
         handleBookNow={handleBookNow}
+        setSearchQuery={setSearchQuery}
         t={t}
       />
 
       <FeaturesSection isDark={isDark} t={t} />
+
+      <HowItWorksSection isDark={isDark} t={t} />
 
       <FleetSection
         isDark={isDark}
@@ -136,6 +143,8 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
       <CtaBanner isDark={isDark} handleBookNow={handleBookNow} t={t} />
 
       <TestimonialsSection isDark={isDark} t={t} />
+
+      <FaqSection isDark={isDark} t={t} />
 
       <Footer
         isDark={isDark}
