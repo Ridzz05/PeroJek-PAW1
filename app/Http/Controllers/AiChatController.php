@@ -16,7 +16,7 @@ class AiChatController extends Controller
             'messages.*.content' => ['required', 'string', 'max:4000'],
         ]);
 
-        $apiKey = config('services.nvidia.key');
+        $apiKey = $this->nvidiaApiKey();
 
         if (blank($apiKey)) {
             return response()->json([
@@ -84,5 +84,10 @@ Rules:
 - Do not invent prices, customers, rental records, or credentials.
 - Do not ask for passwords, API keys, or other secrets.
 PROMPT;
+    }
+
+    private function nvidiaApiKey(): string
+    {
+        return preg_replace('/^Bearer\s+/i', '', trim((string) config('services.nvidia.key'))) ?? '';
     }
 }
