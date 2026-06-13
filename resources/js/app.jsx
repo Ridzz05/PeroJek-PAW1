@@ -516,7 +516,7 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
           {renderPage()}
         </Suspense>
       </Layout>
-      <AiChatWidget />
+      <AiChatWidget placement="admin" />
     </>
   );
 }

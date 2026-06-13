@@ -20,12 +20,13 @@ const initialMessages = [
   },
 ];
 
-export default function AiChatWidget() {
+export default function AiChatWidget({ placement = 'landing' }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const listRef = useRef(null);
+  const isAdminPlacement = placement === 'admin';
 
   useEffect(() => {
     if (open && listRef.current) {
@@ -270,8 +271,15 @@ export default function AiChatWidget() {
         <Box
           sx={{
             position: 'fixed',
-            right: { xs: 16, md: 24 },
-            bottom: { xs: 88, md: 24 },
+            ...(isAdminPlacement
+              ? {
+                  left: { xs: 16, md: 284 },
+                  bottom: { xs: 104, md: 24 },
+                }
+              : {
+                  right: { xs: 16, md: 24 },
+                  bottom: { xs: 88, md: 24 },
+                }),
             zIndex: 1500,
           }}
         >
