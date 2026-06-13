@@ -66,7 +66,7 @@ export default function Footer({ scrollToSection, t }) {
                   component="img"
                   src="/assets/img/srs-logo.png"
                   alt="Smart Rental System"
-                  sx={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '8px' }}
+                  sx={{ width: 36, height: 36, objectFit: 'cover', borderRadius: '50%' }}
                 />
               </Box>
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400, lineHeight: 1.7, mb: 2.5 }}>

@@ -89,7 +89,7 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
           component="img"
           src="/assets/img/srs-logo.png"
           alt="Smart Rental System"
-          sx={{ width: 52, height: 52, objectFit: 'contain', borderRadius: '50%' }}
+          sx={{ width: 52, height: 52, objectFit: 'cover', borderRadius: '50%' }}
         />
       </Box>
       <Divider />

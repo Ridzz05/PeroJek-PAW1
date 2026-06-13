@@ -145,7 +145,7 @@ export default function LoginPage({ onGoRegister, onBackHome }) {
                         component="img"
                         src="/assets/img/srs-logo.png"
                         alt="Smart Rental System"
-                        sx={{ width: 44, height: 44, objectFit: 'contain', borderRadius: '50%' }}
+                        sx={{ width: 44, height: 44, objectFit: 'cover', borderRadius: '50%' }}
                     />
                     <Box>
                         <Typography variant="h6" sx={{

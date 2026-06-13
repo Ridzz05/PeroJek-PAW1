@@ -80,7 +80,7 @@ export default function Navbar({
                 component="img"
                 src="/assets/img/srs-logo.png"
                 alt="Smart Rental System"
-                sx={{ width: { xs: 34, md: 40 }, height: { xs: 34, md: 40 }, objectFit: 'contain', borderRadius: '8px' }}
+                sx={{ width: { xs: 34, md: 40 }, height: { xs: 34, md: 40 }, objectFit: 'cover', borderRadius: '50%' }}
               />
             </Box>
 
@@ -199,7 +199,7 @@ export default function Navbar({
               component="img"
               src="/assets/img/srs-logo.png"
               alt="Smart Rental System"
-              sx={{ width: 34, height: 34, objectFit: 'contain', borderRadius: '8px' }}
+              sx={{ width: 34, height: 34, objectFit: 'cover', borderRadius: '50%' }}
             />
           </Box>
           <IconButton onClick={() => setDrawerOpen(false)} size="small" sx={{ width: 36, height: 36, borderRadius: '8px' }}>
