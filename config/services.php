@@ -22,6 +22,12 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    'nvidia' => [
+        'key' => env('NVIDIA_API_KEY'),
+        'base_url' => env('NVIDIA_BASE_URL', 'https://integrate.api.nvidia.com/v1'),
+        'chat_model' => env('NVIDIA_CHAT_MODEL', 'stepfun-ai/step-3.7-flash'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

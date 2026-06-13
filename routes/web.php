@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RentalController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AiChatController;
 
 // 1. Web API Routes
 Route::prefix('api')->group(function () {
@@ -15,6 +16,9 @@ Route::prefix('api')->group(function () {
 
     // Dashboard stats
     Route::get('dashboard/stats', [DashboardController::class, 'getStats']);
+
+    // AI assistant
+    Route::post('ai-chat', [AiChatController::class, 'chat']);
 
     // Vehicles CRUD
     Route::apiResource('vehicles', VehicleController::class);
