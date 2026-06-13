@@ -13,7 +13,9 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CelebrationIcon from '@mui/icons-material/Celebration';
 
-export default function HowItWorksSection({ isDark, t }) {
+import { iconFrameSx, landingHeaderSx, landingSectionSx, landingSubtitleSx, landingTitleSx } from './styles';
+
+export default function HowItWorksSection({ t }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -41,13 +43,13 @@ export default function HowItWorksSection({ isDark, t }) {
   ];
 
   return (
-    <Box id="how-it-works" sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.paper', transition: 'background-color 0.3s ease' }}>
+    <Box id="how-it-works" sx={{ ...landingSectionSx, backgroundColor: 'background.paper', transition: 'background-color 0.3s ease' }}>
       <Container maxWidth="md">
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
+        <Box sx={landingHeaderSx}>
+          <Typography variant="h2" sx={landingTitleSx}>
             {t('landing.howItWorksTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto', fontWeight: 500 }}>
+          <Typography variant="body1" sx={landingSubtitleSx}>
             {t('landing.howItWorksSubtitle')}
           </Typography>
         </Box>
@@ -59,12 +61,12 @@ export default function HowItWorksSection({ isDark, t }) {
                 <StepLabel
                   StepIconProps={{
                     icon: (
-                      <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Box sx={iconFrameSx(36, 19)}>
                         {step.icon}
                       </Box>
                     ),
                   }}
-                  sx={{ '& .MuiStepLabel-iconContainer': { color: 'primary.main' } }}
+                  sx={{ '& .MuiStepLabel-iconContainer': { pr: 1.25 } }}
                 >
                   <Typography sx={{ fontWeight: 800, fontSize: '1rem' }}>{step.title}</Typography>
                 </StepLabel>
@@ -81,9 +83,9 @@ export default function HowItWorksSection({ isDark, t }) {
             {/* Connecting line */}
             <Box sx={{
               position: 'absolute',
-              top: 32,
-              left: 'calc(12.5% + 32px)',
-              right: 'calc(12.5% + 32px)',
+              top: 26,
+              left: 'calc(12.5% + 26px)',
+              right: 'calc(12.5% + 26px)',
               height: 2,
               backgroundColor: 'divider',
               zIndex: 0,
@@ -93,21 +95,13 @@ export default function HowItWorksSection({ isDark, t }) {
                 <Box key={idx} sx={{ width: '25%', textAlign: 'center', position: 'relative', zIndex: 1, px: 1 }}>
                   <Box
                     sx={{
-                      width: 64,
-                      height: 64,
-                      borderRadius: 999,
-                      backgroundColor: 'action.selected',
-                      color: 'primary.main',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      ...iconFrameSx(52, 24),
                       mx: 'auto',
                       mb: 2.5,
-                      fontSize: '1.5rem',
-                      transition: 'all 0.3s ease',
-                      border: `2px solid`,
+                      transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+                      border: '1px solid',
                       borderColor: 'primary.main',
-                      '&:hover': { transform: 'scale(1.1)', boxShadow: '0 8px 24px rgba(0,0,0,0.12)' },
+                      '&:hover': { transform: 'translateY(-3px)', boxShadow: '0 8px 20px rgba(0,0,0,0.1)' },
                     }}
                   >
                     {step.icon}

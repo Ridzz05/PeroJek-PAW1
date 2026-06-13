@@ -5,16 +5,15 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
-import { useTheme } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+
+import { iconFrameSx, landingCardSx, landingHeaderSx, landingSectionSx, landingSubtitleSx, landingTitleSx } from './styles';
 
 const dicebearUrl = (seed) =>
   `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed)}&backgroundColor=b6e3f4,c0aede,d1d4f9`;
 
 export default function TestimonialsSection({ isDark, t }) {
-  const theme = useTheme();
-
   const testimonials = [
     {
       name: 'Rian Hidayat',
@@ -40,7 +39,7 @@ export default function TestimonialsSection({ isDark, t }) {
     <Box
       id="testimonials"
       sx={{
-        py: { xs: 8, md: 12 },
+        ...landingSectionSx,
         backgroundColor: 'background.paper',
         transition: 'background-color 0.3s ease',
         position: 'relative',
@@ -52,41 +51,38 @@ export default function TestimonialsSection({ isDark, t }) {
         position: 'absolute',
         top: -80,
         right: -80,
-        width: 260,
-        height: 260,
+        width: 200,
+        height: 200,
         borderRadius: '50%',
         background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
         pointerEvents: 'none',
       }} />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
+        <Box sx={landingHeaderSx}>
+          <Typography variant="h2" sx={landingTitleSx}>
             {t('landing.testimonialsTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto', fontWeight: 500 }}>
+          <Typography variant="body1" sx={landingSubtitleSx}>
             {t('landing.testimonialsSubtitle')}
           </Typography>
         </Box>
 
-        <Grid container spacing={4}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {testimonials.map((item, idx) => (
             <Grid item xs={12} md={4} key={idx}>
               <Card
                 sx={{
+                  ...landingCardSx,
                   height: '100%',
                   p: { xs: 2.5, md: 3 },
-                  borderRadius: 4.5,
                   background: 'background.default',
-                  border: `1px solid`,
-                  borderColor: 'divider',
-                  boxShadow: 'none',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  transition: 'all 0.3s ease',
+                  transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
                   '&:hover': {
-                    transform: 'translateY(-4px)',
+                    transform: 'translateY(-3px)',
                     borderColor: 'primary.main',
                     boxShadow: isDark ? '0 12px 30px rgba(255,255,255,0.02)' : '0 12px 30px rgba(0,0,0,0.06)',
                   },
@@ -94,16 +90,13 @@ export default function TestimonialsSection({ isDark, t }) {
               >
                 <Box>
                   {/* Quote icon accent */}
-                  <FormatQuoteIcon sx={{
-                    fontSize: 32,
-                    color: 'action.selected',
-                    mb: 1.5,
-                    transform: 'scaleX(-1)',
-                  }} />
+                  <Box sx={{ ...iconFrameSx(40, 21), mb: 1.5, color: 'text.secondary' }}>
+                    <FormatQuoteIcon sx={{ transform: 'scaleX(-1)' }} />
+                  </Box>
 
                   <Box sx={{ display: 'flex', gap: 0.5, mb: 2 }}>
                     {[...Array(5)].map((_, i) => (
-                      <StarIcon key={i} fontSize="small" sx={{ color: 'warning.main' }} />
+                      <StarIcon key={i} sx={{ color: 'warning.main', fontSize: 17 }} />
                     ))}
                   </Box>
                   <Typography variant="body2" sx={{ fontStyle: 'italic', lineHeight: 1.7, color: 'text.secondary', mb: 3 }}>
@@ -116,8 +109,8 @@ export default function TestimonialsSection({ isDark, t }) {
                     alt={item.name}
                     src={item.avatar}
                     sx={{
-                      width: 48,
-                      height: 48,
+                      width: 44,
+                      height: 44,
                       border: `2px solid`,
                       borderColor: 'divider',
                     }}

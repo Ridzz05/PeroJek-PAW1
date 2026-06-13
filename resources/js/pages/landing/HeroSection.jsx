@@ -18,6 +18,7 @@ import StarIcon from '@mui/icons-material/Star';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
+import { iconFrameSx } from './styles';
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
@@ -36,10 +37,10 @@ const fadeIn = keyframes`
 `;
 
 const statItems = [
-  { key: 'statVehicles', labelKey: 'statVehiclesLabel', icon: <DirectionsCarIcon sx={{ fontSize: 20 }} /> },
-  { key: 'statCustomers', labelKey: 'statCustomersLabel', icon: <PeopleIcon sx={{ fontSize: 20 }} /> },
-  { key: 'statCities', labelKey: 'statCitiesLabel', icon: <LocationCityIcon sx={{ fontSize: 20 }} /> },
-  { key: 'statRating', labelKey: 'statRatingLabel', icon: <StarIcon sx={{ fontSize: 20 }} /> },
+  { key: 'statVehicles', labelKey: 'statVehiclesLabel', icon: <DirectionsCarIcon /> },
+  { key: 'statCustomers', labelKey: 'statCustomersLabel', icon: <PeopleIcon /> },
+  { key: 'statCities', labelKey: 'statCitiesLabel', icon: <LocationCityIcon /> },
+  { key: 'statRating', labelKey: 'statRatingLabel', icon: <StarIcon /> },
 ];
 
 export default function HeroSection({ isDark, heroImages, heroIndex, setHeroIndex, scrollToSection, handleBookNow, setSearchQuery, t }) {
@@ -58,7 +59,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
   const isOverDark = isDark;
 
   const inputSx = {
-    borderRadius: 2.5,
+    borderRadius: '8px',
     backgroundColor: isOverDark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.9)',
     color: isOverDark ? '#FFFFFF' : '#0A0A0A',
     '& .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' },
@@ -81,8 +82,8 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         justifyContent: 'center',
         overflow: 'hidden',
         color: '#FFFFFF',
-        pt: { xs: 8, md: 0 },
-        pb: { xs: 14, md: 10 },
+        pt: { xs: 7, md: 0 },
+        pb: { xs: 16, md: 8 },
       }}
     >
       {/* Background images */}
@@ -130,13 +131,13 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
           alignItems: 'center',
           justifyContent: 'space-between',
           width: '100%',
-          gap: 4,
+          gap: { xs: 3, md: 5 },
         }}>
           {/* Left: Text content + mobile search */}
           <Box sx={{
             maxWidth: { xs: '100%', sm: 620, md: 640 },
-            mx: { xs: 'auto', md: 0 },
-            textAlign: { xs: 'center', md: 'left' },
+            mx: 0,
+            textAlign: 'left',
             animation: `${fadeInUp} 0.8s ease-out`,
           }}>
             <Chip
@@ -157,9 +158,9 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: '2rem', sm: '3rem', md: '4.6rem' },
+                fontSize: { xs: '2rem', sm: '2.85rem', md: '4.15rem', lg: '4.35rem' },
                 fontWeight: 900,
-                lineHeight: { xs: 1.1, md: 1.02 },
+                lineHeight: { xs: 1.1, md: 1.04 },
                 letterSpacing: 0,
                 mb: { xs: 2, md: 2.5 },
                 color: '#FFFFFF',
@@ -176,7 +177,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                 fontSize: { xs: '0.9rem', sm: '1rem', md: '1.15rem' },
                 mb: { xs: 3, md: 4 },
                 maxWidth: { xs: '100%', md: 600 },
-                mx: { xs: 'auto', md: 0 },
+                mx: 0,
                 fontWeight: 500,
                 lineHeight: { xs: 1.6, md: 1.65 },
                 textShadow: '0 6px 20px rgba(0,0,0,0.4)',
@@ -184,16 +185,16 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
             >
               {t('landing.subtitle')}
             </Typography>
-            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: { xs: 'center', md: 'flex-start' } }}>
+            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={() => scrollToSection('fleet')}
                 sx={{
-                  borderRadius: 2,
+                  borderRadius: '8px',
                   fontWeight: 800,
-                  px: { xs: 2.5, sm: 4 },
-                  py: { xs: 1.1, md: 1.4 },
+                  px: { xs: 2.25, sm: 3.25 },
+                  py: { xs: 1, md: 1.25 },
                   fontSize: { xs: '0.85rem', md: '0.9375rem' },
                   backgroundColor: '#FFFFFF',
                   color: '#0A0A0A',
@@ -207,10 +208,10 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                 size="large"
                 onClick={handleBookNow}
                 sx={{
-                  borderRadius: 2,
+                  borderRadius: '8px',
                   fontWeight: 800,
-                  px: { xs: 2.5, sm: 4 },
-                  py: { xs: 1.1, md: 1.4 },
+                  px: { xs: 2.25, sm: 3.25 },
+                  py: { xs: 1, md: 1.25 },
                   fontSize: { xs: '0.85rem', md: '0.9375rem' },
                   color: '#FFFFFF',
                   borderColor: 'rgba(255,255,255,0.7)',
@@ -231,7 +232,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
               <Box
                 component="form"
                 onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
-                sx={{ mt: 3, animation: `${fadeIn} 0.6s ease-out 0.3s both` }}
+                sx={{ maxWidth: 520, mx: 0, mt: 3, animation: `${fadeIn} 0.6s ease-out 0.3s both` }}
               >
                 <TextField
                   placeholder={t('landing.searchPlaceholder')}
@@ -246,6 +247,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                           type="submit"
                           size="small"
                           sx={{
+                            borderRadius: '8px',
                             color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
                             '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
                           }}
@@ -265,10 +267,10 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
           {!isMobile && (
             <Card
               sx={{
-                minWidth: 340,
-                maxWidth: 400,
-                p: 3,
-                borderRadius: 4,
+                minWidth: 320,
+                maxWidth: 380,
+                p: 2.5,
+                borderRadius: '8px',
                 backgroundColor: isOverDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)',
                 backdropFilter: 'blur(20px)',
                 WebkitBackdropFilter: 'blur(20px)',
@@ -282,7 +284,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                 component="form"
                 onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
               >
-                <Typography sx={{ color: isOverDark ? '#FFFFFF' : '#0A0A0A', fontWeight: 800, fontSize: '1.1rem', mb: 2.5 }}>
+                <Typography sx={{ color: isOverDark ? '#FFFFFF' : '#0A0A0A', fontWeight: 800, fontSize: '1rem', mb: 2 }}>
                   {t('landing.quickFind')}
                 </Typography>
 
@@ -299,6 +301,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                           type="submit"
                           size="small"
                           sx={{
+                            borderRadius: '8px',
                             color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
                             '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
                           }}
@@ -311,36 +314,36 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                   }}
                 />
 
-                <Box sx={{ display: 'flex', gap: 1.5, mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 1.25 }}>
                   <TextField
                     type="date"
                     defaultValue={today}
                     size="small"
                     fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CalendarTodayIcon sx={{ fontSize: 16 }} />
-                      </InputAdornment>
-                    ),
-                    sx: inputSx,
-                  }}
-                />
-                <TextField
-                  type="date"
-                  defaultValue={today}
-                  size="small"
-                  fullWidth
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CalendarTodayIcon sx={{ fontSize: 16 }} />
-                      </InputAdornment>
-                    ),
-                    sx: inputSx,
-                  }}
-                />
-              </Box>
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <CalendarTodayIcon sx={{ fontSize: 16 }} />
+                        </InputAdornment>
+                      ),
+                      sx: inputSx,
+                    }}
+                  />
+                  <TextField
+                    type="date"
+                    defaultValue={today}
+                    size="small"
+                    fullWidth
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <CalendarTodayIcon sx={{ fontSize: 16 }} />
+                        </InputAdornment>
+                      ),
+                      sx: inputSx,
+                    }}
+                  />
+                </Box>
               </Box>
 
             </Card>
@@ -353,7 +356,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         onClick={() => scrollToSection('features')}
         sx={{
           position: 'absolute',
-          bottom: { xs: 104, md: 90 },
+          bottom: { xs: 132, md: 82 },
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 2,
@@ -365,7 +368,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
           animation: `${bounce} 2s infinite`,
         }}
       >
-        <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 28 }} />
+        <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 26 }} />
       </Box>
 
       {/* Stats bar overlay at bottom */}
@@ -389,7 +392,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
             display: 'grid',
             gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
             gap: { xs: 0, sm: 2 },
-            py: { xs: 2, md: 2.5 },
+            py: { xs: 1.25, md: 1.75 },
           }}>
             {statItems.map((item, idx) => (
               <Box
@@ -398,20 +401,20 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: { xs: 1, md: 1.5 },
-                  py: { xs: 1, sm: 0 },
+                  gap: { xs: 0.85, md: 1.1 },
+                  py: { xs: 0.75, sm: 0 },
                   borderRight: { xs: 'none', sm: idx < 3 ? '1px solid rgba(255,255,255,0.12)' : 'none' },
                   borderBottom: { xs: idx < 2 ? '1px solid rgba(255,255,255,0.08)' : 'none', sm: 'none' },
                 }}
               >
-                <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ ...iconFrameSx(32, 18), backgroundColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF' }}>
                   {item.icon}
                 </Box>
                 <Box>
-                  <Typography sx={{ fontWeight: 900, fontSize: { xs: '1.1rem', md: '1.3rem' }, color: '#FFF', lineHeight: 1.1 }}>
+                  <Typography sx={{ fontWeight: 900, fontSize: { xs: '1rem', md: '1.2rem' }, color: '#FFF', lineHeight: 1.1 }}>
                     {t(`landing.${item.key}`)}
                   </Typography>
-                  <Typography sx={{ fontSize: { xs: '0.65rem', md: '0.75rem' }, color: 'rgba(255,255,255,0.6)', fontWeight: 600, lineHeight: 1.2 }}>
+                  <Typography sx={{ fontSize: { xs: '0.62rem', md: '0.72rem' }, color: 'rgba(255,255,255,0.66)', fontWeight: 600, lineHeight: 1.2 }}>
                     {t(`landing.${item.labelKey}`)}
                   </Typography>
                 </Box>
@@ -426,14 +429,14 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         sx={{
           position: 'absolute',
           right: { xs: '50%', md: 28 },
-          bottom: { xs: 78, md: 18 },
+          bottom: { xs: 94, md: 18 },
           zIndex: 3,
           display: 'flex',
           gap: 0.75,
           alignItems: 'center',
           px: 1.1,
           py: 0.75,
-          borderRadius: 999,
+          borderRadius: '8px',
           backgroundColor: 'rgba(0,0,0,0.32)',
           backdropFilter: 'blur(8px)',
           transform: { xs: 'translateX(50%)', md: 'none' },
@@ -446,7 +449,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
             sx={{
               width: heroIndex === index ? 18 : 7,
               height: 7,
-              borderRadius: 999,
+              borderRadius: '3px',
               backgroundColor: heroIndex === index ? '#FFFFFF' : 'rgba(255,255,255,0.42)',
               transition: 'width 0.25s ease, background-color 0.25s ease',
               cursor: 'pointer',

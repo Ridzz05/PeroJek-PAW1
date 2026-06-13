@@ -14,16 +14,16 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
-import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 
+import { iconFrameSx, landingCardSx, landingHeaderSx, landingSectionSx, landingSubtitleSx, landingTitleSx } from './styles';
+
 export default function FleetSection({
   isDark,
-  language,
   searchQuery,
   setSearchQuery,
   selectedCategory,
@@ -34,21 +34,19 @@ export default function FleetSection({
   handleBookNow,
   t,
 }) {
-  const theme = useTheme();
-
   return (
-    <Box id="fleet" sx={{ py: { xs: 8, md: 12 } }}>
+    <Box id="fleet" sx={landingSectionSx}>
       <Container maxWidth="lg">
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
+        <Box sx={landingHeaderSx}>
+          <Typography variant="h2" sx={landingTitleSx}>
             {t('landing.fleetTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto', mb: 4, fontWeight: 500 }}>
+          <Typography variant="body1" sx={{ ...landingSubtitleSx, mb: 3 }}>
             {t('landing.fleetSubtitle')}
           </Typography>
 
           {/* Filter Search */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'center', alignItems: 'center', maxWidth: 700, mx: 'auto', mb: 4 }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: { xs: 'flex-start', sm: 'center' }, alignItems: { xs: 'stretch', sm: 'center' }, maxWidth: 680, mx: { xs: 0, sm: 'auto' }, mb: 3 }}>
             <TextField
               placeholder={t('landing.searchPlaceholder')}
               value={searchQuery}
@@ -62,7 +60,7 @@ export default function FleetSection({
                     <SearchIcon fontSize="small" sx={{ color: 'text.secondary' }} />
                   </InputAdornment>
                 ),
-                sx: { borderRadius: 3, background: 'background.paper' }
+                sx: { borderRadius: '8px', background: 'background.paper' }
               }}
             />
           </Box>
@@ -77,7 +75,7 @@ export default function FleetSection({
                 scrollButtons="auto"
                 sx={{
                   '& .MuiTabs-indicator': { backgroundColor: 'primary.main', height: 3 },
-                  '& .MuiTab-root': { fontWeight: 700, px: 3, textTransform: 'uppercase', letterSpacing: 0.5 }
+                  '& .MuiTab-root': { minHeight: 42, fontWeight: 700, px: { xs: 1.5, md: 2.5 }, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.78rem' }
                 }}
               >
                 {categories.map((cat) => (
@@ -94,12 +92,32 @@ export default function FleetSection({
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={{ xs: 2, md: 3 }}>
             {filteredVehicles.map((vehicle) => {
               const isAvail = vehicle.status === 'Available';
               const statusLabel =
                 vehicle.status === 'Available' ? t('landing.available') :
                 vehicle.status === 'Rented' ? t('landing.rented') : t('landing.maintenance');
+              const specs = [
+                vehicle.seats && {
+                  key: 'seats',
+                  title: t('landing.seats'),
+                  icon: <AirlineSeatReclineNormalIcon />,
+                  value: vehicle.seats,
+                },
+                vehicle.transmission && {
+                  key: 'transmission',
+                  title: t('landing.transmission'),
+                  icon: <SettingsIcon />,
+                  value: vehicle.transmission,
+                },
+                vehicle.fuel_type && {
+                  key: 'fuel',
+                  title: t('landing.fuel'),
+                  icon: <LocalGasStationIcon />,
+                  value: vehicle.fuel_type,
+                },
+              ].filter(Boolean);
 
               let badgeColor = 'error';
               if (isAvail) badgeColor = 'success';
@@ -109,18 +127,15 @@ export default function FleetSection({
                 <Grid item xs={12} sm={6} md={4} lg={3} key={vehicle.id}>
                   <Card
                     sx={{
+                      ...landingCardSx,
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
-                      borderRadius: 4.5,
                       overflow: 'hidden',
-                      boxShadow: 'none',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                      transition: 'all 0.3s ease',
+                      transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
                       '&:hover': {
-                        transform: 'translateY(-6px)',
-                        boxShadow: isDark ? '0 15px 30px rgba(0,0,0,0.6)' : '0 15px 30px rgba(0,0,0,0.06)',
+                        transform: 'translateY(-4px)',
+                        boxShadow: isDark ? '0 12px 26px rgba(0,0,0,0.5)' : '0 12px 26px rgba(0,0,0,0.06)',
                         borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
                       }
                     }}
@@ -128,7 +143,7 @@ export default function FleetSection({
                     <Box sx={{ position: 'relative', overflow: 'hidden' }}>
                       <CardMedia
                         component="img"
-                        height="180"
+                        height="168"
                         image={vehicle.image_url || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'}
                         alt={vehicle.model}
                         sx={{
@@ -157,63 +172,49 @@ export default function FleetSection({
                           fontWeight: 800,
                           fontSize: '0.7rem',
                           textTransform: 'uppercase',
+                          borderRadius: '8px',
                           backdropFilter: 'blur(8px)',
                           background: isAvail ? 'rgba(34,197,94,0.9)' : undefined
                         }}
                       />
                     </Box>
 
-                    <CardContent sx={{ p: 2.5, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    <CardContent sx={{ p: 2.25, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                       <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
                         {vehicle.category?.name || 'VEHICLE'}
                       </Typography>
                       <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, mt: 0.5, lineHeight: 1.2 }}>
                         {vehicle.brand} {vehicle.model}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 2, fontWeight: 600 }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: specs.length ? 2 : 2.5, fontWeight: 600 }}>
                         No: {vehicle.license_plate}
                       </Typography>
 
                       {/* Vehicle spec icons row */}
-                      <Box sx={{
-                        display: 'flex',
-                        gap: 2,
-                        mb: 2,
-                        pb: 2,
-                        borderBottom: 1,
-                        borderColor: 'divider',
-                      }}>
-                        {vehicle.seats && (
-                          <Tooltip title={t('landing.seats')} arrow placement="top">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <AirlineSeatReclineNormalIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                                {vehicle.seats}
-                              </Typography>
-                            </Box>
-                          </Tooltip>
-                        )}
-                        {vehicle.transmission && (
-                          <Tooltip title={t('landing.transmission')} arrow placement="top">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <SettingsIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                                {vehicle.transmission}
-                              </Typography>
-                            </Box>
-                          </Tooltip>
-                        )}
-                        {vehicle.fuel_type && (
-                          <Tooltip title={t('landing.fuel')} arrow placement="top">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <LocalGasStationIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                              <Typography variant="caption" sx={{ fontWeight: 600, color: 'text.secondary' }}>
-                                {vehicle.fuel_type}
-                              </Typography>
-                            </Box>
-                          </Tooltip>
-                        )}
-                      </Box>
+                      {specs.length > 0 && (
+                        <Box sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1,
+                          mb: 2,
+                          pb: 2,
+                          borderBottom: 1,
+                          borderColor: 'divider',
+                        }}>
+                          {specs.map((spec) => (
+                            <Tooltip key={spec.key} title={spec.title} arrow placement="top">
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+                                <Box sx={iconFrameSx(28, 15)}>
+                                  {spec.icon}
+                                </Box>
+                                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {spec.value}
+                                </Typography>
+                              </Box>
+                            </Tooltip>
+                          ))}
+                        </Box>
+                      )}
 
                       <Box sx={{ mt: 'auto' }}>
                         <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2 }}>
@@ -232,7 +233,7 @@ export default function FleetSection({
                           onClick={handleBookNow}
                           endIcon={<KeyboardArrowRightIcon />}
                           sx={{
-                            borderRadius: 2.5,
+                            borderRadius: '8px',
                             fontWeight: 700,
                             py: 1,
                             textTransform: 'none'

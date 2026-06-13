@@ -10,7 +10,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -22,6 +21,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import WidgetsIcon from '@mui/icons-material/Widgets';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ReviewsIcon from '@mui/icons-material/Reviews';
+import AltRouteIcon from '@mui/icons-material/AltRoute';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+
+import { iconFrameSx } from './styles';
 
 export default function Navbar({
   isMobile,
@@ -42,10 +45,10 @@ export default function Navbar({
   const navSections = [
     { id: 'hero', label: t('landing.navHome'), icon: <HomeIcon /> },
     { id: 'features', label: t('landing.navFeatures'), icon: <WidgetsIcon /> },
-    { id: 'how-it-works', label: t('landing.navHowItWorks'), icon: <WidgetsIcon /> },
+    { id: 'how-it-works', label: t('landing.navHowItWorks'), icon: <AltRouteIcon /> },
     { id: 'fleet', label: t('landing.navFleet'), icon: <DirectionsCarIcon /> },
     { id: 'testimonials', label: t('landing.navTestimonials'), icon: <ReviewsIcon /> },
-    { id: 'faq', label: t('landing.navFaq'), icon: <ReviewsIcon /> },
+    { id: 'faq', label: t('landing.navFaq'), icon: <HelpOutlineIcon /> },
   ];
 
   const handleNavClick = (sectionId) => {
@@ -77,7 +80,7 @@ export default function Navbar({
                 component="img"
                 src="/assets/img/srs-logo.png"
                 alt="Smart Rental System"
-                sx={{ width: { xs: 36, md: 44 }, height: { xs: 36, md: 44 }, objectFit: 'contain', borderRadius: '50%' }}
+                sx={{ width: { xs: 34, md: 40 }, height: { xs: 34, md: 40 }, objectFit: 'contain', borderRadius: '8px' }}
               />
             </Box>
 
@@ -108,13 +111,13 @@ export default function Navbar({
             <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 1.5 } }}>
               {/* Mobile hamburger */}
               {isMobile && (
-                <IconButton onClick={() => setDrawerOpen(true)} size="small" color="inherit" sx={{ mr: 0.5 }}>
-                  <MenuIcon />
+                <IconButton onClick={() => setDrawerOpen(true)} size="small" color="inherit" sx={{ width: 36, height: 36, borderRadius: '8px', mr: 0.5 }}>
+                  <MenuIcon sx={{ fontSize: 21 }} />
                 </IconButton>
               )}
 
               {/* Language Toggle */}
-              <IconButton onClick={toggleLanguage} size="small" color="inherit">
+              <IconButton onClick={toggleLanguage} size="small" color="inherit" sx={{ height: 36, borderRadius: '8px' }}>
                 <LanguageIcon fontSize="small" />
                 <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 700, display: { xs: 'none', sm: 'inline' } }}>
                   {language.toUpperCase()}
@@ -122,7 +125,7 @@ export default function Navbar({
               </IconButton>
 
               {/* Theme Toggle */}
-              <IconButton onClick={toggleColorMode} size="small" color="inherit">
+              <IconButton onClick={toggleColorMode} size="small" color="inherit" sx={{ width: 36, height: 36, borderRadius: '8px' }}>
                 {isDark ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
               </IconButton>
 
@@ -133,7 +136,7 @@ export default function Navbar({
                   size={isMobile ? 'small' : 'medium'}
                   onClick={() => setCurrentPage ? setCurrentPage('dashboard') : null}
                   sx={{
-                    borderRadius: 2,
+                    borderRadius: '8px',
                     fontWeight: 700,
                     px: { xs: 1.5, md: 3 },
                     py: { xs: 0.6, md: 1 }
@@ -160,7 +163,7 @@ export default function Navbar({
                     size={isMobile ? 'small' : 'medium'}
                     onClick={onGoRegister}
                     sx={{
-                      borderRadius: 2.5,
+                      borderRadius: '8px',
                       fontWeight: 700,
                       px: { xs: 1.8, md: 3 },
                       py: { xs: 0.7, md: 1 }
@@ -196,11 +199,11 @@ export default function Navbar({
               component="img"
               src="/assets/img/srs-logo.png"
               alt="Smart Rental System"
-              sx={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '50%' }}
+              sx={{ width: 34, height: 34, objectFit: 'contain', borderRadius: '8px' }}
             />
           </Box>
-          <IconButton onClick={() => setDrawerOpen(false)} size="small">
-            <CloseIcon />
+          <IconButton onClick={() => setDrawerOpen(false)} size="small" sx={{ width: 36, height: 36, borderRadius: '8px' }}>
+            <CloseIcon sx={{ fontSize: 21 }} />
           </IconButton>
         </Box>
 
@@ -213,12 +216,13 @@ export default function Navbar({
               <ListItemButton
                 onClick={() => handleNavClick(sec.id)}
                 sx={{
-                  borderRadius: 2,
-                  gap: 1.5,
+                  borderRadius: '8px',
+                  gap: 1.25,
+                  py: 1,
                   '&:hover': { backgroundColor: 'action.hover' },
                 }}
               >
-                <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>
+                <Box sx={iconFrameSx(36, 19)}>
                   {sec.icon}
                 </Box>
                 <ListItemText
@@ -238,7 +242,7 @@ export default function Navbar({
             <Button variant="text" fullWidth onClick={() => { onGoLogin(); setDrawerOpen(false); }} sx={{ fontWeight: 700, justifyContent: 'flex-start' }}>
               {t('landing.login')}
             </Button>
-            <Button variant="contained" fullWidth onClick={() => { onGoRegister(); setDrawerOpen(false); }} sx={{ borderRadius: 2.5, fontWeight: 700 }}>
+            <Button variant="contained" fullWidth onClick={() => { onGoRegister(); setDrawerOpen(false); }} sx={{ borderRadius: '8px', fontWeight: 700 }}>
               {t('landing.register')}
             </Button>
           </Box>

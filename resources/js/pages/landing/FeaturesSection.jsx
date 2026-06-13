@@ -4,33 +4,32 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
-import { useTheme } from '@mui/material/styles';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import SecurityIcon from '@mui/icons-material/Security';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 import PaidIcon from '@mui/icons-material/Paid';
 
-export default function FeaturesSection({ isDark, t }) {
-  const theme = useTheme();
+import { iconFrameSx, landingCardSx, landingHeaderSx, landingSectionSx, landingSubtitleSx, landingTitleSx } from './styles';
 
+export default function FeaturesSection({ isDark, t }) {
   const features = [
     {
-      icon: <SecurityIcon fontSize="large" />,
+      icon: <SecurityIcon />,
       title: t('landing.feature1Title'),
       desc: t('landing.feature1Desc'),
     },
     {
-      icon: <FlashOnIcon fontSize="large" />,
+      icon: <FlashOnIcon />,
       title: t('landing.feature2Title'),
       desc: t('landing.feature2Desc'),
     },
     {
-      icon: <DirectionsCarIcon fontSize="large" />,
+      icon: <DirectionsCarIcon />,
       title: t('landing.feature24Title'),
       desc: t('landing.feature24Desc'),
     },
     {
-      icon: <PaidIcon fontSize="large" />,
+      icon: <PaidIcon />,
       title: t('landing.feature3Title'),
       desc: t('landing.feature3Desc'),
     },
@@ -40,7 +39,7 @@ export default function FeaturesSection({ isDark, t }) {
     <Box
       id="features"
       sx={{
-        py: { xs: 8, md: 12 },
+        ...landingSectionSx,
         backgroundColor: 'background.paper',
         transition: 'background-color 0.3s ease',
         position: 'relative',
@@ -52,8 +51,8 @@ export default function FeaturesSection({ isDark, t }) {
         position: 'absolute',
         top: '10%',
         left: -120,
-        width: 300,
-        height: 300,
+        width: 220,
+        height: 220,
         borderRadius: '50%',
         background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
         pointerEvents: 'none',
@@ -62,42 +61,39 @@ export default function FeaturesSection({ isDark, t }) {
         position: 'absolute',
         bottom: '5%',
         right: -60,
-        width: 200,
-        height: 200,
+        width: 160,
+        height: 160,
         borderRadius: '50%',
         background: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.02)',
         pointerEvents: 'none',
       }} />
 
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 800, mb: 2 }}>
+        <Box sx={landingHeaderSx}>
+          <Typography variant="h2" sx={landingTitleSx}>
             {t('landing.featuresTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto', fontWeight: 500 }}>
+          <Typography variant="body1" sx={landingSubtitleSx}>
             {t('landing.featuresSubtitle')}
           </Typography>
         </Box>
 
-        <Grid container spacing={4}>
+        <Grid container spacing={{ xs: 2, md: 3 }}>
           {features.map((feature, idx) => (
             <Grid item xs={12} sm={6} md={3} key={idx}>
               <Card
                 sx={{
+                  ...landingCardSx,
                   height: '100%',
                   p: 2.5,
-                  borderRadius: 4,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'flex-start',
                   position: 'relative',
                   background: 'background.default',
-                  border: `1px solid`,
-                  borderColor: 'divider',
-                  boxShadow: 'none',
-                  transition: 'all 0.35s ease',
+                  transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
                   '&:hover': {
-                    transform: 'translateY(-8px)',
+                    transform: 'translateY(-4px)',
                     borderColor: 'primary.main',
                     boxShadow: isDark
                       ? '0 16px 40px rgba(255,255,255,0.03)'
@@ -111,7 +107,7 @@ export default function FeaturesSection({ isDark, t }) {
                     position: 'absolute',
                     top: 12,
                     right: 16,
-                    fontSize: '2.5rem',
+                    fontSize: '2.25rem',
                     fontWeight: 900,
                     color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
                     lineHeight: 1,
@@ -123,20 +119,11 @@ export default function FeaturesSection({ isDark, t }) {
                 </Typography>
 
                 {/* Icon box using theme palette */}
-                <Box sx={{
-                  p: 1.8,
-                  borderRadius: 3,
-                  mb: 2.5,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'action.selected',
-                  color: 'primary.main',
-                }}>
+                <Box sx={{ ...iconFrameSx(48, 24), mb: 2.25 }}>
                   {feature.icon}
                 </Box>
 
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.5, fontSize: '1.05rem' }}>
+                <Typography variant="h6" sx={{ fontWeight: 800, mb: 1.25, fontSize: '1.02rem', lineHeight: 1.25 }}>
                   {feature.title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary', lineHeight: 1.7 }}>

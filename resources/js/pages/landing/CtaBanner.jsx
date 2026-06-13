@@ -3,9 +3,11 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useTheme, keyframes } from '@mui/material/styles';
+import { keyframes } from '@mui/material/styles';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+import { iconFrameSx } from './styles';
 
 const float = keyframes`
   0%, 100% { transform: translateY(0px); }
@@ -13,12 +15,10 @@ const float = keyframes`
 `;
 
 export default function CtaBanner({ isDark, handleBookNow, t }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
-        py: { xs: 6, md: 8 },
+        py: { xs: 5.5, md: 7 },
         position: 'relative',
         overflow: 'hidden',
         backgroundColor: isDark ? 'background.paper' : 'primary.main',
@@ -29,8 +29,8 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
         position: 'absolute',
         top: -40,
         right: '10%',
-        width: 120,
-        height: 120,
+        width: 96,
+        height: 96,
         borderRadius: '50%',
         backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.08)',
         animation: `${float} 6s ease-in-out infinite`,
@@ -40,8 +40,8 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
         position: 'absolute',
         bottom: -20,
         left: '5%',
-        width: 80,
-        height: 80,
+        width: 64,
+        height: 64,
         borderRadius: '50%',
         backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.06)',
         animation: `${float} 8s ease-in-out infinite 1s`,
@@ -51,8 +51,8 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
         position: 'absolute',
         top: '30%',
         right: '25%',
-        width: 50,
-        height: 50,
+        width: 42,
+        height: 42,
         borderRadius: '50%',
         backgroundColor: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.04)',
         animation: `${float} 5s ease-in-out infinite 0.5s`,
@@ -63,22 +63,25 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
         <Box sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'center',
+          alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
-          gap: { xs: 3, md: 4 },
-          textAlign: { xs: 'center', md: 'left' },
+          gap: { xs: 2.5, md: 4 },
+          textAlign: 'left',
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, md: 3 } }}>
-            <DirectionsCarIcon sx={{
-              fontSize: { xs: 48, md: 64 },
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.75, md: 2.5 } }}>
+            <Box sx={{
+              ...iconFrameSx(52, 26),
+              backgroundColor: isDark ? 'action.selected' : 'rgba(255,255,255,0.16)',
               color: isDark ? 'text.primary' : 'primary.contrastText',
-              display: { xs: 'none', sm: 'block' },
-            }} />
+              display: { xs: 'none', sm: 'inline-flex' },
+            }}>
+              <DirectionsCarIcon />
+            </Box>
             <Box>
               <Typography
                 variant="h3"
                 sx={{
-                  fontSize: { xs: '1.8rem', md: '2.4rem' },
+                  fontSize: { xs: '1.65rem', md: '2.2rem' },
                   fontWeight: 900,
                   color: isDark ? 'text.primary' : 'primary.contrastText',
                   mb: 1,
@@ -107,11 +110,11 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
             onClick={handleBookNow}
             endIcon={<ArrowForwardIcon />}
             sx={{
-              borderRadius: 3,
               fontWeight: 800,
-              px: { xs: 4, md: 5 },
-              py: { xs: 1.5, md: 1.8 },
+              px: { xs: 3, md: 4 },
+              py: { xs: 1.25, md: 1.45 },
               fontSize: { xs: '0.95rem', md: '1rem' },
+              borderRadius: '8px',
               backgroundColor: isDark ? 'primary.main' : 'background.paper',
               color: isDark ? 'primary.contrastText' : 'text.primary',
               boxShadow: '0 8px 30px rgba(0,0,0,0.2)',

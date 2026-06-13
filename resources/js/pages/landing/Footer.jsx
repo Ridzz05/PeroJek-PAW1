@@ -18,6 +18,8 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
+import { iconFrameSx } from './styles';
+
 const fadeIn = keyframes`
   from { opacity: 0; transform: scale(0.8); }
   to { opacity: 1; transform: scale(1); }
@@ -30,7 +32,7 @@ const socialLinks = [
   { icon: <YouTubeIcon />, label: 'YouTube' },
 ];
 
-export default function Footer({ isDark, language, scrollToSection, t }) {
+export default function Footer({ scrollToSection, t }) {
   const theme = useTheme();
   const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -49,7 +51,7 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
       <Box
         component="footer"
         sx={{
-          py: 6,
+          py: { xs: 5, md: 6 },
           mt: 'auto',
           backgroundColor: 'background.default',
           borderTop: `1px solid ${theme.palette.divider}`,
@@ -64,7 +66,7 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
                   component="img"
                   src="/assets/img/srs-logo.png"
                   alt="Smart Rental System"
-                  sx={{ width: 40, height: 40, objectFit: 'contain', borderRadius: '50%' }}
+                  sx={{ width: 36, height: 36, objectFit: 'contain', borderRadius: '8px' }}
                 />
               </Box>
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400, lineHeight: 1.7, mb: 2.5 }}>
@@ -83,9 +85,11 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
                       sx={{
                         backgroundColor: 'action.hover',
                         color: 'text.secondary',
-                        width: 38,
-                        height: 38,
+                        width: 36,
+                        height: 36,
+                        borderRadius: '8px',
                         transition: 'all 0.2s ease',
+                        '& .MuiSvgIcon-root': { fontSize: 19 },
                         '&:hover': {
                           backgroundColor: 'primary.main',
                           color: 'primary.contrastText',
@@ -136,20 +140,26 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
                 {t('landing.contactUs')}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                  <EmailIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
+                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary' }}>
+                    <EmailIcon />
+                  </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
                     support@smartrental.com
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2 }}>
-                  <PhoneIcon sx={{ fontSize: 18, color: 'text.secondary' }} />
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
+                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary' }}>
+                    <PhoneIcon />
+                  </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
                     +62 812-3456-7890
                   </Typography>
                 </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2 }}>
-                  <LocationOnIcon sx={{ fontSize: 18, color: 'text.secondary', mt: 0.2 }} />
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.1 }}>
+                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary', mt: 0.1 }}>
+                    <LocationOnIcon />
+                  </Box>
                   <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
                     Palembang, Sumatera Selatan, Indonesia
                   </Typography>
@@ -160,7 +170,7 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
 
           <Divider sx={{ my: 3 }} />
 
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2 }}>
             <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
               &copy; {new Date().getFullYear()} Smart Rental. {t('landing.rights')}
             </Typography>
@@ -183,8 +193,10 @@ export default function Footer({ isDark, language, scrollToSection, t }) {
               bottom: { xs: 20, md: 28 },
               right: { xs: 20, md: 28 },
               zIndex: 1200,
+              borderRadius: '8px',
               animation: `${fadeIn} 0.3s ease`,
               boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+              '& .MuiSvgIcon-root': { fontSize: 22 },
             }}
           >
             <KeyboardArrowUpIcon />
