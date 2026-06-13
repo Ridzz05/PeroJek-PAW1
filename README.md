@@ -103,3 +103,27 @@ composer test
 ## 📖 Dokumentasi Lengkap
 
 Lihat [SUMMARIZE.md](./SUMMARIZE.md) untuk ringkasan menyeluruh proyek, termasuk arsitektur, routing, struktur database, alur bisnis, validasi, dan area perbaikan.
+
+## 🚢 Production Database Setup
+
+Set environment variables berikut di Laravel Cloud untuk membuat akun admin resmi tanpa data dummy:
+
+```env
+ADMIN_USER_NAME="Administrator"
+ADMIN_USER_EMAIL="admin@example.com"
+ADMIN_USER_PASSWORD=
+ADMIN_USER_ROLE=admin
+```
+
+Jalankan migration dan seeder secara incremental agar data production tidak terhapus:
+
+```bash
+php artisan migrate --force
+php artisan db:seed --force
+```
+
+Atau satu langkah:
+
+```bash
+php artisan migrate --force --seed
+```

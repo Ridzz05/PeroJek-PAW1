@@ -43,7 +43,7 @@ Struktur utama proyek:
 - `app/Http/Controllers`: controller API untuk auth, dashboard, kategori, kendaraan, pelanggan, dan rental.
 - `app/Models`: model Eloquent `User`, `Category`, `Vehicle`, `Customer`, dan `Rental` — masing-masing memiliki static helper method untuk query dashboard.
 - `database/migrations`: schema users, session/cache/jobs, tabel rental utama, dan tambahan profil user.
-- `database/seeders`: `DatabaseSeeder` saat ini kosong.
+- `database/seeders`: `DatabaseSeeder` memanggil `AdminUserSeeder` untuk membuat/update akun admin dari environment variables.
 - `resources/js`: aplikasi React SPA.
 - `resources/js/pages`: halaman utama dashboard, rental desk, fleet, customers, rentals, master data, landing.
 - `resources/js/pages/landing`: komponen modular landing page (Navbar, HeroSection, FeaturesSection, FleetSection, TestimonialsSection, CtaBanner, Footer).
@@ -371,8 +371,8 @@ Database lokal aktif:
 
 Catatan:
 
-- `DatabaseSeeder` saat ini kosong (hanya komentar), jadi tidak ada seed data default.
-- README/IMPLEMENT masih menyarankan migrate/seed, tetapi seeder tidak membuat data awal.
+- `AdminUserSeeder` membuat/update satu akun admin dari `ADMIN_USER_EMAIL` dan `ADMIN_USER_PASSWORD`.
+- Seeder aman dijalankan berulang dan tidak menghapus data lama.
 
 ## 9. Frontend React
 
@@ -753,7 +753,7 @@ Rekomendasi keamanan:
 Temuan konsistensi:
 
 - `README.md`, `IMPLEMENT.md`, dan kode aktual berbeda versi stack.
-- `DatabaseSeeder` kosong, tetapi dokumentasi masih menyiratkan ada seed data.
+- Seeder hanya membuat akun admin resmi dari env production, bukan data dummy hardcoded.
 - `payment_status` ada di migration tetapi tidak dipakai model/controller/frontend.
 - `apiResource` membuat route `show` untuk vehicles/customers, tetapi controller tidak punya method `show`.
 - Frontend Customers mengirim field `email` yang tidak ada di schema/model backend.
@@ -843,10 +843,10 @@ Reset database lokal:
 php artisan migrate:fresh
 ```
 
-Jika nanti seeder diisi:
+Deploy/update database tanpa menghapus data production:
 
 ```bash
-php artisan migrate:fresh --seed
+php artisan migrate --force --seed
 ```
 
 ## 16. Aset Visual
@@ -925,4 +925,4 @@ Project ini sudah membentuk sistem rental kendaraan yang fungsional secara end-t
 
 Bagian yang paling kuat adalah alur operasional rental: kendaraan available dipilih, rental dibuat dalam transaction, status kendaraan berubah menjadi rented, lalu return mengembalikan status kendaraan. Frontend juga sudah cukup matang dengan landing page modular, dashboard auto-refresh, shared utility layer, responsive layout, dark mode, i18n, dan modal/profile handling.
 
-Namun, untuk menjadi lebih siap produksi, proyek perlu memperkuat keamanan API, memperbaiki mismatch route/controller, menyelaraskan dokumentasi, mengisi seeder, menambah test untuk business logic inti, memastikan schema seperti `payment_status` benar-benar dipakai atau dirapikan, serta membersihkan dependency dan konfigurasi yang tidak terpakai. Setelah area tersebut diperbaiki, aplikasi ini akan jauh lebih stabil, aman, dan mudah dikembangkan.
+Namun, untuk menjadi lebih siap produksi, proyek perlu memperkuat keamanan API, memperbaiki mismatch route/controller, menambah test untuk business logic inti, memastikan schema seperti `payment_status` benar-benar dipakai atau dirapikan, serta membersihkan dependency dan konfigurasi yang tidak terpakai. Setelah area tersebut diperbaiki, aplikasi ini akan jauh lebih stabil, aman, dan mudah dikembangkan.

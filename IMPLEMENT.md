@@ -42,10 +42,11 @@ This document outlines the architecture and execution roadmap for building the *
 ---
 
 ## Action Items & Setup
-1. Run migrations and seeders:
+1. Run migrations and seeders without dropping production data:
    ```bash
-   php artisan migrate:fresh --seed
+   php artisan migrate --force --seed
    ```
+   Set `ADMIN_USER_EMAIL` and `ADMIN_USER_PASSWORD` in production so the admin seeder can create/update the official login account.
 2. Verify that npm dependencies are installed locally:
    ```bash
    npm install

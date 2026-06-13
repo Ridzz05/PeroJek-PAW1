@@ -6,11 +6,10 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Keep the database fresh: no default records are inserted.
+        $this->call([
+            AdminUserSeeder::class,
+        ]);
     }
 }
