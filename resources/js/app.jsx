@@ -384,6 +384,7 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
   const { user, authLoading } = useAuth();
   const videoRef = useRef(null);
   const [muted, setMuted] = useState(true);
+  const [adminChatOpen, setAdminChatOpen] = useState(false);
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -511,12 +512,18 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
         setCurrentPage={setCurrentPage}
         mode={mode}
         toggleColorMode={toggleColorMode}
+        onOpenAiChat={() => setAdminChatOpen(true)}
       >
         <Suspense fallback={<PageFallback />}>
           {renderPage()}
         </Suspense>
       </Layout>
-      <AiChatWidget placement="admin" />
+      <AiChatWidget
+        placement="admin"
+        open={adminChatOpen}
+        onOpenChange={setAdminChatOpen}
+        launcherDisplay={{ xs: 'none', md: 'block' }}
+      />
     </>
   );
 }

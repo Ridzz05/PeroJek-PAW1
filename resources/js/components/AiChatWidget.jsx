@@ -20,13 +20,23 @@ const initialMessages = [
   },
 ];
 
-export default function AiChatWidget({ placement = 'landing' }) {
-  const [open, setOpen] = useState(false);
+export default function AiChatWidget({ placement = 'landing', open: controlledOpen, onOpenChange, launcherDisplay = 'block' }) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [messages, setMessages] = useState(initialMessages);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const listRef = useRef(null);
   const isAdminPlacement = placement === 'admin';
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const setOpen = (nextOpen) => {
+    if (!isControlled) {
+      setInternalOpen(nextOpen);
+    }
+
+    onOpenChange?.(nextOpen);
+  };
 
   useEffect(() => {
     if (open && listRef.current) {
@@ -271,6 +281,7 @@ export default function AiChatWidget({ placement = 'landing' }) {
         <Box
           sx={{
             position: 'fixed',
+            display: launcherDisplay,
             ...(isAdminPlacement
               ? {
                   left: { xs: 16, md: 284 },

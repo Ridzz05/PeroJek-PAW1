@@ -32,12 +32,13 @@ import Brightness7Icon from '@mui/icons-material/Brightness7';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LanguageIcon from '@mui/icons-material/Language';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 
 const SettingsModal = lazy(() => import('../auth/SettingsModal'));
 
 const drawerWidth = 260;
 
-export default function Layout({ children, currentPage, setCurrentPage, mode, toggleColorMode }) {
+export default function Layout({ children, currentPage, setCurrentPage, mode, toggleColorMode, onOpenAiChat }) {
   const theme = useTheme();
   const isDark = mode === 'dark';
 
@@ -250,6 +251,15 @@ export default function Layout({ children, currentPage, setCurrentPage, mode, to
                 </ListItemIcon>
                 <Typography variant="body2" sx={{ fontWeight: 500 }}>
                   {t('menu.master_data')}
+                </Typography>
+              </MenuItem>
+
+              <MenuItem onClick={() => { handleMenuClose(); onOpenAiChat?.(); }} sx={{ display: { xs: 'flex', md: 'none' }, py: 1.2, px: 2, gap: 1.5 }}>
+                <ListItemIcon sx={{ minWidth: 'unset', color: 'text.secondary' }}>
+                  <SupportAgentIcon fontSize="small" />
+                </ListItemIcon>
+                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  {language === 'eng' ? 'AI Support' : 'AI CS'}
                 </Typography>
               </MenuItem>
 
