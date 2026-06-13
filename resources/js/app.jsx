@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import Layout from './components/Layout';
+import AiChatWidget from './components/AiChatWidget';
 import { LanguageProvider } from './i18n/i18n';
 import { AuthProvider, useAuth } from './auth/AuthContext';
 
@@ -402,15 +403,18 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
   if (!user) {
     if (authPage === 'landing') {
       return (
-        <Suspense fallback={<PageFallback />}>
-          <Landing
-            onGoLogin={() => setAuthPage('login')}
-            onGoRegister={() => setAuthPage('register')}
-            setCurrentPage={setCurrentPage}
-            mode={mode}
-            toggleColorMode={toggleColorMode}
-          />
-        </Suspense>
+        <>
+          <Suspense fallback={<PageFallback />}>
+            <Landing
+              onGoLogin={() => setAuthPage('login')}
+              onGoRegister={() => setAuthPage('register')}
+              setCurrentPage={setCurrentPage}
+              mode={mode}
+              toggleColorMode={toggleColorMode}
+            />
+          </Suspense>
+          <AiChatWidget />
+        </>
       );
     }
 
@@ -485,29 +489,35 @@ function AuthGate({ authPage, setAuthPage, renderPage, currentPage, setCurrentPa
   // If user is logged in but has current page set to landing, render landing directly (outside Layout)
   if (currentPage === 'landing') {
     return (
-      <Suspense fallback={<PageFallback />}>
-        <Landing
-          onGoLogin={() => setAuthPage('login')}
-          onGoRegister={() => setAuthPage('register')}
-          setCurrentPage={setCurrentPage}
-          mode={mode}
-          toggleColorMode={toggleColorMode}
-        />
-      </Suspense>
+      <>
+        <Suspense fallback={<PageFallback />}>
+          <Landing
+            onGoLogin={() => setAuthPage('login')}
+            onGoRegister={() => setAuthPage('register')}
+            setCurrentPage={setCurrentPage}
+            mode={mode}
+            toggleColorMode={toggleColorMode}
+          />
+        </Suspense>
+        <AiChatWidget />
+      </>
     );
   }
 
   return (
-    <Layout
-      currentPage={currentPage}
-      setCurrentPage={setCurrentPage}
-      mode={mode}
-      toggleColorMode={toggleColorMode}
-    >
-      <Suspense fallback={<PageFallback />}>
-        {renderPage()}
-      </Suspense>
-    </Layout>
+    <>
+      <Layout
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        mode={mode}
+        toggleColorMode={toggleColorMode}
+      >
+        <Suspense fallback={<PageFallback />}>
+          {renderPage()}
+        </Suspense>
+      </Layout>
+      <AiChatWidget />
+    </>
   );
 }
 
