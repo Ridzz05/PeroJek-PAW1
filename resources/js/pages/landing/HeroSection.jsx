@@ -356,11 +356,11 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         onClick={() => scrollToSection('features')}
         sx={{
           position: 'absolute',
-          bottom: { xs: 132, md: 82 },
+          bottom: 124,
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 2,
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' },
           flexDirection: 'column',
           alignItems: 'center',
           gap: 0.5,
@@ -371,50 +371,81 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 26 }} />
       </Box>
 
-      {/* Stats bar overlay at bottom */}
+      {/* Hero stats summary */}
       <Box
         sx={{
           position: 'absolute',
-          bottom: 0,
+          bottom: { xs: 18, md: 24 },
           left: 0,
           right: 0,
           zIndex: 2,
-          background: {
-            xs: 'rgba(0,0,0,0.6)',
-            md: 'rgba(0,0,0,0.35)',
-          },
-          backdropFilter: 'blur(16px)',
-          borderTop: '1px solid rgba(255,255,255,0.1)',
+          px: { xs: 2, sm: 3, lg: 4 },
+          pointerEvents: 'none',
         }}
       >
-        <Container maxWidth="xl" sx={{ px: { xs: 1, sm: 3, lg: 4 } }}>
-          <Box sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
-            gap: { xs: 0, sm: 2 },
-            py: { xs: 1.25, md: 1.75 },
-          }}>
+        <Container maxWidth="lg" disableGutters>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: 'repeat(4, minmax(0, 1fr))' },
+              gap: { xs: 0.75, md: 1 },
+              p: { xs: 0.75, md: 1 },
+              borderRadius: '8px',
+              backgroundColor: 'rgba(0,0,0,0.34)',
+              border: '1px solid rgba(255,255,255,0.14)',
+              boxShadow: '0 18px 48px rgba(0,0,0,0.26)',
+              backdropFilter: 'blur(18px)',
+              WebkitBackdropFilter: 'blur(18px)',
+              pointerEvents: 'auto',
+            }}
+          >
             {statItems.map((item, idx) => (
               <Box
                 key={idx}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: { xs: 0.85, md: 1.1 },
-                  py: { xs: 0.75, sm: 0 },
-                  borderRight: { xs: 'none', sm: idx < 3 ? '1px solid rgba(255,255,255,0.12)' : 'none' },
-                  borderBottom: { xs: idx < 2 ? '1px solid rgba(255,255,255,0.08)' : 'none', sm: 'none' },
+                  justifyContent: 'flex-start',
+                  gap: { xs: 0.9, md: 1.15 },
+                  minWidth: 0,
+                  p: { xs: 1, md: 1.2 },
+                  borderRadius: '8px',
+                  backgroundColor: {
+                    xs: idx < 2 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)',
+                    md: 'rgba(255,255,255,0.08)',
+                  },
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  transition: 'background-color 180ms ease, transform 180ms ease',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.12)',
+                    transform: { xs: 'none', md: 'translateY(-1px)' },
+                  },
                 }}
               >
-                <Box sx={{ ...iconFrameSx(32, 18), backgroundColor: 'rgba(255,255,255,0.12)', color: '#FFFFFF' }}>
+                <Box
+                  sx={{
+                    ...iconFrameSx(isMobile ? 34 : 40, isMobile ? 18 : 20),
+                    backgroundColor: 'rgba(255,255,255,0.12)',
+                    border: '1px solid rgba(255,255,255,0.14)',
+                    color: '#FFFFFF',
+                  }}
+                >
                   {item.icon}
                 </Box>
-                <Box>
-                  <Typography sx={{ fontWeight: 900, fontSize: { xs: '1rem', md: '1.2rem' }, color: '#FFF', lineHeight: 1.1 }}>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography sx={{ fontWeight: 900, fontSize: { xs: '1.05rem', md: '1.35rem' }, color: '#FFF', lineHeight: 1 }}>
                     {t(`landing.${item.key}`)}
                   </Typography>
-                  <Typography sx={{ fontSize: { xs: '0.62rem', md: '0.72rem' }, color: 'rgba(255,255,255,0.66)', fontWeight: 600, lineHeight: 1.2 }}>
+                  <Typography
+                    sx={{
+                      mt: 0.35,
+                      fontSize: { xs: '0.64rem', md: '0.74rem' },
+                      color: 'rgba(255,255,255,0.68)',
+                      fontWeight: 700,
+                      lineHeight: 1.2,
+                      whiteSpace: { xs: 'normal', md: 'nowrap' },
+                    }}
+                  >
                     {t(`landing.${item.labelKey}`)}
                   </Typography>
                 </Box>
@@ -429,7 +460,8 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         sx={{
           position: 'absolute',
           right: { xs: '50%', md: 28 },
-          bottom: { xs: 94, md: 18 },
+          top: { xs: 'auto', md: 96 },
+          bottom: { xs: 142, md: 'auto' },
           zIndex: 3,
           display: 'flex',
           gap: 0.75,

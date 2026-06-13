@@ -5,12 +5,13 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
 import CloseIcon from '@mui/icons-material/Close';
 import SendIcon from '@mui/icons-material/Send';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { apiFetch } from '../utils/api';
+
+const aiCsLogo = '/assets/logo/ai-cs-logo.svg';
 
 const initialMessages = [
   {
@@ -109,17 +110,24 @@ export default function AiChatWidget() {
             </IconButton>
             <Box
               sx={{
-                width: 40,
-                height: 40,
+                width: 42,
+                height: 42,
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'action.selected',
-                color: 'primary.main',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid',
+                borderColor: 'divider',
+                overflow: 'hidden',
               }}
             >
-              <SmartToyIcon sx={{ fontSize: 22 }} />
+              <Box
+                component="img"
+                src={aiCsLogo}
+                alt="SRS AI CS"
+                sx={{ width: 34, height: 34, objectFit: 'contain' }}
+              />
             </Box>
             <Box sx={{ minWidth: 0, flexGrow: 1 }}>
               <Typography variant="subtitle1" sx={{ fontWeight: 800, lineHeight: 1.2 }}>
@@ -161,17 +169,24 @@ export default function AiChatWidget() {
               >
                 <Box
                   sx={{
-                    width: 34,
-                    height: 34,
+                    width: 36,
+                    height: 36,
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    backgroundColor: 'action.selected',
-                    color: 'primary.main',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    overflow: 'hidden',
                   }}
                 >
-                  <SmartToyIcon sx={{ fontSize: 19 }} />
+                  <Box
+                    component="img"
+                    src={aiCsLogo}
+                    alt="SRS AI CS"
+                    sx={{ width: 30, height: 30, objectFit: 'contain' }}
+                  />
                 </Box>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 800 }}>
@@ -263,13 +278,28 @@ export default function AiChatWidget() {
           <Button
             variant="contained"
             onClick={() => setOpen(true)}
-            startIcon={<SmartToyIcon />}
+            startIcon={(
+              <Box
+                component="img"
+                src={aiCsLogo}
+                alt=""
+                aria-hidden="true"
+                sx={{ width: 30, height: 30, objectFit: 'contain', display: 'block' }}
+              />
+            )}
             sx={{
-              height: 52,
-              px: 2,
+              height: 54,
+              pl: 1.25,
+              pr: 2,
               borderRadius: '8px',
               fontWeight: 800,
               boxShadow: '0 12px 30px rgba(0,0,0,0.22)',
+              '& .MuiButton-startIcon': {
+                mr: 1,
+                p: 0.25,
+                borderRadius: '8px',
+                backgroundColor: '#FFFFFF',
+              },
             }}
           >
             Message
