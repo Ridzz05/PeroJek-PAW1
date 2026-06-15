@@ -15,23 +15,23 @@ export default function FeaturesSection({ t }) {
   const features = [
     {
       icon: <SecurityIcon />,
-      title: t('landing.feature1Title'),
-      desc: t('landing.feature1Desc'),
+      title: t('landing.storyPerformance1Title'),
+      desc: t('landing.storyPerformance1Desc'),
     },
     {
       icon: <FlashOnIcon />,
-      title: t('landing.feature2Title'),
-      desc: t('landing.feature2Desc'),
+      title: t('landing.storyPerformance2Title'),
+      desc: t('landing.storyPerformance2Desc'),
     },
     {
       icon: <DirectionsCarIcon />,
-      title: t('landing.feature24Title'),
-      desc: t('landing.feature24Desc'),
+      title: t('landing.storyPerformance3Title'),
+      desc: t('landing.storyPerformance3Desc'),
     },
     {
       icon: <PaidIcon />,
-      title: t('landing.feature3Title'),
-      desc: t('landing.feature3Desc'),
+      title: t('landing.storyPerformance4Title'),
+      desc: t('landing.storyPerformance4Desc'),
     },
   ];
 
@@ -45,10 +45,10 @@ export default function FeaturesSection({ t }) {
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Box sx={landingHeaderSx}>
           <Typography variant="h2" sx={landingTitleSx}>
-            {t('landing.featuresTitle')}
+            {t('landing.storyPerformanceTitle')}
           </Typography>
           <Typography variant="body1" sx={landingSubtitleSx}>
-            {t('landing.featuresSubtitle')}
+            {t('landing.storyPerformanceSubtitle')}
           </Typography>
         </Box>
 

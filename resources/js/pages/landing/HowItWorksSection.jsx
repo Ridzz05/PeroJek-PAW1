@@ -22,23 +22,23 @@ export default function HowItWorksSection({ t }) {
   const steps = [
     {
       icon: <SearchIcon />,
-      title: t('landing.howItWorksStep1Title'),
-      desc: t('landing.howItWorksStep1Desc'),
+      title: t('landing.storyControlStep1Title'),
+      desc: t('landing.storyControlStep1Desc'),
     },
     {
       icon: <CalendarMonthIcon />,
-      title: t('landing.howItWorksStep2Title'),
-      desc: t('landing.howItWorksStep2Desc'),
+      title: t('landing.storyControlStep2Title'),
+      desc: t('landing.storyControlStep2Desc'),
     },
     {
       icon: <PaymentsIcon />,
-      title: t('landing.howItWorksStep3Title'),
-      desc: t('landing.howItWorksStep3Desc'),
+      title: t('landing.storyControlStep3Title'),
+      desc: t('landing.storyControlStep3Desc'),
     },
     {
       icon: <CelebrationIcon />,
-      title: t('landing.howItWorksStep4Title'),
-      desc: t('landing.howItWorksStep4Desc'),
+      title: t('landing.storyControlStep4Title'),
+      desc: t('landing.storyControlStep4Desc'),
     },
   ];
 
@@ -47,10 +47,10 @@ export default function HowItWorksSection({ t }) {
       <Container maxWidth="md" sx={{ px: { xs: 2, sm: 3 } }}>
         <Box sx={landingHeaderSx}>
           <Typography variant="h2" sx={landingTitleSx}>
-            {t('landing.howItWorksTitle')}
+            {t('landing.storyControlTitle')}
           </Typography>
           <Typography variant="body1" sx={landingSubtitleSx}>
-            {t('landing.howItWorksSubtitle')}
+            {t('landing.storyControlSubtitle')}
           </Typography>
         </Box>
 

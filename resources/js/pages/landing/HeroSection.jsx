@@ -30,9 +30,9 @@ export default function HeroSection({ scrollToSection, handleBookNow, t }) {
         justifyContent: 'center',
         overflow: 'hidden',
         color: '#FFFFFF',
+        backgroundColor: 'transparent',
         scrollSnapAlign: 'start',
         scrollSnapStop: 'always',
-        backgroundColor: 'transparent',
         pt: { xs: 2.5, sm: 4, md: 0 },
         pb: { xs: 5, md: 8 },
       }}
@@ -41,24 +41,23 @@ export default function HeroSection({ scrollToSection, handleBookNow, t }) {
       <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, lg: 4 }, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
         <Box sx={{
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           flexDirection: 'column',
           width: '100%',
           gap: { xs: 4, md: 5 },
         }}>
-          {/* Centered Text */}
           <Box sx={{
-            maxWidth: 760,
-            mx: 'auto',
-            textAlign: 'center',
+            maxWidth: { xs: 330, sm: 520, md: 650, lg: 720 },
+            mr: 'auto',
+            textAlign: 'left',
             animation: `${fadeInUp} 0.8s ease-out`,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'flex-start',
           }}>
             <Chip
-              label={t('landing.tagline')}
+              label={t('landing.storyHeroEyebrow')}
               size="small"
               sx={{
                 mb: { xs: 2, md: 3 },
@@ -87,9 +86,9 @@ export default function HeroSection({ scrollToSection, handleBookNow, t }) {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              {t('landing.titleHighlight')}
+              {t('landing.storyHeroTitle')}
               <Box component="span" sx={{ display: 'block', WebkitTextFillColor: 'initial', color: '#FFFFFF' }}>
-                {t('landing.titleRest')}
+                {t('landing.storyHeroAccent')}
               </Box>
             </Typography>
             <Typography
@@ -99,15 +98,14 @@ export default function HeroSection({ scrollToSection, handleBookNow, t }) {
                 fontSize: { xs: '0.9rem', sm: '1.02rem', md: '1.2rem' },
                 mb: { xs: 2.5, md: 4 },
                 maxWidth: 620,
-                mx: 'auto',
                 fontWeight: 500,
                 lineHeight: 1.6,
                 textShadow: '0 4px 12px rgba(0,0,0,0.5)',
               }}
             >
-              {t('landing.subtitle')}
+              {t('landing.storyHeroSubtitle')}
             </Typography>
-            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
+            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
               <Button
                 variant="contained"
                 size="large"

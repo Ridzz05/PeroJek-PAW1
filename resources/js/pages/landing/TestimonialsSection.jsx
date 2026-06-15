@@ -45,10 +45,10 @@ export default function TestimonialsSection({ t }) {
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, px: { xs: 2, sm: 3 } }}>
         <Box sx={landingHeaderSx}>
           <Typography variant="h2" sx={landingTitleSx}>
-            {t('landing.testimonialsTitle')}
+            {t('landing.storyTrustTitle')}
           </Typography>
           <Typography variant="body1" sx={landingSubtitleSx}>
-            {t('landing.testimonialsSubtitle')}
+            {t('landing.storyTrustSubtitle')}
           </Typography>
         </Box>
 

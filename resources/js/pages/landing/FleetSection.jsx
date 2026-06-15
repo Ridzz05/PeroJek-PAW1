@@ -34,14 +34,14 @@ export default function FleetSection({
   t,
 }) {
   return (
-    <Box id="fleet" sx={{ ...landingSectionSx, py: { xs: 4.5, md: 8 } }}>
+    <Box id="fleet" sx={{ ...landingSectionSx, py: { xs: 4.5, md: 8 }, scrollSnapStop: 'normal' }}>
       <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Box sx={landingHeaderSx}>
           <Typography variant="h2" sx={landingTitleSx}>
-            {t('landing.fleetTitle')}
+            {t('landing.storyFleetTitle')}
           </Typography>
           <Typography variant="body1" sx={{ ...landingSubtitleSx, mb: { xs: 2, md: 3 } }}>
-            {t('landing.fleetSubtitle')}
+            {t('landing.storyFleetSubtitle')}
           </Typography>
 
           {/* Filter Search */}

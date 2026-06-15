@@ -5,10 +5,10 @@ export const landingSectionSx = {
   alignItems: 'center',
   width: '100%',
   position: 'relative',
-  scrollSnapAlign: 'start',
-  scrollSnapStop: 'always',
   color: '#FFFFFF',
   backgroundColor: 'transparent',
+  scrollSnapAlign: 'start',
+  scrollSnapStop: 'always',
 };
 
 export const landingHeaderSx = {

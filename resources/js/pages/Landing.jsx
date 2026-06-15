@@ -18,8 +18,6 @@ import HowItWorksSection from './landing/HowItWorksSection';
 import FaqSection from './landing/FaqSection';
 import Footer from './landing/Footer';
 
-const landingSectionIds = ['hero', 'features', 'how-it-works', 'fleet', 'cta', 'testimonials', 'faq', 'footer'];
-
 export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode, toggleColorMode }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -32,7 +30,8 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   // Fetch Fleet Data using shared apiFetch utility
   useEffect(() => {
@@ -61,34 +60,21 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
 
     let frameId = 0;
 
-    const updateActiveSection = () => {
+    const updateScrollProgress = () => {
       frameId = 0;
-      const scrollTop = scrollTarget.scrollTop;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      landingSectionIds.forEach((id, index) => {
-        const section = document.getElementById(id);
-        if (!section) return;
-
-        const distance = Math.abs(section.offsetTop - scrollTop);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      setActiveSectionIndex((currentIndex) => (
-        currentIndex === closestIndex ? currentIndex : closestIndex
+      const maxScroll = Math.max(1, scrollTarget.scrollHeight - scrollTarget.clientHeight);
+      const nextProgress = Math.min(1, Math.max(0, scrollTarget.scrollTop / maxScroll));
+      setScrollProgress((currentProgress) => (
+        Math.abs(currentProgress - nextProgress) < 0.002 ? currentProgress : nextProgress
       ));
     };
 
     const onScroll = () => {
       if (frameId) cancelAnimationFrame(frameId);
-      frameId = requestAnimationFrame(updateActiveSection);
+      frameId = requestAnimationFrame(updateScrollProgress);
     };
 
-    updateActiveSection();
+    updateScrollProgress();
     scrollTarget.addEventListener('scroll', onScroll, { passive: true });
 
     return () => {
@@ -108,9 +94,18 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const scrollTarget = landingScrollRef.current;
+    if (!el) return;
+
+    if (scrollTarget?.contains(el)) {
+      const navOffset = isMobile ? 60 : 72;
+      const maxScroll = Math.max(0, scrollTarget.scrollHeight - scrollTarget.clientHeight);
+      const targetTop = Math.min(maxScroll, Math.max(0, el.offsetTop - navOffset));
+      scrollTarget.scrollTo({ top: targetTop, behavior: 'smooth' });
+      return;
     }
+
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   const handleBookNow = () => {
@@ -135,7 +130,12 @@ export default function Landing({ onGoLogin, onGoRegister, setCurrentPage, mode,
       }}
     >
       <Box sx={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', backgroundColor: '#050505' }}>
-        <CarModelViewer activeSectionIndex={activeSectionIndex} sx={{ position: 'fixed' }} />
+        <CarModelViewer
+          scrollProgress={scrollProgress}
+          isMobile={isMobile}
+          reducedMotion={reducedMotion}
+          sx={{ position: 'fixed' }}
+        />
         <Box
           sx={{
             position: 'absolute',
