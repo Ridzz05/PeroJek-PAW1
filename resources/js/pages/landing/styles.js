@@ -23,26 +23,26 @@ export const landingTitleSx = {
   letterSpacing: 0,
   mb: 1.5,
   color: '#FFFFFF',
-  textShadow: '0 14px 44px rgba(0,0,0,0.58)',
+  textShadow: { xs: '0 2px 10px rgba(0,0,0,0.9)', md: '0 14px 44px rgba(0,0,0,0.58)' },
 };
 
 export const landingSubtitleSx = {
-  color: 'rgba(255,255,255,0.72)',
+  color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.72)' },
   maxWidth: 600,
   mx: { xs: 0, md: 'auto' },
   fontWeight: 500,
   fontSize: { xs: '0.88rem', md: '1rem' },
   lineHeight: { xs: 1.55, md: 1.7 },
-  textShadow: '0 8px 28px rgba(0,0,0,0.45)',
+  textShadow: { xs: '0 2px 8px rgba(0,0,0,0.85)', md: '0 8px 28px rgba(0,0,0,0.45)' },
 };
 
 export const landingCardSx = {
   borderRadius: '8px',
-  border: '1px solid rgba(255,255,255,0.14)',
-  background: { xs: 'rgba(8, 8, 10, 0.5)', md: 'rgba(8, 8, 10, 0.42)' },
-  backdropFilter: 'blur(22px)',
-  WebkitBackdropFilter: 'blur(22px)',
-  boxShadow: '0 22px 60px rgba(0,0,0,0.28)',
+  border: { xs: '1px solid rgba(255,255,255,0.2)', md: '1px solid rgba(255,255,255,0.14)' },
+  background: { xs: 'transparent', md: 'rgba(8, 8, 10, 0.42)' },
+  backdropFilter: { xs: 'none', md: 'blur(22px)' },
+  WebkitBackdropFilter: { xs: 'none', md: 'blur(22px)' },
+  boxShadow: { xs: 'none', md: '0 22px 60px rgba(0,0,0,0.28)' },
   color: '#FFFFFF',
 };
 

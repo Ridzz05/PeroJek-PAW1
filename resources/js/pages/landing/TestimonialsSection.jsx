@@ -82,7 +82,7 @@ export default function TestimonialsSection({ t }) {
                       <StarIcon key={i} sx={{ color: 'warning.main', fontSize: 17 }} />
                     ))}
                   </Box>
-                  <Typography variant="body2" sx={{ fontStyle: 'italic', fontSize: { xs: '0.82rem', md: '0.875rem' }, lineHeight: { xs: 1.55, md: 1.7 }, color: 'rgba(255,255,255,0.72)', mb: { xs: 2, md: 3 } }}>
+                  <Typography variant="body2" sx={{ fontStyle: 'italic', fontSize: { xs: '0.82rem', md: '0.875rem' }, lineHeight: { xs: 1.55, md: 1.7 }, color: { xs: 'rgba(255,255,255,0.92)', md: 'rgba(255,255,255,0.72)' }, textShadow: { xs: '0 1px 3px rgba(0,0,0,0.8)', md: 'none' }, mb: { xs: 2, md: 3 } }}>
                     "{item.quote}"
                   </Typography>
                 </Box>

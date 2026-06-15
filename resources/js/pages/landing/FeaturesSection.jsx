@@ -100,9 +100,10 @@ export default function FeaturesSection({ t }) {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: 'rgba(255,255,255,0.7)',
+                    color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.7)' },
                     fontSize: { xs: '0.72rem', md: '0.875rem' },
                     lineHeight: { xs: 1.45, md: 1.7 },
+                    textShadow: { xs: '0 1px 4px rgba(0,0,0,0.8)', md: 'none' },
                   }}
                 >
                   {feature.desc}

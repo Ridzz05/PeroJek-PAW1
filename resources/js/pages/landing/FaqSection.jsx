@@ -68,13 +68,13 @@ export default function FaqSection({ t }) {
                   fontWeight: 700,
                   fontSize: { xs: '0.86rem', md: '0.95rem' },
                   color: '#FFFFFF',
-                  '&.Mui-expanded': { borderBottom: '1px solid rgba(255,255,255,0.14)' },
+                  '&.Mui-expanded': { borderBottom: { xs: '1px solid rgba(255,255,255,0.22)', md: '1px solid rgba(255,255,255,0.14)' } },
                 }}
               >
                 {faq.question}
               </AccordionSummary>
               <AccordionDetails sx={{ px: { xs: 2, md: 2.5 }, py: { xs: 1.5, md: 2.25 } }}>
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: { xs: '0.82rem', md: '0.875rem' }, lineHeight: { xs: 1.55, md: 1.7 } }}>
+                <Typography variant="body2" sx={{ color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.7)' }, textShadow: { xs: '0 1px 3px rgba(0,0,0,0.8)', md: 'none' }, fontSize: { xs: '0.82rem', md: '0.875rem' }, lineHeight: { xs: 1.55, md: 1.7 } }}>
                   {faq.answer}
                 </Typography>
               </AccordionDetails>

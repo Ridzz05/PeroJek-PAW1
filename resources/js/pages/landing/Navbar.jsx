@@ -63,10 +63,10 @@ export default function Navbar({
           top: 0,
           zIndex: 1100,
           width: '100%',
-          backgroundColor: 'rgba(5, 5, 7, 0.58)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.12)',
+          backgroundColor: { xs: 'transparent', md: 'rgba(5, 5, 7, 0.58)' },
+          backdropFilter: { xs: 'none', md: 'blur(20px)' },
+          WebkitBackdropFilter: { xs: 'none', md: 'blur(20px)' },
+          borderBottom: { xs: 'none', md: '1px solid rgba(255,255,255,0.12)' },
           color: '#FFFFFF',
         }}
       >

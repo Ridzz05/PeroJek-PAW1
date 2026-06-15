@@ -51,6 +51,7 @@ export default function CtaBanner({ handleBookNow, t }) {
                   color: '#FFFFFF',
                   mb: 1,
                   lineHeight: 1.2,
+                  textShadow: { xs: '0 2px 8px rgba(0,0,0,0.9)', md: 'none' },
                 }}
               >
                 {t('landing.ctaTitle')}
@@ -58,11 +59,12 @@ export default function CtaBanner({ handleBookNow, t }) {
               <Typography
                 variant="body1"
                 sx={{
-                  color: 'rgba(255,255,255,0.72)',
+                  color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.72)' },
                   fontWeight: 500,
                   maxWidth: { xs: '100%', md: 500 },
                   fontSize: { xs: '0.84rem', md: '1rem' },
                   lineHeight: { xs: 1.55, md: 1.65 },
+                  textShadow: { xs: '0 1px 3px rgba(0,0,0,0.8)', md: 'none' },
                 }}
               >
                 {t('landing.ctaSubtitle')}

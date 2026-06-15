@@ -7,47 +7,47 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 
 const cameraStages = [
-  { z: 6.1, y: 1.15, fov: 37 },
-  { z: 5.25, y: 1.05, fov: 34 },
-  { z: 6.55, y: 1.2, fov: 40 },
-  { z: 5.05, y: 1.0, fov: 33 },
-  { z: 6.35, y: 1.18, fov: 39 },
-  { z: 5.45, y: 1.08, fov: 35 },
-  { z: 6.7, y: 1.22, fov: 41 },
-  { z: 5.35, y: 1.06, fov: 34 },
+  { z: 4.8, y: 1.05, fov: 32 },  // Hero: Very close & large
+  { z: 4.5, y: 0.95, fov: 30 },  // Features: Zoomed in side profile
+  { z: 5.2, y: 1.10, fov: 35 },  // How it works: Tilt/further
+  { z: 4.3, y: 0.90, fov: 28 },  // Fleet: Detail shot
+  { z: 4.0, y: 0.85, fov: 28 },  // CTA: Sports back angle
+  { z: 4.9, y: 1.00, fov: 33 },  // Testimonials: Rotate
+  { z: 4.4, y: 0.95, fov: 30 },  // FAQ: Angled close
+  { z: 5.4, y: 1.15, fov: 36 },  // Footer: Pull back
 ];
 
 const mobileCameraStages = [
-  { z: 5.25, y: 0.92, fov: 39 },
-  { z: 4.65, y: 0.86, fov: 35 },
-  { z: 5.8, y: 0.98, fov: 43 },
-  { z: 4.5, y: 0.84, fov: 34 },
-  { z: 5.65, y: 0.96, fov: 42 },
-  { z: 4.8, y: 0.88, fov: 36 },
-  { z: 5.95, y: 1.0, fov: 44 },
-  { z: 4.7, y: 0.86, fov: 35 },
+  { z: 4.1, y: 0.80, fov: 34 },  // Hero
+  { z: 4.3, y: 0.82, fov: 35 },  // Features
+  { z: 4.0, y: 0.78, fov: 32 },  // How it works
+  { z: 3.7, y: 0.72, fov: 29 },  // Fleet
+  { z: 3.6, y: 0.70, fov: 28 },  // CTA
+  { z: 4.2, y: 0.80, fov: 34 },  // Testimonials
+  { z: 4.4, y: 0.85, fov: 35 },  // FAQ
+  { z: 4.7, y: 0.90, fov: 37 },  // Footer
 ];
 
 const modelStages = [
-  { scale: 1, y: 0, x: 0, rotation: 0 },
-  { scale: 1.08, y: 0.04, x: -0.04, rotation: 0.14 },
-  { scale: 0.94, y: -0.02, x: 0.06, rotation: -0.1 },
-  { scale: 1.12, y: 0.06, x: 0, rotation: 0.22 },
-  { scale: 0.96, y: -0.02, x: -0.05, rotation: -0.16 },
-  { scale: 1.06, y: 0.03, x: 0.05, rotation: 0.12 },
-  { scale: 0.92, y: -0.03, x: 0, rotation: -0.2 },
-  { scale: 1.1, y: 0.05, x: -0.03, rotation: 0.18 },
+  { scale: 1.25, y: -0.05, x: 0, rotation: 0 },         // Hero: Large, front
+  { scale: 1.20, y: 0.02, x: 0.8, rotation: 0.6 },      // Features: Slide right, show side profile
+  { scale: 1.15, y: -0.02, x: 0, rotation: -0.4 },     // How it works: Angled left
+  { scale: 1.30, y: 0.05, x: -0.7, rotation: 0.5 },     // Fleet: Slide left, close up
+  { scale: 1.35, y: 0.08, x: 0.6, rotation: 3.1 },      // CTA: Slide right, show sports rear exhaust
+  { scale: 1.10, y: -0.04, x: -0.4, rotation: -0.8 },   // Testimonials: Slightly left
+  { scale: 1.22, y: 0.03, x: 0.5, rotation: 0.8 },      // FAQ: Angled right
+  { scale: 1.05, y: -0.06, x: 0, rotation: 0.2 },       // Footer: Centered pullback
 ];
 
 const mobileModelStages = [
-  { scale: 1.1, y: -0.08, x: 0, rotation: 0 },
-  { scale: 1.2, y: -0.04, x: -0.02, rotation: 0.14 },
-  { scale: 1.02, y: -0.12, x: 0.03, rotation: -0.1 },
-  { scale: 1.24, y: -0.03, x: 0, rotation: 0.22 },
-  { scale: 1.04, y: -0.12, x: -0.03, rotation: -0.16 },
-  { scale: 1.16, y: -0.06, x: 0.03, rotation: 0.12 },
-  { scale: 1, y: -0.14, x: 0, rotation: -0.2 },
-  { scale: 1.18, y: -0.05, x: -0.02, rotation: 0.18 },
+  { scale: 1.35, y: -0.06, x: 0, rotation: 0 },         // Hero: Centered large
+  { scale: 1.25, y: -0.02, x: 0, rotation: 0.85 },      // Features: Side profile
+  { scale: 1.22, y: -0.08, x: 0, rotation: -0.6 },      // How it works
+  { scale: 1.40, y: -0.01, x: 0, rotation: 0.35 },      // Fleet: Zoom front
+  { scale: 1.42, y: 0.02, x: 0, rotation: 3.14 },       // CTA: Rear exhaust profile
+  { scale: 1.20, y: -0.07, x: 0, rotation: -0.9 },      // Testimonials
+  { scale: 1.28, y: -0.04, x: 0, rotation: 0.75 },      // FAQ
+  { scale: 1.15, y: -0.10, x: 0, rotation: 0.1 },       // Footer
 ];
 
 function CameraRig({ activeSectionIndex }) {
@@ -78,8 +78,8 @@ function Model({ url, activeSectionIndex }) {
 
   // Adjust model scale and position based on viewport width (responsive layout)
   // Center the car in the viewport (X = 0) and float it slightly lower
-  const position = isMobile ? [0, -0.48, 0] : [0, -0.42, 0];
-  const scale = isMobile ? Math.min(116, viewport.width * 18) : 150;
+  const position = isMobile ? [0, -0.40, 0] : [0, -0.42, 0];
+  const scale = isMobile ? Math.min(145, viewport.width * 24) : 185;
 
   useFrame((state) => {
     if (!groupRef.current) return;

@@ -78,7 +78,7 @@ export default function HowItWorksSection({ t }) {
                     <Typography sx={{ fontWeight: 800, fontSize: '0.9rem', color: '#FFFFFF' }}>{step.title}</Typography>
                   </StepLabel>
                   <StepContent sx={{ ml: 2.25, pl: 1.5 }}>
-                    <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.78rem', lineHeight: 1.55, mb: 1.25 }}>
+                    <Typography variant="body2" sx={{ color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.7)' }, textShadow: { xs: '0 1px 3px rgba(0,0,0,0.8)', md: 'none' }, fontSize: '0.78rem', lineHeight: 1.55, mb: 1.25 }}>
                       {step.desc}
                     </Typography>
                   </StepContent>

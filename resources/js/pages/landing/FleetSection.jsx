@@ -61,11 +61,11 @@ export default function FleetSection({
                 ),
                 sx: {
                   borderRadius: '8px',
-                  background: 'rgba(8,8,10,0.48)',
+                  background: { xs: 'transparent', sm: 'rgba(8,8,10,0.48)' },
                   color: '#FFFFFF',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
-                  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.16)' },
+                  backdropFilter: { xs: 'none', sm: 'blur(18px)' },
+                  WebkitBackdropFilter: { xs: 'none', sm: 'blur(18px)' },
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: { xs: 'rgba(255,255,255,0.36)', sm: 'rgba(255,255,255,0.16)' } },
                   '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.3)' },
                   '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#FFFFFF' },
                   '& input': { color: '#FFFFFF' },
@@ -203,13 +203,13 @@ export default function FleetSection({
                     </Box>
 
                     <CardContent sx={{ p: { xs: 1.5, md: 2.25 }, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.58)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0 }}>
+                      <Typography variant="caption" sx={{ color: { xs: 'rgba(255,255,255,0.82)', md: 'rgba(255,255,255,0.58)' }, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0 }}>
                         {vehicle.category?.name || 'VEHICLE'}
                       </Typography>
                       <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, mt: 0.5, lineHeight: 1.2, color: '#FFFFFF', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                         {vehicle.brand} {vehicle.model}
                       </Typography>
-                      <Typography variant="caption" sx={{ display: 'block', mb: specs.length ? { xs: 1.25, md: 2 } : { xs: 1.5, md: 2.5 }, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}>
+                      <Typography variant="caption" sx={{ display: 'block', mb: specs.length ? { xs: 1.25, md: 2 } : { xs: 1.5, md: 2.5 }, fontWeight: 600, color: { xs: 'rgba(255,255,255,0.85)', md: 'rgba(255,255,255,0.6)' } }}>
                         No: {vehicle.license_plate}
                       </Typography>
 
@@ -221,7 +221,7 @@ export default function FleetSection({
                           gap: { xs: 0.75, md: 1 },
                           mb: { xs: 1.35, md: 2 },
                           pb: { xs: 1.35, md: 2 },
-                          borderBottom: '1px solid rgba(255,255,255,0.14)',
+                          borderBottom: { xs: '1px solid rgba(255,255,255,0.22)', md: '1px solid rgba(255,255,255,0.14)' },
                         }}>
                           {specs.map((spec) => (
                             <Tooltip key={spec.key} title={spec.title} arrow placement="top">
@@ -229,7 +229,7 @@ export default function FleetSection({
                                 <Box sx={iconFrameSx(28, 15)}>
                                   {spec.icon}
                                 </Box>
-                                <Typography variant="caption" sx={{ fontWeight: 700, color: 'rgba(255,255,255,0.68)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <Typography variant="caption" sx={{ fontWeight: 700, color: { xs: 'rgba(255,255,255,0.88)', md: 'rgba(255,255,255,0.68)' }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                   {spec.value}
                                 </Typography>
                               </Box>
@@ -243,7 +243,7 @@ export default function FleetSection({
                           <Typography variant="h6" sx={{ fontWeight: 900, color: '#FFFFFF', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                             Rp {Number(vehicle.daily_rate).toLocaleString('id-ID')}
                           </Typography>
-                          <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 700, color: 'rgba(255,255,255,0.6)' }}>
+                          <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 700, color: { xs: 'rgba(255,255,255,0.85)', md: 'rgba(255,255,255,0.6)' } }}>
                             / {t('landing.daily')}
                           </Typography>
                         </Box>
