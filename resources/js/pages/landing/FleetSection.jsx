@@ -23,7 +23,6 @@ import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 import { iconFrameSx, landingCardSx, landingHeaderSx, landingSectionSx, landingSubtitleSx, landingTitleSx } from './styles';
 
 export default function FleetSection({
-  isDark,
   searchQuery,
   setSearchQuery,
   selectedCategory,
@@ -35,18 +34,18 @@ export default function FleetSection({
   t,
 }) {
   return (
-    <Box id="fleet" sx={landingSectionSx}>
-      <Container maxWidth="lg">
+    <Box id="fleet" sx={{ ...landingSectionSx, py: { xs: 4.5, md: 8 } }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Box sx={landingHeaderSx}>
           <Typography variant="h2" sx={landingTitleSx}>
             {t('landing.fleetTitle')}
           </Typography>
-          <Typography variant="body1" sx={{ ...landingSubtitleSx, mb: 3 }}>
+          <Typography variant="body1" sx={{ ...landingSubtitleSx, mb: { xs: 2, md: 3 } }}>
             {t('landing.fleetSubtitle')}
           </Typography>
 
           {/* Filter Search */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: { xs: 'flex-start', sm: 'center' }, alignItems: { xs: 'stretch', sm: 'center' }, maxWidth: 680, mx: { xs: 0, sm: 'auto' }, mb: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: { xs: 'flex-start', sm: 'center' }, alignItems: { xs: 'stretch', sm: 'center' }, maxWidth: 680, mx: { xs: 0, sm: 'auto' }, mb: { xs: 2, md: 3 } }}>
             <TextField
               placeholder={t('landing.searchPlaceholder')}
               value={searchQuery}
@@ -57,25 +56,47 @@ export default function FleetSection({
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon fontSize="small" sx={{ color: 'text.secondary' }} />
+                    <SearchIcon fontSize="small" sx={{ color: 'rgba(255,255,255,0.62)' }} />
                   </InputAdornment>
                 ),
-                sx: { borderRadius: '8px', background: 'background.paper' }
+                sx: {
+                  borderRadius: '8px',
+                  background: 'rgba(8,8,10,0.48)',
+                  color: '#FFFFFF',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
+                  '& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.16)' },
+                  '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(255,255,255,0.3)' },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#FFFFFF' },
+                  '& input': { color: '#FFFFFF' },
+                  '& input.MuiInputBase-input': { py: { xs: 1.05, md: 1 } },
+                  '& input::placeholder': { color: 'rgba(255,255,255,0.58)', opacity: 1 },
+                }
               }}
             />
           </Box>
 
           {/* Category Tabs */}
           {categories.length > 1 && (
-            <Box sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.16)', display: 'flex', justifyContent: 'center', mb: { xs: 2.5, md: 4 } }}>
               <Tabs
                 value={selectedCategory}
                 onChange={(e, val) => setSelectedCategory(val)}
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{
-                  '& .MuiTabs-indicator': { backgroundColor: 'primary.main', height: 3 },
-                  '& .MuiTab-root': { minHeight: 42, fontWeight: 700, px: { xs: 1.5, md: 2.5 }, textTransform: 'uppercase', letterSpacing: 0.5, fontSize: '0.78rem' }
+                  '& .MuiTabs-indicator': { backgroundColor: '#FFFFFF', height: 3 },
+                  '& .MuiTab-root': {
+                    minHeight: { xs: 36, md: 42 },
+                    fontWeight: 700,
+                    px: { xs: 1.25, md: 2.5 },
+                    textTransform: 'uppercase',
+                    letterSpacing: 0,
+                    fontSize: { xs: '0.7rem', md: '0.78rem' },
+                    color: 'rgba(255,255,255,0.62)',
+                  },
+                  '& .MuiTab-root.Mui-selected': { color: '#FFFFFF' },
+                  '& .MuiTabs-scrollButtons': { color: '#FFFFFF' },
                 }}
               >
                 {categories.map((cat) => (
@@ -92,7 +113,7 @@ export default function FleetSection({
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={{ xs: 2, md: 3 }}>
+          <Grid container spacing={{ xs: 1.5, md: 3 }}>
             {filteredVehicles.map((vehicle) => {
               const isAvail = vehicle.status === 'Available';
               const statusLabel =
@@ -135,8 +156,8 @@ export default function FleetSection({
                       transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
                       '&:hover': {
                         transform: 'translateY(-4px)',
-                        boxShadow: isDark ? '0 12px 26px rgba(0,0,0,0.5)' : '0 12px 26px rgba(0,0,0,0.06)',
-                        borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
+                        boxShadow: '0 24px 70px rgba(0,0,0,0.36)',
+                        borderColor: 'rgba(255,255,255,0.28)',
                       }
                     }}
                   >
@@ -147,6 +168,8 @@ export default function FleetSection({
                         image={vehicle.image_url || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'}
                         alt={vehicle.model}
                         sx={{
+                          height: { xs: 142, sm: 156, md: 168 },
+                          objectFit: 'cover',
                           transition: 'transform 0.5s ease',
                           '&:hover': { transform: 'scale(1.08)' },
                         }}
@@ -179,14 +202,14 @@ export default function FleetSection({
                       />
                     </Box>
 
-                    <CardContent sx={{ p: 2.25, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                      <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                    <CardContent sx={{ p: { xs: 1.5, md: 2.25 }, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.58)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0 }}>
                         {vehicle.category?.name || 'VEHICLE'}
                       </Typography>
-                      <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, mt: 0.5, lineHeight: 1.2 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 800, mb: 0.5, mt: 0.5, lineHeight: 1.2, color: '#FFFFFF', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                         {vehicle.brand} {vehicle.model}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: specs.length ? 2 : 2.5, fontWeight: 600 }}>
+                      <Typography variant="caption" sx={{ display: 'block', mb: specs.length ? { xs: 1.25, md: 2 } : { xs: 1.5, md: 2.5 }, fontWeight: 600, color: 'rgba(255,255,255,0.6)' }}>
                         No: {vehicle.license_plate}
                       </Typography>
 
@@ -195,11 +218,10 @@ export default function FleetSection({
                         <Box sx={{
                           display: 'flex',
                           flexWrap: 'wrap',
-                          gap: 1,
-                          mb: 2,
-                          pb: 2,
-                          borderBottom: 1,
-                          borderColor: 'divider',
+                          gap: { xs: 0.75, md: 1 },
+                          mb: { xs: 1.35, md: 2 },
+                          pb: { xs: 1.35, md: 2 },
+                          borderBottom: '1px solid rgba(255,255,255,0.14)',
                         }}>
                           {specs.map((spec) => (
                             <Tooltip key={spec.key} title={spec.title} arrow placement="top">
@@ -207,7 +229,7 @@ export default function FleetSection({
                                 <Box sx={iconFrameSx(28, 15)}>
                                   {spec.icon}
                                 </Box>
-                                <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <Typography variant="caption" sx={{ fontWeight: 700, color: 'rgba(255,255,255,0.68)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                   {spec.value}
                                 </Typography>
                               </Box>
@@ -217,11 +239,11 @@ export default function FleetSection({
                       )}
 
                       <Box sx={{ mt: 'auto' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2 }}>
-                          <Typography variant="h6" sx={{ fontWeight: 900, color: 'primary.main' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'baseline', mb: { xs: 1.35, md: 2 } }}>
+                          <Typography variant="h6" sx={{ fontWeight: 900, color: '#FFFFFF', fontSize: { xs: '1rem', md: '1.25rem' } }}>
                             Rp {Number(vehicle.daily_rate).toLocaleString('id-ID')}
                           </Typography>
-                          <Typography variant="caption" color="text.secondary" sx={{ ml: 0.5, fontWeight: 700 }}>
+                          <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 700, color: 'rgba(255,255,255,0.6)' }}>
                             / {t('landing.daily')}
                           </Typography>
                         </Box>
@@ -235,7 +257,7 @@ export default function FleetSection({
                           sx={{
                             borderRadius: '8px',
                             fontWeight: 700,
-                            py: 1,
+                            py: { xs: 0.85, md: 1 },
                             textTransform: 'none'
                           }}
                         >

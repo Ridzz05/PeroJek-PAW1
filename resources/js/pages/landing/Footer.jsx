@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Fab from '@mui/material/Fab';
-import { useTheme, keyframes } from '@mui/material/styles';
+import { keyframes } from '@mui/material/styles';
 
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import InstagramIcon from '@mui/icons-material/Instagram';
@@ -18,7 +18,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-import { iconFrameSx } from './styles';
+import { iconFrameSx, landingCardSx } from './styles';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: scale(0.8); }
@@ -32,33 +32,47 @@ const socialLinks = [
   { icon: <YouTubeIcon />, label: 'YouTube' },
 ];
 
-export default function Footer({ scrollToSection, t }) {
-  const theme = useTheme();
+export default function Footer({ scrollContainerRef, scrollToSection, t }) {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShowScrollTop(window.scrollY > 500);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    const scrollTarget = scrollContainerRef?.current;
+    if (!scrollTarget) return undefined;
+
+    const onScroll = () => setShowScrollTop(scrollTarget.scrollTop > 500);
+    onScroll();
+    scrollTarget.addEventListener('scroll', onScroll, { passive: true });
+    return () => scrollTarget.removeEventListener('scroll', onScroll);
+  }, [scrollContainerRef]);
 
   const handleScrollTop = () => {
+    const scrollTarget = scrollContainerRef?.current;
+    if (scrollTarget) {
+      scrollTarget.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <>
       <Box
+        id="footer"
         component="footer"
         sx={{
-          py: { xs: 5, md: 6 },
+          minHeight: { xs: 'calc(100svh - 60px)', md: 'calc(100svh - 72px)' },
+          py: { xs: 4.5, md: 6 },
+          display: 'flex',
+          alignItems: 'center',
           mt: 'auto',
-          backgroundColor: 'background.default',
-          borderTop: `1px solid ${theme.palette.divider}`,
+          backgroundColor: 'transparent',
+          borderTop: '1px solid rgba(255,255,255,0.12)',
+          scrollSnapAlign: 'start',
+          scrollSnapStop: 'always',
         }}
       >
-        <Container maxWidth="lg">
-          <Grid container spacing={4} sx={{ mb: 4 }}>
+        <Container maxWidth="lg" sx={{ ...landingCardSx, p: { xs: 1.8, md: 4 }, width: { xs: 'calc(100% - 32px)', sm: 'calc(100% - 48px)', md: '100%' }, mx: 'auto' }}>
+          <Grid container spacing={{ xs: 2.25, md: 4 }} sx={{ mb: { xs: 2.5, md: 4 } }}>
             {/* Brand column */}
             <Grid item xs={12} md={5}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -69,12 +83,12 @@ export default function Footer({ scrollToSection, t }) {
                   sx={{ width: 36, height: 36, objectFit: 'cover', borderRadius: '50%' }}
                 />
               </Box>
-              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 400, lineHeight: 1.7, mb: 2.5 }}>
+              <Typography variant="body2" sx={{ maxWidth: 400, fontSize: { xs: '0.82rem', md: '0.875rem' }, lineHeight: { xs: 1.55, md: 1.7 }, mb: { xs: 2, md: 2.5 }, color: 'rgba(255,255,255,0.7)' }}>
                 {t('landing.footerDesc')}
               </Typography>
 
               {/* Social media icons */}
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 1.5, color: '#FFFFFF' }}>
                 {t('landing.followUs')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1 }}>
@@ -83,16 +97,17 @@ export default function Footer({ scrollToSection, t }) {
                     <IconButton
                       size="small"
                       sx={{
-                        backgroundColor: 'action.hover',
-                        color: 'text.secondary',
+                        backgroundColor: 'rgba(255,255,255,0.1)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        color: 'rgba(255,255,255,0.72)',
                         width: 36,
                         height: 36,
                         borderRadius: '8px',
                         transition: 'all 0.2s ease',
                         '& .MuiSvgIcon-root': { fontSize: 19 },
                         '&:hover': {
-                          backgroundColor: 'primary.main',
-                          color: 'primary.contrastText',
+                          backgroundColor: '#FFFFFF',
+                          color: '#0A0A0A',
                           transform: 'translateY(-2px)',
                         },
                       }}
@@ -105,11 +120,11 @@ export default function Footer({ scrollToSection, t }) {
             </Grid>
 
             {/* Quick Links */}
-            <Grid item xs={6} sm={4} md={3}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 2 }}>
+            <Grid item xs={12} sm={4} md={3}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 2, color: '#FFFFFF' }}>
                 {t('landing.quickLinks')}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: '1fr' }, gap: { xs: 1, md: 1.5 } }}>
                 {['features', 'how-it-works', 'fleet', 'faq', 'testimonials'].map((sec) => (
                   <Typography
                     key={sec}
@@ -117,8 +132,8 @@ export default function Footer({ scrollToSection, t }) {
                     onClick={() => scrollToSection(sec)}
                     sx={{
                       cursor: 'pointer',
-                      color: 'text.secondary',
-                      '&:hover': { color: 'primary.main' },
+                      color: 'rgba(255,255,255,0.66)',
+                      '&:hover': { color: '#FFFFFF' },
                       transition: 'color 0.2s ease',
                       textTransform: 'capitalize',
                       fontWeight: 600
@@ -135,32 +150,32 @@ export default function Footer({ scrollToSection, t }) {
             </Grid>
 
             {/* Contact Info */}
-            <Grid item xs={6} sm={8} md={4}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 2 }}>
+            <Grid item xs={12} sm={8} md={4}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 800, mb: 2, color: '#FFFFFF' }}>
                 {t('landing.contactUs')}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 1, md: 1.5 } }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
-                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary' }}>
+                  <Box sx={iconFrameSx(30, 16)}>
                     <EmailIcon />
                   </Box>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.68)' }}>
                     support@smartrental.com
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.1 }}>
-                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary' }}>
+                  <Box sx={iconFrameSx(30, 16)}>
                     <PhoneIcon />
                   </Box>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.68)' }}>
                     +62 812-3456-7890
                   </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.1 }}>
-                  <Box sx={{ ...iconFrameSx(30, 16), color: 'text.secondary', mt: 0.1 }}>
+                  <Box sx={{ ...iconFrameSx(30, 16), mt: 0.1 }}>
                     <LocationOnIcon />
                   </Box>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.68)' }}>
                     Palembang, Sumatera Selatan, Indonesia
                   </Typography>
                 </Box>
@@ -168,13 +183,13 @@ export default function Footer({ scrollToSection, t }) {
             </Grid>
           </Grid>
 
-          <Divider sx={{ my: 3 }} />
+          <Divider sx={{ my: { xs: 2, md: 3 }, borderColor: 'rgba(255,255,255,0.14)' }} />
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: 2 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.62)' }}>
               &copy; {new Date().getFullYear()} Smart Rental. {t('landing.rights')}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ fontWeight: 600, color: 'rgba(255,255,255,0.62)' }}>
               Made with Google Sans &amp; Material UI
             </Typography>
           </Box>
@@ -190,12 +205,15 @@ export default function Footer({ scrollToSection, t }) {
             onClick={handleScrollTop}
             sx={{
               position: 'fixed',
-              bottom: { xs: 20, md: 28 },
-              right: { xs: 20, md: 28 },
+              bottom: { xs: 16, md: 28 },
+              right: { xs: 16, md: 28 },
               zIndex: 1200,
               borderRadius: '8px',
+              backgroundColor: '#FFFFFF',
+              color: '#0A0A0A',
               animation: `${fadeIn} 0.3s ease`,
               boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+              '&:hover': { backgroundColor: '#EDEDED' },
               '& .MuiSvgIcon-root': { fontSize: 22 },
             }}
           >

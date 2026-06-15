@@ -1,24 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Chip from '@mui/material/Chip';
-import Card from '@mui/material/Card';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme, keyframes } from '@mui/material/styles';
+import { keyframes } from '@mui/material/styles';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import PeopleIcon from '@mui/icons-material/People';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-import StarIcon from '@mui/icons-material/Star';
-import SearchIcon from '@mui/icons-material/Search';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-
-import { iconFrameSx } from './styles';
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
@@ -31,174 +18,110 @@ const fadeInUp = keyframes`
   to { opacity: 1; transform: translateY(0); }
 `;
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
-
-const statItems = [
-  { key: 'statVehicles', labelKey: 'statVehiclesLabel', icon: <DirectionsCarIcon /> },
-  { key: 'statCustomers', labelKey: 'statCustomersLabel', icon: <PeopleIcon /> },
-  { key: 'statCities', labelKey: 'statCitiesLabel', icon: <LocationCityIcon /> },
-  { key: 'statRating', labelKey: 'statRatingLabel', icon: <StarIcon /> },
-];
-
-export default function HeroSection({ isDark, heroImages, heroIndex, setHeroIndex, scrollToSection, handleBookNow, setSearchQuery, t }) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [quickSearch, setQuickSearch] = useState('');
-
-  const handleQuickSearch = () => {
-    if (quickSearch.trim()) {
-      setSearchQuery(quickSearch.trim());
-    }
-    scrollToSection('fleet');
-  };
-
-  const today = new Date().toISOString().split('T')[0];
-  const isOverDark = isDark;
-
-  const inputSx = {
-    borderRadius: '8px',
-    backgroundColor: isOverDark ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.9)',
-    color: isOverDark ? '#FFFFFF' : '#0A0A0A',
-    '& .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)' },
-    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.3)' },
-    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: isOverDark ? '#FFFFFF' : '#0A0A0A' },
-    '& input::placeholder': { color: isOverDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)', opacity: 1 },
-    '& input': { color: isOverDark ? '#FFFFFF' : '#0A0A0A' },
-    '& input[type="date"]::-webkit-calendar-picker-indicator': { filter: isOverDark ? 'invert(1)' : 'none', cursor: 'pointer' },
-    '& .MuiInputAdornment-root .MuiSvgIcon-root': { color: isOverDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)' },
-  };
-
+export default function HeroSection({ scrollToSection, handleBookNow, t }) {
   return (
     <Box
       id="hero"
       sx={{
         position: 'relative',
-        minHeight: { xs: '100svh', md: 'calc(100svh - 72px)' },
+        minHeight: { xs: 'calc(100svh - 60px)', md: 'calc(100svh - 72px)' },
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         overflow: 'hidden',
         color: '#FFFFFF',
-        pt: { xs: 7, md: 0 },
-        pb: { xs: 16, md: 8 },
+        scrollSnapAlign: 'start',
+        scrollSnapStop: 'always',
+        backgroundColor: 'transparent',
+        pt: { xs: 2.5, sm: 4, md: 0 },
+        pb: { xs: 5, md: 8 },
       }}
     >
-      {/* Background images */}
-      {heroImages.map((image, index) => (
-        <Box
-          key={image}
-          component="img"
-          src={image}
-          alt={`Smart Rental hero vehicle ${index + 1}`}
-          loading={index === 0 ? 'eager' : 'lazy'}
-          decoding="async"
-          sx={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            objectPosition: { xs: 'center 30%', md: 'center center' },
-            opacity: heroIndex === index ? 1 : 0,
-            transform: heroIndex === index ? 'scale(1)' : 'scale(1.035)',
-            transition: 'opacity 900ms ease, transform 4200ms ease',
-            zIndex: 0,
-          }}
-        />
-      ))}
-
-      {/* Gradient overlay */}
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          background: {
-            xs: 'linear-gradient(180deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.78) 100%)',
-            md: 'linear-gradient(90deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.56) 38%, rgba(0,0,0,0.14) 74%, rgba(0,0,0,0.04) 100%)',
-          },
-          pointerEvents: 'none',
-        }}
-      />
-
       {/* Main content */}
-      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, sm: 3, lg: 4 }, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+      <Container maxWidth="xl" sx={{ position: 'relative', zIndex: 1, px: { xs: 2, sm: 3, lg: 4 }, flexGrow: 1, display: 'flex', alignItems: 'center' }}>
         <Box sx={{
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: 'center',
+          flexDirection: 'column',
           width: '100%',
-          gap: { xs: 3, md: 5 },
+          gap: { xs: 4, md: 5 },
         }}>
-          {/* Left: Text content + mobile search */}
+          {/* Centered Text */}
           <Box sx={{
-            maxWidth: { xs: '100%', sm: 620, md: 640 },
-            mx: 0,
-            textAlign: 'left',
+            maxWidth: 760,
+            mx: 'auto',
+            textAlign: 'center',
             animation: `${fadeInUp} 0.8s ease-out`,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}>
             <Chip
               label={t('landing.tagline')}
               size="small"
               sx={{
                 mb: { xs: 2, md: 3 },
-                height: { xs: 26, md: 28 },
-                px: 0.5,
+                height: { xs: 24, md: 28 },
+                px: { xs: 1, md: 1.5 },
                 color: '#FFFFFF',
                 fontWeight: 800,
-                fontSize: { xs: '0.7rem', md: '0.8125rem' },
-                backgroundColor: 'rgba(255,255,255,0.16)',
-                border: '1px solid rgba(255,255,255,0.28)',
+                fontSize: { xs: '0.64rem', md: '0.8125rem' },
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.18)',
                 backdropFilter: 'blur(10px)',
               }}
             />
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: '2rem', sm: '2.85rem', md: '4.15rem', lg: '4.35rem' },
+                fontSize: { xs: '1.95rem', sm: '2.65rem', md: '4.1rem', lg: '4.35rem' },
                 fontWeight: 900,
-                lineHeight: { xs: 1.1, md: 1.04 },
+                lineHeight: { xs: 1.15, md: 1.05 },
                 letterSpacing: 0,
                 mb: { xs: 2, md: 2.5 },
                 color: '#FFFFFF',
-                textShadow: '0 8px 30px rgba(0,0,0,0.5)',
+                textShadow: '0 10px 40px rgba(0,0,0,0.6)',
+                background: 'linear-gradient(to bottom, #FFFFFF 60%, #B3B3B3 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
               }}
             >
               {t('landing.titleHighlight')}
-              {t('landing.titleRest')}
+              <Box component="span" sx={{ display: 'block', WebkitTextFillColor: 'initial', color: '#FFFFFF' }}>
+                {t('landing.titleRest')}
+              </Box>
             </Typography>
             <Typography
               variant="body1"
               sx={{
-                color: 'rgba(255,255,255,0.85)',
-                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.15rem' },
-                mb: { xs: 3, md: 4 },
-                maxWidth: { xs: '100%', md: 600 },
-                mx: 0,
+                color: 'rgba(255,255,255,0.75)',
+                fontSize: { xs: '0.9rem', sm: '1.02rem', md: '1.2rem' },
+                mb: { xs: 2.5, md: 4 },
+                maxWidth: 620,
+                mx: 'auto',
                 fontWeight: 500,
-                lineHeight: { xs: 1.6, md: 1.65 },
-                textShadow: '0 6px 20px rgba(0,0,0,0.4)',
+                lineHeight: 1.6,
+                textShadow: '0 4px 12px rgba(0,0,0,0.5)',
               }}
             >
               {t('landing.subtitle')}
             </Typography>
-            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: 'flex-start' }}>
+            <Box sx={{ display: 'flex', gap: { xs: 1, md: 1.5 }, flexWrap: 'wrap', justifyContent: 'center', width: '100%' }}>
               <Button
                 variant="contained"
                 size="large"
                 onClick={() => scrollToSection('fleet')}
                 sx={{
-                  borderRadius: '8px',
+                  borderRadius: '30px',
                   fontWeight: 800,
-                  px: { xs: 2.25, sm: 3.25 },
-                  py: { xs: 1, md: 1.25 },
-                  fontSize: { xs: '0.85rem', md: '0.9375rem' },
+                  px: { xs: 2.4, sm: 4.5 },
+                  py: { xs: 1.05, md: 1.5 },
+                  fontSize: { xs: '0.8rem', md: '0.9375rem' },
                   backgroundColor: '#FFFFFF',
                   color: '#0A0A0A',
-                  '&:hover': { backgroundColor: '#EDEDED' },
+                  boxShadow: '0 8px 30px rgba(255,255,255,0.15)',
+                  '&:hover': { backgroundColor: '#EDEDED', boxShadow: '0 8px 30px rgba(255,255,255,0.3)' },
                 }}
               >
                 {t('landing.exploreBtn')}
@@ -208,14 +131,14 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                 size="large"
                 onClick={handleBookNow}
                 sx={{
-                  borderRadius: '8px',
+                  borderRadius: '30px',
                   fontWeight: 800,
-                  px: { xs: 2.25, sm: 3.25 },
-                  py: { xs: 1, md: 1.25 },
-                  fontSize: { xs: '0.85rem', md: '0.9375rem' },
+                  px: { xs: 2.4, sm: 4.5 },
+                  py: { xs: 1.05, md: 1.5 },
+                  fontSize: { xs: '0.8rem', md: '0.9375rem' },
                   color: '#FFFFFF',
-                  borderColor: 'rgba(255,255,255,0.7)',
-                  backgroundColor: 'rgba(0,0,0,0.16)',
+                  borderColor: 'rgba(255,255,255,0.4)',
+                  backgroundColor: 'rgba(255,255,255,0.06)',
                   backdropFilter: 'blur(8px)',
                   '&:hover': {
                     borderColor: '#FFFFFF',
@@ -226,128 +149,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
                 {t('landing.startBtn')}
               </Button>
             </Box>
-
-            {/* Mobile search — inline after CTA */}
-            {isMobile && (
-              <Box
-                component="form"
-                onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
-                sx={{ maxWidth: 520, mx: 0, mt: 3, animation: `${fadeIn} 0.6s ease-out 0.3s both` }}
-              >
-                <TextField
-                  placeholder={t('landing.searchPlaceholder')}
-                  value={quickSearch}
-                  onChange={(e) => setQuickSearch(e.target.value)}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end" sx={{ mr: -0.5 }}>
-                        <IconButton
-                          type="submit"
-                          size="small"
-                          sx={{
-                            borderRadius: '8px',
-                            color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-                            '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
-                          }}
-                        >
-                          <SearchIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                    sx: { ...inputSx, pr: 1 },
-                  }}
-                />
-              </Box>
-            )}
           </Box>
-
-          {/* Right: Quick Booking Card (desktop only) */}
-          {!isMobile && (
-            <Card
-              sx={{
-                minWidth: 320,
-                maxWidth: 380,
-                p: 2.5,
-                borderRadius: '8px',
-                backgroundColor: isOverDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.95)',
-                backdropFilter: 'blur(20px)',
-                WebkitBackdropFilter: 'blur(20px)',
-                border: '1px solid',
-                borderColor: isOverDark ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.8)',
-                boxShadow: isOverDark ? '0 20px 60px rgba(0,0,0,0.3)' : '0 20px 60px rgba(0,0,0,0.15)',
-                animation: `${fadeIn} 0.6s ease-out 0.3s both`,
-              }}
-            >
-              <Box
-                component="form"
-                onSubmit={(e) => { e.preventDefault(); handleQuickSearch(); }}
-              >
-                <Typography sx={{ color: isOverDark ? '#FFFFFF' : '#0A0A0A', fontWeight: 800, fontSize: '1rem', mb: 2 }}>
-                  {t('landing.quickFind')}
-                </Typography>
-
-                <TextField
-                  placeholder={t('landing.searchPlaceholder')}
-                  value={quickSearch}
-                  onChange={(e) => setQuickSearch(e.target.value)}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          type="submit"
-                          size="small"
-                          sx={{
-                            borderRadius: '8px',
-                            color: isOverDark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)',
-                            '&:hover': { backgroundColor: isOverDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)' },
-                          }}
-                        >
-                          <SearchIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                    sx: { ...inputSx, mb: 2, pr: 1 },
-                  }}
-                />
-
-                <Box sx={{ display: 'flex', gap: 1.25 }}>
-                  <TextField
-                    type="date"
-                    defaultValue={today}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CalendarTodayIcon sx={{ fontSize: 16 }} />
-                        </InputAdornment>
-                      ),
-                      sx: inputSx,
-                    }}
-                  />
-                  <TextField
-                    type="date"
-                    defaultValue={today}
-                    size="small"
-                    fullWidth
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CalendarTodayIcon sx={{ fontSize: 16 }} />
-                        </InputAdornment>
-                      ),
-                      sx: inputSx,
-                    }}
-                  />
-                </Box>
-              </Box>
-
-            </Card>
-          )}
         </Box>
       </Container>
 
@@ -356,7 +158,7 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         onClick={() => scrollToSection('features')}
         sx={{
           position: 'absolute',
-          bottom: 124,
+          bottom: { xs: 24, md: 34 },
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 2,
@@ -369,126 +171,6 @@ export default function HeroSection({ isDark, heroImages, heroIndex, setHeroInde
         }}
       >
         <KeyboardArrowDownIcon sx={{ color: 'rgba(255,255,255,0.7)', fontSize: 26 }} />
-      </Box>
-
-      {/* Hero stats summary */}
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: { xs: 18, md: 24 },
-          left: 0,
-          right: 0,
-          zIndex: 2,
-          px: { xs: 2, sm: 3, lg: 4 },
-          pointerEvents: 'none',
-        }}
-      >
-        <Container maxWidth="lg" disableGutters>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', sm: 'repeat(4, minmax(0, 1fr))' },
-              gap: { xs: 0.75, md: 1 },
-              p: { xs: 0.75, md: 1 },
-              borderRadius: '8px',
-              backgroundColor: 'rgba(0,0,0,0.34)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              boxShadow: '0 18px 48px rgba(0,0,0,0.26)',
-              backdropFilter: 'blur(18px)',
-              WebkitBackdropFilter: 'blur(18px)',
-              pointerEvents: 'auto',
-            }}
-          >
-            {statItems.map((item, idx) => (
-              <Box
-                key={idx}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  gap: { xs: 0.9, md: 1.15 },
-                  minWidth: 0,
-                  p: { xs: 1, md: 1.2 },
-                  borderRadius: '8px',
-                  backgroundColor: {
-                    xs: idx < 2 ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.07)',
-                    md: 'rgba(255,255,255,0.08)',
-                  },
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  transition: 'background-color 180ms ease, transform 180ms ease',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.12)',
-                    transform: { xs: 'none', md: 'translateY(-1px)' },
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    ...iconFrameSx(isMobile ? 34 : 40, isMobile ? 18 : 20),
-                    backgroundColor: 'rgba(255,255,255,0.12)',
-                    border: '1px solid rgba(255,255,255,0.14)',
-                    color: '#FFFFFF',
-                  }}
-                >
-                  {item.icon}
-                </Box>
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography sx={{ fontWeight: 900, fontSize: { xs: '1.05rem', md: '1.35rem' }, color: '#FFF', lineHeight: 1 }}>
-                    {t(`landing.${item.key}`)}
-                  </Typography>
-                  <Typography
-                    sx={{
-                      mt: 0.35,
-                      fontSize: { xs: '0.64rem', md: '0.74rem' },
-                      color: 'rgba(255,255,255,0.68)',
-                      fontWeight: 700,
-                      lineHeight: 1.2,
-                      whiteSpace: { xs: 'normal', md: 'nowrap' },
-                    }}
-                  >
-                    {t(`landing.${item.labelKey}`)}
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Hero image indicators (dots) */}
-      <Box
-        sx={{
-          position: 'absolute',
-          right: { xs: '50%', md: 28 },
-          top: { xs: 'auto', md: 96 },
-          bottom: { xs: 142, md: 'auto' },
-          zIndex: 3,
-          display: 'flex',
-          gap: 0.75,
-          alignItems: 'center',
-          px: 1.1,
-          py: 0.75,
-          borderRadius: '8px',
-          backgroundColor: 'rgba(0,0,0,0.32)',
-          backdropFilter: 'blur(8px)',
-          transform: { xs: 'translateX(50%)', md: 'none' },
-        }}
-      >
-        {heroImages.map((image, index) => (
-          <Box
-            key={image}
-            onClick={() => setHeroIndex(index)}
-            sx={{
-              width: heroIndex === index ? 18 : 7,
-              height: 7,
-              borderRadius: '3px',
-              backgroundColor: heroIndex === index ? '#FFFFFF' : 'rgba(255,255,255,0.42)',
-              transition: 'width 0.25s ease, background-color 0.25s ease',
-              cursor: 'pointer',
-              '&:hover': { backgroundColor: '#FFFFFF' },
-            }}
-          />
-        ))}
       </Box>
     </Box>
   );

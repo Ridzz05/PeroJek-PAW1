@@ -3,76 +3,41 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { keyframes } from '@mui/material/styles';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-import { iconFrameSx } from './styles';
+import { iconFrameSx, landingCardSx } from './styles';
 
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-`;
-
-export default function CtaBanner({ isDark, handleBookNow, t }) {
+export default function CtaBanner({ handleBookNow, t }) {
   return (
     <Box
+      id="cta"
       sx={{
-        py: { xs: 5.5, md: 7 },
+        minHeight: { xs: 'calc(100svh - 60px)', md: 'calc(100svh - 72px)' },
+        py: { xs: 4.5, md: 7 },
+        display: 'flex',
+        alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
-        backgroundColor: isDark ? 'background.paper' : 'primary.main',
+        backgroundColor: 'transparent',
+        scrollSnapAlign: 'start',
+        scrollSnapStop: 'always',
       }}
     >
-      {/* Decorative floating shapes */}
-      <Box sx={{
-        position: 'absolute',
-        top: -40,
-        right: '10%',
-        width: 96,
-        height: 96,
-        borderRadius: '50%',
-        backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.08)',
-        animation: `${float} 6s ease-in-out infinite`,
-        pointerEvents: 'none',
-      }} />
-      <Box sx={{
-        position: 'absolute',
-        bottom: -20,
-        left: '5%',
-        width: 64,
-        height: 64,
-        borderRadius: '50%',
-        backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.06)',
-        animation: `${float} 8s ease-in-out infinite 1s`,
-        pointerEvents: 'none',
-      }} />
-      <Box sx={{
-        position: 'absolute',
-        top: '30%',
-        right: '25%',
-        width: 42,
-        height: 42,
-        borderRadius: '50%',
-        backgroundColor: isDark ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.04)',
-        animation: `${float} 5s ease-in-out infinite 0.5s`,
-        pointerEvents: 'none',
-      }} />
-
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, px: { xs: 2, sm: 3 } }}>
         <Box sx={{
+          ...landingCardSx,
+          p: { xs: 1.9, md: 4 },
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
-          gap: { xs: 2.5, md: 4 },
+          gap: { xs: 2, md: 4 },
           textAlign: 'left',
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.75, md: 2.5 } }}>
             <Box sx={{
               ...iconFrameSx(52, 26),
-              backgroundColor: isDark ? 'action.selected' : 'rgba(255,255,255,0.16)',
-              color: isDark ? 'text.primary' : 'primary.contrastText',
               display: { xs: 'none', sm: 'inline-flex' },
             }}>
               <DirectionsCarIcon />
@@ -81,9 +46,9 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
               <Typography
                 variant="h3"
                 sx={{
-                  fontSize: { xs: '1.65rem', md: '2.2rem' },
+                  fontSize: { xs: '1.45rem', md: '2.2rem' },
                   fontWeight: 900,
-                  color: isDark ? 'text.primary' : 'primary.contrastText',
+                  color: '#FFFFFF',
                   mb: 1,
                   lineHeight: 1.2,
                 }}
@@ -93,10 +58,11 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
               <Typography
                 variant="body1"
                 sx={{
-                  color: isDark ? 'text.secondary' : 'rgba(255,255,255,0.75)',
+                  color: 'rgba(255,255,255,0.72)',
                   fontWeight: 500,
                   maxWidth: { xs: '100%', md: 500 },
-                  fontSize: { xs: '0.9rem', md: '1rem' },
+                  fontSize: { xs: '0.84rem', md: '1rem' },
+                  lineHeight: { xs: 1.55, md: 1.65 },
                 }}
               >
                 {t('landing.ctaSubtitle')}
@@ -113,13 +79,14 @@ export default function CtaBanner({ isDark, handleBookNow, t }) {
               fontWeight: 800,
               px: { xs: 3, md: 4 },
               py: { xs: 1.25, md: 1.45 },
-              fontSize: { xs: '0.95rem', md: '1rem' },
+              width: { xs: '100%', md: 'auto' },
+              fontSize: { xs: '0.9rem', md: '1rem' },
               borderRadius: '8px',
-              backgroundColor: isDark ? 'primary.main' : 'background.paper',
-              color: isDark ? 'primary.contrastText' : 'text.primary',
+              backgroundColor: '#FFFFFF',
+              color: '#0A0A0A',
               boxShadow: '0 8px 30px rgba(0,0,0,0.2)',
               '&:hover': {
-                backgroundColor: isDark ? 'primary.light' : '#F0F0F0',
+                backgroundColor: '#EDEDED',
                 transform: 'translateY(-2px)',
                 boxShadow: '0 12px 40px rgba(0,0,0,0.3)',
               },

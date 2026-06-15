@@ -10,7 +10,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
-import { useTheme } from '@mui/material/styles';
 import LanguageIcon from '@mui/icons-material/Language';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
@@ -39,7 +38,6 @@ export default function Navbar({
   scrollToSection,
   t,
 }) {
-  const theme = useTheme();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const navSections = [
@@ -65,14 +63,14 @@ export default function Navbar({
           top: 0,
           zIndex: 1100,
           width: '100%',
-          backgroundColor: isDark ? 'rgba(13, 13, 13, 0.85)' : 'rgba(242, 242, 240, 0.85)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          transition: 'background-color 0.3s ease',
+          backgroundColor: 'rgba(5, 5, 7, 0.58)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(255,255,255,0.12)',
+          color: '#FFFFFF',
         }}
       >
-        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, lg: 4 } }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 1.5, sm: 3, lg: 4 } }}>
           <Box sx={{ height: { xs: 60, md: 72 }, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {/* Logo */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, cursor: 'pointer' }} onClick={() => scrollToSection('hero')}>
@@ -80,7 +78,7 @@ export default function Navbar({
                 component="img"
                 src="/assets/img/srs-logo.png"
                 alt="Smart Rental System"
-                sx={{ width: { xs: 34, md: 40 }, height: { xs: 34, md: 40 }, objectFit: 'cover', borderRadius: '50%' }}
+                sx={{ width: { xs: 32, md: 40 }, height: { xs: 32, md: 40 }, objectFit: 'cover', borderRadius: '50%' }}
               />
             </Box>
 
@@ -95,8 +93,8 @@ export default function Navbar({
                     sx={{
                       cursor: 'pointer',
                       fontWeight: 600,
-                      color: 'text.secondary',
-                      '&:hover': { color: 'primary.main' },
+                      color: 'rgba(255,255,255,0.68)',
+                      '&:hover': { color: '#FFFFFF' },
                       transition: 'color 0.2s ease',
                       textTransform: 'capitalize'
                     }}
@@ -111,13 +109,13 @@ export default function Navbar({
             <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, md: 1.5 } }}>
               {/* Mobile hamburger */}
               {isMobile && (
-                <IconButton onClick={() => setDrawerOpen(true)} size="small" color="inherit" sx={{ width: 36, height: 36, borderRadius: '8px', mr: 0.5 }}>
+                <IconButton onClick={() => setDrawerOpen(true)} size="small" color="inherit" sx={{ width: 34, height: 34, borderRadius: '8px', mr: 0.25 }}>
                   <MenuIcon sx={{ fontSize: 21 }} />
                 </IconButton>
               )}
 
               {/* Language Toggle */}
-              <IconButton onClick={toggleLanguage} size="small" color="inherit" sx={{ height: 36, borderRadius: '8px' }}>
+              <IconButton onClick={toggleLanguage} size="small" color="inherit" sx={{ height: 34, borderRadius: '8px', color: 'rgba(255,255,255,0.82)' }}>
                 <LanguageIcon fontSize="small" />
                 <Typography variant="caption" sx={{ ml: 0.5, fontWeight: 700, display: { xs: 'none', sm: 'inline' } }}>
                   {language.toUpperCase()}
@@ -125,7 +123,7 @@ export default function Navbar({
               </IconButton>
 
               {/* Theme Toggle */}
-              <IconButton onClick={toggleColorMode} size="small" color="inherit" sx={{ width: 36, height: 36, borderRadius: '8px' }}>
+              <IconButton onClick={toggleColorMode} size="small" color="inherit" sx={{ width: 34, height: 34, borderRadius: '8px', color: 'rgba(255,255,255,0.82)' }}>
                 {isDark ? <LightModeIcon fontSize="small" /> : <DarkModeIcon fontSize="small" />}
               </IconButton>
 
@@ -139,7 +137,10 @@ export default function Navbar({
                     borderRadius: '8px',
                     fontWeight: 700,
                     px: { xs: 1.5, md: 3 },
-                    py: { xs: 0.6, md: 1 }
+                    py: { xs: 0.6, md: 1 },
+                    backgroundColor: '#FFFFFF',
+                    color: '#0A0A0A',
+                    '&:hover': { backgroundColor: '#EDEDED' },
                   }}
                 >
                   {t('landing.viewDashboard')}
@@ -152,7 +153,7 @@ export default function Navbar({
                     onClick={onGoLogin}
                     sx={{
                       fontWeight: 700,
-                      color: 'text.primary',
+                      color: '#FFFFFF',
                       display: { xs: 'none', sm: 'inline-flex' }
                     }}
                   >
@@ -165,8 +166,12 @@ export default function Navbar({
                     sx={{
                       borderRadius: '8px',
                       fontWeight: 700,
-                      px: { xs: 1.8, md: 3 },
-                      py: { xs: 0.7, md: 1 }
+                      px: { xs: 1.45, md: 3 },
+                      py: { xs: 0.6, md: 1 },
+                      fontSize: { xs: '0.74rem', md: '0.875rem' },
+                      backgroundColor: '#FFFFFF',
+                      color: '#0A0A0A',
+                      '&:hover': { backgroundColor: '#EDEDED' },
                     }}
                   >
                     {t('landing.register')}
@@ -185,10 +190,13 @@ export default function Navbar({
         onClose={() => setDrawerOpen(false)}
         PaperProps={{
           sx: {
-            width: 280,
-            backgroundColor: 'background.paper',
-            borderRight: `1px solid`,
-            borderColor: 'divider',
+            width: { xs: '86vw', sm: 320 },
+            maxWidth: 320,
+            backgroundColor: 'rgba(8,8,10,0.94)',
+            color: '#FFFFFF',
+            borderRight: '1px solid rgba(255,255,255,0.14)',
+            backdropFilter: 'blur(18px)',
+            WebkitBackdropFilter: 'blur(18px)',
           }
         }}
       >
@@ -202,12 +210,12 @@ export default function Navbar({
               sx={{ width: 34, height: 34, objectFit: 'cover', borderRadius: '50%' }}
             />
           </Box>
-          <IconButton onClick={() => setDrawerOpen(false)} size="small" sx={{ width: 36, height: 36, borderRadius: '8px' }}>
+          <IconButton onClick={() => setDrawerOpen(false)} size="small" sx={{ width: 36, height: 36, borderRadius: '8px', color: '#FFFFFF' }}>
             <CloseIcon sx={{ fontSize: 21 }} />
           </IconButton>
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)' }} />
 
         {/* Nav Links */}
         <List sx={{ px: 1, py: 1 }}>
@@ -219,7 +227,8 @@ export default function Navbar({
                   borderRadius: '8px',
                   gap: 1.25,
                   py: 1,
-                  '&:hover': { backgroundColor: 'action.hover' },
+                  color: '#FFFFFF',
+                  '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
                 }}
               >
                 <Box sx={iconFrameSx(36, 19)}>
@@ -234,15 +243,15 @@ export default function Navbar({
           ))}
         </List>
 
-        <Divider sx={{ mx: 2 }} />
+        <Divider sx={{ mx: 2, borderColor: 'rgba(255,255,255,0.12)' }} />
 
         {/* Auth actions in drawer for mobile */}
         {!user && (
           <Box sx={{ px: 2, py: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Button variant="text" fullWidth onClick={() => { onGoLogin(); setDrawerOpen(false); }} sx={{ fontWeight: 700, justifyContent: 'flex-start' }}>
+            <Button variant="text" fullWidth onClick={() => { onGoLogin(); setDrawerOpen(false); }} sx={{ fontWeight: 700, justifyContent: 'flex-start', color: '#FFFFFF' }}>
               {t('landing.login')}
             </Button>
-            <Button variant="contained" fullWidth onClick={() => { onGoRegister(); setDrawerOpen(false); }} sx={{ borderRadius: '8px', fontWeight: 700 }}>
+            <Button variant="contained" fullWidth onClick={() => { onGoRegister(); setDrawerOpen(false); }} sx={{ borderRadius: '8px', fontWeight: 700, backgroundColor: '#FFFFFF', color: '#0A0A0A', '&:hover': { backgroundColor: '#EDEDED' } }}>
               {t('landing.register')}
             </Button>
           </Box>
