@@ -46,8 +46,20 @@ class VehicleController extends Controller
         return response()->json($vehicle->load('category'));
     }
 
+    public function show(Vehicle $vehicle): JsonResponse
+    {
+        return response()->json($vehicle->load('category'));
+    }
+
     public function destroy(Vehicle $vehicle): JsonResponse
     {
+        // Cegah penghapusan kendaraan yang masih punya histori rental (Ongoing atau Completed)
+        if ($vehicle->rentals()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete vehicle: it has associated rental history. Set status to Maintenance instead.',
+            ], 422);
+        }
+
         $vehicle->delete();
         return response()->json(['message' => 'Vehicle deleted successfully']);
     }

@@ -20,6 +20,10 @@ use Illuminate\Support\Collection;
     'total_amount',
     'status',
     'payment_method',
+    'payment_status',
+    'late_days',
+    'penalty_amount',
+    'final_amount',
 ])]
 class Rental extends Model
 {
@@ -30,10 +34,13 @@ class Rental extends Model
     protected function casts(): array
     {
         return [
-            'start_date' => 'date',
-            'end_date' => 'date',
-            'total_days' => 'integer',
-            'total_amount' => 'decimal:2',
+            'start_date'     => 'date',
+            'end_date'       => 'date',
+            'total_days'     => 'integer',
+            'total_amount'   => 'decimal:2',
+            'late_days'      => 'integer',
+            'penalty_amount' => 'decimal:2',
+            'final_amount'   => 'decimal:2',
         ];
     }
 

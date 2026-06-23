@@ -40,8 +40,20 @@ class CustomerController extends Controller
         return response()->json($customer);
     }
 
+    public function show(Customer $customer): JsonResponse
+    {
+        return response()->json($customer);
+    }
+
     public function destroy(Customer $customer): JsonResponse
     {
+        // Cegah penghapusan pelanggan yang masih punya histori rental
+        if ($customer->rentals()->exists()) {
+            return response()->json([
+                'message' => 'Cannot delete customer: they have associated rental history.',
+            ], 422);
+        }
+
         $customer->delete();
         return response()->json(['message' => 'Customer deleted successfully']);
     }

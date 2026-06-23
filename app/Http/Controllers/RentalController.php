@@ -88,26 +88,59 @@ class RentalController extends Controller
 
         if ($rental->status !== 'Ongoing') {
             return response()->json([
-                'message' => 'This rental transaction is already closed or cancelled.'
+                'message' => 'This rental transaction is already closed or cancelled.',
             ], 422);
         }
 
+        // -------------------------------------------------------
+        // Sistem Denda Otomatis (Late Return Penalty)
+        // -------------------------------------------------------
+        $today      = Carbon::today();
+        $expectedEnd = Carbon::parse($rental->end_date)->startOfDay();
+
+        // Hitung hari keterlambatan (0 jika tepat waktu atau lebih awal)
+        $lateDays = max(0, $expectedEnd->diffInDays($today, false));
+
+        // Denda: 10% dari daily_rate per hari keterlambatan
+        $dailyRate    = (float) $rental->vehicle->daily_rate;
+        $penaltyRate  = 0.10;                                     // 10% per hari
+        $penaltyPerDay = $dailyRate * $penaltyRate;
+        $totalPenalty  = $lateDays * $penaltyPerDay;
+
+        // Total tagihan akhir = biaya sewa asal + denda
+        $finalAmount = (float) $rental->total_amount + $totalPenalty;
+
         DB::beginTransaction();
         try {
-            // Update rental record
-            $rental->update(['status' => 'Completed']);
+            // Update rental: status Completed, simpan denda dan total akhir
+            $rental->update([
+                'status'        => 'Completed',
+                'late_days'     => $lateDays,
+                'penalty_amount' => $totalPenalty,
+                'final_amount'  => $finalAmount,
+            ]);
 
-            // Update vehicle status back to Available
+            // Kembalikan status kendaraan menjadi Available
             $vehicle = Vehicle::findOrFail($rental->vehicle_id);
             $vehicle->update(['status' => 'Available']);
 
             DB::commit();
 
-            return response()->json($rental->load(['vehicle.category', 'customer']));
+            $response = $rental->load(['vehicle.category', 'customer']);
+
+            return response()->json([
+                'rental'         => $response,
+                'late_days'      => $lateDays,
+                'penalty_amount' => $totalPenalty,
+                'final_amount'   => $finalAmount,
+                'message'        => $lateDays > 0
+                    ? "Kendaraan dikembalikan {$lateDays} hari terlambat. Denda: Rp " . number_format($totalPenalty, 0, ',', '.')
+                    : 'Kendaraan dikembalikan tepat waktu.',
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Failed to process vehicle return: ' . $e->getMessage()
+                'message' => 'Failed to process vehicle return: ' . $e->getMessage(),
             ], 500);
         }
     }

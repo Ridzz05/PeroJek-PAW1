@@ -41,7 +41,6 @@ export default function Customers() {
   const [currentCustomer, setCurrentCustomer] = useState({
     id: null,
     name: '',
-    email: '',
     phone: '',
     address: '',
     identity_number: ''
@@ -81,7 +80,6 @@ export default function Customers() {
     setCurrentCustomer({
       id: null,
       name: '',
-      email: '',
       phone: '',
       address: '',
       identity_number: ''
@@ -94,7 +92,6 @@ export default function Customers() {
     setCurrentCustomer({
       id: customer.id,
       name: customer.name,
-      email: customer.email || '',
       phone: customer.phone,
       address: customer.address || '',
       identity_number: customer.identity_number || ''
@@ -155,8 +152,7 @@ export default function Customers() {
 
   const filteredCustomers = useMemo(() => customers.filter(c => {
     const query = searchQuery.toLowerCase();
-    return c.name.toLowerCase().includes(query) || 
-           (c.email && c.email.toLowerCase().includes(query)) ||
+    return c.name.toLowerCase().includes(query) ||
            c.phone.includes(query) ||
            (c.identity_number && c.identity_number.includes(query));
   }), [customers, searchQuery]);
@@ -203,14 +199,7 @@ export default function Customers() {
                   required
                   fullWidth
                 />
-                <TextField
-                  label={t('customers.email_address')}
-                  type="email"
-                  placeholder="e.g. john@example.com"
-                  value={currentCustomer.email}
-                  onChange={(e) => setCurrentCustomer({ ...currentCustomer, email: e.target.value })}
-                  fullWidth
-                />
+
                 <TextField
                   label={t('customers.sim_number')}
                   placeholder="e.g. 1234-5678-901234"
@@ -309,9 +298,6 @@ export default function Customers() {
                   </Box>
                   <Divider sx={{ my: 1.25 }} />
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>{customer.phone}</Typography>
-                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                    {customer.email || t('customers.no_email')}
-                  </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
                     {customer.identity_number || t('customers.not_recorded')}
                   </Typography>
@@ -359,9 +345,6 @@ export default function Customers() {
                     <TableCell>
                       <Typography variant="body2" sx={{ fontWeight: 500 }}>
                         {customer.phone}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
-                        {customer.email || t('customers.no_email')}
                       </Typography>
                     </TableCell>
                     <TableCell>

@@ -41,7 +41,7 @@ Aplikasi manajemen rental kendaraan berbasis web dengan **landing page publik** 
 - **Frontend**: React 19 + Material UI 6 + Tailwind CSS 4
 - **Bundler**: Vite 7 + laravel-vite-plugin
 - **Database**: SQLite (default), support MySQL via konfigurasi `.env`
-- **Auth**: Laravel session guard
+- **Auth**: Laravel session guard (middleware `auth`)
 
 ---
 
